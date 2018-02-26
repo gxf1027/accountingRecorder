@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <constant name="struts.devMode" value="true" />
+    <!-- 此版本一定要加這個常量，否則不無法開啟DMI -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+<!-- 	<constant name="struts.i18n.encoding" value="UTF-8" /> -->
+    <package name="haha" namespace="/demo" extends="struts-default">
+    	
+    	<interceptors>
+    		<interceptor name="MySessionInterceptor" class="cn.gxf.spring.struts.integrate.test.SessionInterceptor" />
+    		
+    		<interceptor-stack name="myinterceptorStack">
+    			<interceptor-ref name="token" >
+    				<param name="includeMethods">accountSave,saveExp</param>
+    			</interceptor-ref>
+    			<interceptor-ref name="paramsPrepareParamsStack" />
+    			<interceptor-ref name="MySessionInterceptor" />
+    		</interceptor-stack>
+    	
+    	</interceptors>
+    	
+    	
+    	
+    	<!-- 必须写在这里，写在后面会报错 -->
+    	<default-action-ref name="default_page" ></default-action-ref>
+    	
+    	<global-results>
+    		<result name="session_invalid">/myLoginWcai.jsp</result>
+    	</global-results>
+    	
+    	
+    	<!-- 注意class属性，使用IOC容器中的bean
+    		为了让struts2使用IOC容器而不是自己创建action, 要增加struts2-spring-plugin-2.3.32.jsr 
+    	-->
+    	<action name="account" class="account_action" >
+        	<result>/WEB-INF/content/costPage.jsp</result>
+        	<result name="NULL_SESSION_ERROR">/WEB-INF/content/1.jsp</result>
+        	<!-- redirectAction, 要使用动态调用方式(account!resetAcc),否则抛出异常 -->
+			<result type="redirectAction" name="SAVE_OK">account!listAllAccInfo</result>
+			<result name="RESET_OK">/WEB-INF/content/accountPage.jsp</result>
+			<result name="ROLL_BACK">/WEB-INF/content/accountPage.jsp</result>
+			<result name="listAll">/WEB-INF/content/listall.jsp</result>
+			<result name="deleteOne" type="redirectAction">account!listAllAccInfo</result>
+			<result name="input_ok">/WEB-INF/content/accountPage.jsp</result>
+			<result name="invalid.token">/WEB-INF/content/1.jsp</result>
+			<interceptor-ref name="myinterceptorStack" />
+        </action>
+        
+         <action name="exp" class="exp_action">
+        	<result>/WEB-INF/content/accountPage.jsp</result>
+        	<result name="loanInfo_OK">/WEB-INF/content/costPage.jsp</result>
+        	<result name="invalid.token">/WEB-INF/content/1.jsp</result>
+<!--         	<interceptor-ref name="defaultStack"></interceptor-ref> -->
+<!--         	<interceptor-ref name="MySessionInterceptor"></interceptor-ref> -->
+			<interceptor-ref name="myinterceptorStack" />
+        </action>
+        
+        <action name="accountDetail" class="accountDetailAction">
+        	<!-- 保证删除后仍旧重定向到删除前页面 -->
+        	<result name="delOk" type="redirectAction">listDetail!listByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<result name="editIncome" type="redirectAction">incomeDetail!editShow?mxuuidList=${mxuuidToEdit}&amp;date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<result name="editPayment" type="redirectAction">paymentDetail!editShow?mxuuidList=${mxuuidToEdit}&amp;date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<result name="editTransfer" type="redirectAction">transferDetail!editShow?mxuuidList=${mxuuidToEdit}&amp;date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<interceptor-ref name="myinterceptorStack" />
+        </action>
+        
+        <action name="incomeDetail" class="incomeDetailAction">
+        	<result name="IncomeInputOk">/WEB-INF/income_detail.jsp</result>
+        	<result name="saveOk" type="redirectAction">listDetail!listByMonth</result>
+        	<result name="saveRecOk" type="redirectAction">incomeDetail!inputIncome</result>
+        	<result name="delOk" type="redirectAction">listDetail!listIncomeByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<interceptor-ref name="myinterceptorStack" />
+        </action>
+        
+        <action name="paymentDetail" class="paymentDetailAction">
+        	<result name="PaymentInputOk">/WEB-INF/payment_detail.jsp</result>
+        	<result name="saveOk" type="redirectAction" >listDetail!listByMonth</result>
+        	<result name="saveRecOk" type="redirectAction">paymentDetail!inputPayment</result>
+        	<result name="delOk" type="redirectAction">listDetail!listPaymentByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<result name="PaymentError">/WEB-INF/payment_detail.jsp</result>
+        	<interceptor-ref name="myinterceptorStack" />
+        </action>
+        
+         <action name="transferDetail" class="transferDetailAction">
+        	<result name="TransferInputOk">/WEB-INF/transfer_detail.jsp</result>
+        	<result name="saveOk" type="redirectAction" >listDetail!listByMonth</result>
+        	<result name="saveRecOk" type="redirectAction">transferDetail!inputTransfer</result>
+        	<result name="delOk" type="redirectAction">listDetail!listTransferByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<interceptor-ref name="myinterceptorStack" />
+        </action>
+        
+        <action name="listDetail" class="listDetailAction">
+        	<result name="listOk">/WEB-INF/list_detail.jsp</result>
+        	<result name="listTransferOk">/WEB-INF/list_transfer.jsp</result>
+        	<interceptor-ref name="myinterceptorStack" />
+        </action>
+        
+        <action name="customTailoredQuery" class="customTailoredQueryAction">
+        	<result name="inputOk">/WEB-INF/query-payment.jsp</result>
+        	<!-- <result name="queryOk" type="redirectAction">customTailoredQuery!inputQuery</result> -->
+        	<result name="queryOk">/WEB-INF/query-payment.jsp</result>
+        	<interceptor-ref name="myinterceptorStack" />
+        </action>
+        
+        <action name="frontStatistics" class="frontStatisticsAction">
+        	<result name="inputOk">/WEB-INF/front-stat.jsp</result>
+        </action>
+        
+        <action name="accountBook" class="accountBookAction">
+        	
+        	<result name="inputBook">/WEB-INF/accbook.jsp</result>
+        	<!-- 使用type='chain'可以将request不丢失 -->
+     		<!-- 使用param而不是incomeDetail!inputIncome?je=${incomeDetail.je}&amp;...是struts2推荐方式，可以避免中文乱码 -->
+        	<!-- <result name="bookSaveOkFromIncome" type="redirectAction">incomeDetail!inputIncome?je=${incomeDetail.je}&amp;lb_dm=${incomeDetail.lb_dm}&amp;fsrq=${incomeDetail.fsrqToShow}&amp;fkfmc=${incomeDetail.fkfmc}&amp;bz=${incomeDetail.bz}</result> -->
+        	<result name="bookSaveOkFromIncome" type="redirectAction">
+        		<param name="actionName">incomeDetail</param>
+        		<param name="method">inputIncome</param>
+        		<param name="je">${incomeDetail.je}</param>
+        		<param name="lb_dm">${incomeDetail.lb_dm}</param>
+        		<param name="fsrq">${incomeDetail.fsrqToShow}</param>
+        		<param name="fkfmc">${incomeDetail.fkfmc}</param>
+        		<param name="zh_dm">${incomeDetail.zh_dm}</param>
+        		<param name="bz">${incomeDetail.bz}</param>
+        	</result> 
+        	<result name="bookSaveOkFromPayment" type="redirectAction">
+        		<param name="actionName">paymentDetail</param>
+        		<param name="method">inputPayment</param>
+        		<param name="je">${paymentDetail.je}</param>
+        		<param name="dl_dm">${paymentDetail.dl_dm}</param>
+        		<param name="xl_dm">${paymentDetail.xl_dm}</param>
+        		<param name="seller">${paymentDetail.seller}</param>
+        		<param name="fsrq">${paymentDetail.fsrqToShow}</param>
+        		<param name="zh_dm">${paymentDetail.zh_dm}</param>
+        		<param name="bz">${paymentDetail.bz}</param>
+        	</result>
+        	<!-- 用于struts2的validate错误验证 -->
+        	<result name="input" type="redirectAction">
+        		<param name="actionName">accountBook</param>
+        		<param name="method">inputBook</param>
+        		<param name="zhlx_dm">${accountBook.zhlx_dm}</param>
+        		<param name="zh_mc">${accountBook.zh_mc}</param>
+        		<param name="zhhm">${accountBook.zhhm}</param>
+        		<param name="ye">${accountBook.ye}</param>
+        		<param name="khrmc">${accountBook.khrmc}</param>
+        		<param name="bz">${accountBook.bz}</param>
+        		<param name="bookErrorMessage">${bookErrorMessage}</param>
+        	</result>
+        </action>
+        
+        <action name="checkRegisterName" class="registerUserAction" method="checkUserName"></action>
+        
+        <action name="registerUser" class="registerUserAction" method="registerUser">
+        	<result name="registerOk">/myLoginWcai.jsp</result>
+        	<result name="notProperyUerPwd">/myRegisterWcai.jsp</result>
+        	<result name="invalid.token">/WEB-INF/content/1.jsp</result>
+        	<interceptor-ref name="myinterceptorStack" />
+        </action>
+                
+        <action name="login_*" class="login_action" method="login{1}">
+        	<result name="{1}_OK">/WEB-INF/content/1.jsp</result>
+        </action>
+        
+        
+        <!-- action name=* 和 default action（default_page）只能存在一个，如果都存在，default action将不起作用 -->
+        
+      <!--   <action name="*" >
+            处理所有页面请求，调整到同名的jsp
+			             必须为  /WEB-INF/content/ ， 不能为 WEB-INF/content/ 
+			             第一个 “/” 不能少
+            
+        	<result>/WEB-INF/content/{1}.jsp</result>
+        </action> -->
+        
+        
+        <action name="default_page">
+        	<result>/myLoginWcai.jsp</result>
+        </action>
+       
+    </package>
+
+   
+
+</struts>
