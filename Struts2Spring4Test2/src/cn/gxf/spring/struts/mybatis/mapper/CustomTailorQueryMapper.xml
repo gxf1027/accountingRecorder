@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.gxf.spring.struts.mybatis.dao.CustomTailorQueryDao">
+  	
+	<select id="getPaymentDetailVo" parameterType="map" 
+		resultType="PaymentDetailVO">
+		SELECT p.accuuid, 
+			   p.mxuuid, 
+			   p.user_id,  
+			   DATE_FORMAT(p.shijian, '%Y-%m-%d %H:%i:00') fsrq, 
+			   p.je je,
+			   (select dl_mc from dm_dl d where d.dl_dm = p.dl_dm) lbmc,
+			   (select xl_mc from dm_xl x where x.xl_dm = p.xl_dm) xlmc,
+			   p.seller seller,
+			   p.bz,	
+			   2 AS type 
+			FROM account_payment_detail p
+			WHERE 1=1
+			<if test="paydl_dm != null">
+				AND p.dl_dm IN 
+				<foreach collection="paydl_dm" index="index" item="dm" open="(" separator="," close=")">
+					#{dm}
+				</foreach>
+			</if> 
+			<if test="payxl_dm != null">
+				AND p.xl_dm IN
+				<foreach collection="payxl_dm" index="index" item="dm" open="(" separator="," close=")">
+					#{dm}
+				</foreach>
+			</if>
+			<if  test="seller != null">
+				AND p.seller LIKE CONCAT('%', #{seller}, '%')
+			</if>
+			<if test="date_from != null">  
+			 	AND p.shijian &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d')
+			</if> 
+			<if test="date_to != null">
+				AND p.shijian &lt;= DATE_FORMAT(#{date_to}, '%Y-%m-%d 23:59:59')
+			</if>
+			<if test="je_gt != null">
+				AND p.je &gt;= #{je_gt}
+			</if>
+			<if test="je_lt != null">
+				AND p.je &lt;= #{je_lt}
+			</if>
+			<if test="zh_dm != null">
+				AND p.zh_dm IN
+				<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
+					#{dm}
+				</foreach>
+			</if>
+			AND user_id = #{user_id} 
+			AND yxbz='Y'
+			ORDER BY p.shijian
+	</select>
+	
+	<select id="getIncomeDetailVo"	parameterType="map" 
+		resultType="IncomeDetailVO">
+		SELECT p.accuuid, 
+			   p.mxuuid, 
+			   p.user_id,  
+			   DATE_FORMAT(p.shijian, '%Y-%m-%d %H:%i:00') fsrq, 
+			   p.je je, 
+			   b.srlb_mc lbmc,
+			   p.fkfmc seller,
+			   p.bz,	
+			   1 AS type 
+			FROM account_income_detail p LEFT JOIN dm_srlb b 
+			ON p.lb_dm = b.srlb_dm
+			WHERE 1=1
+			<if test="srlb_dm != null">
+				AND p.lb_dm IN 
+				<foreach collection="srlb_dm" index="index" item="dm" open="(" separator="," close=")">
+					#{dm}
+				</foreach>
+			</if> 
+			<if  test="fkfmc != null">
+				AND p.fkfmc LIKE CONCAT('%', #{fkfmc}, '%')
+			</if>
+			<if test="date_from != null">  
+			 	AND p.shijian &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d')
+			</if> 
+			<if test="date_to != null">
+				AND p.shijian &lt;= DATE_FORMAT(#{date_to}, '%Y-%m-%d 23:59:59')
+			</if>
+			<if test="je_gt != null">
+				AND p.je &gt;= #{je_gt}
+			</if>
+			<if test="je_lt != null">
+				AND p.je &lt;= #{je_lt}
+			</if>
+			<if test="zh_dm != null">
+				AND p.zh_dm IN
+				<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
+					#{dm}
+				</foreach>
+			</if>
+			AND p.user_id = #{user_id} 
+			AND p.yxbz='Y'
+			ORDER BY p.shijian
+	</select>
+    
+    <select id="getTransferDetailVo" parameterType="map" 
+		resultType="TransferDetailVO">
+		SELECT p.accuuid, 
+			   p.mxuuid, 
+			   p.user_id,  
+			   DATE_FORMAT(p.shijian, '%Y-%m-%d %H:%i:00') fsrq, 
+			   p.je je, 
+			   (select z.zh_mc from zh_detail_info z where z.zh_dm = p.srcZh_dm) srcZhmc,
+			   (select z.zh_mc from zh_detail_info z where z.zh_dm = p.tgtZh_dm) tgtZhmc,
+			   p.bz,	
+			   3 AS type 
+			FROM account_transfer_detail p
+			WHERE 1=1
+			<if test="srcZh_dm != null">
+				AND p.srcZh_dm IN 
+				<foreach collection="srcZh_dm" index="index" item="dm" open="(" separator="," close=")">
+					#{dm}
+				</foreach>
+			</if> 
+			<if test="tgtZh_dm != null">
+				AND p.tgtZh_dm IN 
+				<foreach collection="tgtZh_dm" index="index" item="dm" open="(" separator="," close=")">
+					#{dm}
+				</foreach>
+			</if> 
+			<if test="date_from != null">  
+			 	AND p.shijian &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d')
+			</if> 
+			<if test="date_to != null">
+				AND p.shijian &lt;= DATE_FORMAT(#{date_to}, '%Y-%m-%d 23:59:59')
+			</if>
+			<if test="je_gt != null">
+				AND p.je &gt;= #{je_gt}
+			</if>
+			<if test="je_lt != null">
+				AND p.je &lt;= #{je_lt}
+			</if>
+			AND user_id = #{user_id} 
+			AND yxbz='Y'
+			ORDER BY p.shijian
+	</select>
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.gxf.spring.struts.mybatis.dao.StatNdYfMBDao">
+	
+	<select id="procAccStatByNd" statementType="CALLABLE">
+		{ call proc_acc_stat_nd(
+				#{nd, mode=IN, jdbcType=VARCHAR}, #{user_id, mode=IN, jdbcType=INTEGER}
+				)}
+	</select>
+
+	<select id="getNdYfStat" resultType="cn.gxf.spring.struts2.integrate.model.StatByMonth" >
+		SELECT	* FROM
+			(
+				SELECT
+					a.nd AS nd,
+					a.yf AS yf,
+					IFNULL(a.je, 0) AS paysum,
+					IFNULL(b.je, 0) AS incomesum,
+					a.user_id  AS user_id
+				FROM
+					stat_payment_nd AS a
+				LEFT JOIN stat_income_nd AS b 
+				ON a.nd = b.nd
+				AND a.yf = b.yf
+				AND a.user_id = b.user_id
+				UNION
+				SELECT
+					b.nd AS nd,
+					b.yf AS yf,
+					IFNULL(a.je, 0) AS paysum,
+					IFNULL(b.je, 0) AS incomesum,
+					b.user_id AS user_id
+				FROM
+					stat_payment_nd AS a
+				RIGHT JOIN stat_income_nd AS b 
+				ON a.nd = b.nd
+				AND a.yf = b.yf
+				AND a.user_id = b.user_id
+			) AS tab
+		WHERE user_id = #{user_id}
+		AND nd = #{nd}
+		ORDER BY nd,	yf
+	</select>
+	
+	<select id="getIncomeStatOnSrlb" resultType="cn.gxf.spring.struts2.integrate.model.StatByCategory">
+		SELECT
+			srlb_dm AS category_dm,
+			srlb_mc AS category_mc,
+			je AS je,
+			nd AS nd
+		FROM
+			stat_income_lb
+		WHERE
+			nd = #{nd}
+			AND user_id = #{user_id}
+		ORDER BY je DESC
+	</select>
+	
+	<select id="getPaymentStatOnDl" resultType="cn.gxf.spring.struts2.integrate.model.StatByCategory">
+		SELECT
+			dl_dm AS category_dm,
+			dl_mc AS category_mc,
+			je AS je,
+			nd AS nd
+		FROM
+			stat_payment_dl
+		WHERE
+			nd = #{nd}
+			AND user_id = #{user_id}
+		ORDER BY je DESC
+	</select>
+</mapper>
+
