@@ -34,6 +34,7 @@
   		SELECT t.accuuid, t.mxuuid, t.user_id,  DATE_FORMAT(t.shijian, '%Y-%m-%d %H:%i:00') fsrq, t.je je, 
 			 (select z.zh_mc from zh_detail_info z where z.zh_dm = t.srcZh_dm) srcZhmc, 
 			 (select z.zh_mc from zh_detail_info z where z.zh_dm = t.tgtZh_dm) tgtZhmc, 
+			 (select lx.zzlx_mc from dm_zzlx lx where lx.zzlx_dm = t.zzlx_dm and yxbz='Y') zzlxmc,
 			 t.bz,	3 AS type 
 			 FROM account_transfer_detail t 
 			 WHERE 1 = 1

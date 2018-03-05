@@ -317,11 +317,11 @@
 		<div class="g-layout-header">
 			<ul >
 				<li>
-					<a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home " bi="8013" style=" text-decoration: none;">退出</a>
+					<a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home " style=" text-decoration: none;">退出</a>
 				</li>
 				
 				<li>
-					<a href="frontStatistics!inputFront"  class="home before" bi="8012">首页</a>
+					<a href="frontStatistics!inputFront"  class="home before" style=" text-decoration: none;">首页</a>
 				</li>
 				
 				<li>
@@ -414,12 +414,6 @@
 				<s:textfield name="date_from" theme="simple" style="display:none"/>
 				<s:textfield name="date_to" theme="simple" style="display:none"/>
 				
-				<tr>
-					<th>优惠金额</th>
-					<td>
-						<s:textfield id="input_yhje" name="yhje"  maxlength="16" required="required" class="recordInput calc keepMoney {required:true,money:1,messages:{required:'收入金额必填'}} hasCalculator" theme="simple"/>
-					</td>	
-				</tr>
 				
 				<tr>
 					<th>实付金额</th>
@@ -429,6 +423,14 @@
 						<img id="calc_img" src="../components/calculator/calculator.png" alt="计算器" title="计算器" class="calculator-trigger" onclick="calcDisplay()">
 					</td>	
 				</tr>
+				
+				<tr>
+					<th>优惠金额</th>
+					<td>
+						<s:textfield id="input_yhje" name="yhje"  maxlength="16" required="required" class="recordInput calc keepMoney {required:true,money:1,messages:{required:'收入金额必填'}} hasCalculator" theme="simple"/>
+					</td>	
+				</tr>
+				
 				
 				<tr>
 					<th>类别</th>
@@ -470,6 +472,13 @@
 						<s:else>
 							<input type="datetime-local"  id="fsrq2" name="fsrq" style="height:24px;line-height:24px;border:1px solid #CCC;background-position: 115px 12px;" required="required">
 						</s:else>
+					</td>
+				</tr>
+				
+				<tr>
+					<th>项目</th>
+					<td>
+						<s:select list="#request.outgo_category" listKey="key" listValue="value" name="category_dm" theme="simple" class="selectInput" />
 					</td>
 				</tr>
 	  			

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.gxf.spring.quartz.job.dao.CreditCardBillDao">
+	
+	<select id="getIncomeDetailByUserId" parameterType="int" 
+		resultType="IncomeDetail">
+		SELECT * from account_income_detail WHERE user_id = #{user_id} AND yxbz='Y'
+	</select>
+
+	<select id="getCreditCardTranscationRecordInZDQ"  parameterType="map" 
+			resultType="CreditCardTransRecord">
+		SELECT zh_dm, zh_mc, user_id, jysj, CONCAT(dl_mc,'-',xl_mc) jylx, jyf, je, bz 
+			FROM (
+			SELECT
+				t.zh_dm as zh_dm, 
+				z.zh_mc as zh_mc,
+				t.user_id as user_id, 
+				t.je as je , 
+				t.shijian as jysj, 
+				(SELECT dl_mc from dm_dl d where d.dl_dm = t.dl_dm) as dl_mc, 
+			    (SELECT xl_mc from dm_xl x where x.xl_dm = t.xl_dm) as xl_mc,
+			    t.seller as jyf, 
+			    t.bz as bz
+			FROM
+				account_payment_detail t, zh_detail_info z
+				WHERE t.shijian <![CDATA[ > ]]> DATE_FORMAT(#{jyqq}, '%Y-%m-%d') 
+				AND t.shijian <![CDATA[ <= ]]> DATE_FORMAT(#{jyqz}, '%Y-%m-%d 23:59:59') 
+				AND t.yxbz = 'Y'
+				AND t.zh_dm = z.zh_dm
+				AND t.zh_dm IN
+				<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
+					#{dm}
+				</foreach>
+			
+			union all
+			
+			SELECT 
+				t.tgtZh_dm as zh_dm, 
+				z.zh_mc as zh_mc, 
+				t.user_id as user_id,
+				t.je as je, 
+				t.shijian as jysj, 
+				'还款' as dl_mc, 
+				'无' as xl_mc, 
+				CONCAT('还款账户','-',(select x.zh_mc from zh_detail_info x where x.zh_dm = t.srcZh_dm)) as jyf, 
+				t.bz as bz
+			 FROM account_transfer_detail t, zh_detail_info z
+				WHERE t.shijian <![CDATA[ > ]]>  DATE_FORMAT(#{jyqq}, '%Y-%m-%d') 
+				AND t.shijian <![CDATA[ <= ]]> DATE_FORMAT(#{jyqz}, '%Y-%m-%d 23:59:59') 
+				AND t.yxbz = 'Y'
+				AND t.tgtZh_dm = z.zh_dm
+				AND t.tgtZh_dm IN
+				<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
+					#{dm}
+				</foreach>) as bill
+		ORDER BY user_id, zh_dm, jysj desc
+	</select>
+	
+	<insert id="saveTranscationRecordInZDQ" parameterType="java.util.List">
+		INSERT INTO zh_detail_ccbill(billuuid, user_id, bill_ssqq, bill_ssqz, zh_dm, zh_mc, jysj, jylx, jyf, je, bz, yxbz, lrrq, xgrq, mailed)
+		VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+            (uuid(), #{item.user_id}, #{item.bill_ssqq}, #{item.bill_ssqz}, #{item.zh_dm}, #{item.zh_mc}, #{item.jysj}, #{item.jylx}, #{item.jyf}, #{item.je}, #{item.bz}, 'Y', now(), null, #{item.isMailed})
+        </foreach>
+	</insert>
+	
+	<update id="deleteInvalidRecord" parameterType="map">
+		UPDATE zh_detail_ccbill SET yxbz='N', xgrq = now()
+		WHERE bill_ssqq = #{ssqq} AND bill_ssqz = #{ssqz} AND yxbz='Y' AND mailed='N'
+	</update>
+</mapper>
+

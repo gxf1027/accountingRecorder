@@ -10,6 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../css/header-account.css" />
 <link rel="stylesheet" type="text/css" href="../css/footer.css" />
 <link rel="stylesheet" type="text/css" href="../css/left-nav.css" />
+<link rel="stylesheet" type="text/css" href="../css/buttons.css" />
 
 
 	<style type="text/css"> 
@@ -38,7 +39,7 @@
 		.record_biz tr{height:36px;}
 		.query_condition tr{height:36px;}
 		.recordInput{width:118px;padding-left:0px;height:24px;line-height:24px;border:1px solid #CCC;padding-right:2px;font-size:12px;}
-		.selectInput{width:77px;padding-left:5px;height:22px;line-height:24px;border:1px solid #CCC;padding-right:20px;font-size:12px;}
+		.selectInput{width:77px;padding-left:5px;height:28px;line-height:24px;border:1px solid #CCC;padding-right:20px;font-size:12px;}
 		.queryBtn{cursor:pointer;height:30px;line-height:30px;_height:28px;_line-height:28px;text-align:center;}
 		.queryBtn{background:#15A041;color:#FFF;width:110px;border:1px #15A041 solid;font-weight:bold;}
 		
@@ -173,7 +174,7 @@
 						<s:form action="frontStatistics">
 							<s:select list="{'2015','2016','2017','2018','2019','2020'}" name="nd" id="nd" class="selectInput" theme="simple"></s:select>
 							&nbsp;
-							<s:submit method="reProcStat" key="重新统计" theme="simple"></s:submit>
+							<s:submit method="reProcStat" key="重新统计" theme="simple" class="button button-primary button-rounded button-small"></s:submit>
 						</s:form>
 					</div>
 					
@@ -193,10 +194,10 @@
 									<tr>
 										
 										<td><span class="ndyf">${ndyf }</span></td>
-										<td>
+										<td title="显示明细">
 											<a class="pay-je" href="listDetail!listPaymentByMonth?date_from=${yfFirstDate }&date_to=${yfLastDate }">${paysumStr2 }</a>
 										</td>
-										<td>
+										<td title="显示明细">
 											<a class="income-je" href="listDetail!listIncomeByMonth?date_from=${yfFirstDate }&date_to=${yfLastDate }">${incomesumStr2 }</a>
 										</td>
 										<td>${jeNetSumStr2 }</td>

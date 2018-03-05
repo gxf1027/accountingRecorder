@@ -46,6 +46,10 @@
 				window.location.href = "${pageContext.request.contextPath}/demo/paymentDetail!inputPayment";
 				break;
 				
+			case "query-payment":
+				window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputQuery";
+				break;
+				
 			default:
 				break;
 			}
@@ -183,7 +187,7 @@
 			
 			url += "&date_from=" + $("#date_from").val();
 			url += "&date_to=" + $("#date_to").val();
-			alert(url);
+			// alert(url);
 			
 			window.location.href = url;
 		}
@@ -198,11 +202,11 @@
 		<div class="g-layout-header">
 			<ul >
 				<li>
-					<a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home " bi="8013" style=" text-decoration: none;">退出</a>
+					<a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home " style=" text-decoration: none;">退出</a>
 				</li>
 				
 				<li>
-					<a href="frontStatistics!inputFront"  class="home before" bi="8012">首页</a>
+					<a href="frontStatistics!inputFront"  class="home before" style=" text-decoration: none;">首页</a>
 				</li>
 				
 				<li>
@@ -253,6 +257,12 @@
 				<div class="itemWrap">
 					<div class="img_0_3 icon-nav ddfix">&nbsp;</div>
 					<span>明细</span>
+				</div>
+			</div>
+			<div id="query" class="menu"  onclick="chooseTab('query-payment');">
+				<div class="itemWrap rel">
+					<div class="img_0_5 icon-nav ddfix">&nbsp;</div>
+					<span>查询</span> <!-- <i class="icon-nav icon-arrow icon-arrow-down abs ddfix"></i> -->
 				</div>
 			</div>
 			<div id="set" class="menu">
@@ -314,7 +324,8 @@
 				</li>
 				<li class="left fontRight sep" style="width:60px;">时间</li>
 				<li class="left sep" style="width:160px;">转出账户/金额</li>
-				<li class="left sep" style="width:140px;">转入账户/金额</li>
+				<li class="left sep" style="width:165px;">转入账户/金额</li>
+				<li class="left sep" style="width:80px;">类型</li>
 				<li class="left sep" style="width:40px;">备注</li>
 			</ul>
 		</div>
@@ -351,7 +362,8 @@
 							<li class="left " style="width:160px; line-height: 20px; ">
 								<p class="cutlong">${tgtZhmc }</p>
 								<p>${je }</p>
-							</li>		
+							</li>
+							<li class="left" style="width:80px;"> ${zzlxmc } </li>	
 							<li class="cutlongForIe" style="color:#999;"> ${bz } &nbsp;</li>
 						</ul>
 					</div>

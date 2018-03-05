@@ -285,11 +285,11 @@
 		<div class="g-layout-header">
 			<ul >
 				<li>
-					<a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home " bi="8013" style=" text-decoration: none;">退出</a>
+					<a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home "  style=" text-decoration: none;">退出</a>
 				</li>
 				
 				<li>
-					<a href="frontStatistics!inputFront"  class="home before" bi="8012">首页</a>
+					<a href="frontStatistics!inputFront"  class="home before" style=" text-decoration: none;">首页</a>
 				</li>
 				
 				<li>
@@ -402,6 +402,13 @@
 						<s:textfield name="je" id="input_je"  maxlength="16" class="recordInput calc keepMoney {required:true,money:1,messages:{required:'收入金额必填'}} hasCalculator" required="required"  theme="simple"/>
 						<img id="calc_img" src="../components/calculator/calculator.png" alt="计算器" title="计算器" class="calculator-trigger" onclick="calcDisplay()">
 					</td>	
+				</tr>
+				
+				<tr>
+					<th>类型</th>
+					<td>
+						<s:select id="zzlxDm" list="#request.dm_zzlx" listKey="key" listValue="value" name="zzlx_dm" theme="simple" class="selectInput" />
+					</td>
 				</tr>
 				
 				

@@ -20,6 +20,7 @@ public class PaymentDetail extends AccountObject implements Serializable {
 	private String xl_dm;
 	private String seller;
 	private String zh_dm;
+	private String category_dm;
 	private Date shijian;
 	private String bz;
 	private String yxbz;
@@ -97,6 +98,14 @@ public class PaymentDetail extends AccountObject implements Serializable {
 		this.zh_dm = zh_dm;
 	}
 
+	public String getCategory_dm() {
+		return category_dm;
+	}
+	
+	public void setCategory_dm(String category_dm) {
+		this.category_dm = category_dm;
+	}
+	
 	public Date getShijian() {
 		return shijian;
 	}

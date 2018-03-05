@@ -10,40 +10,87 @@
 
  
 <style type="text/css">
-.loginBox {
-	background-color: #ffe;
-	position: relative;
+
+a {text-decoration: none;}
+
+div {margin: 0; padding: 0;}
+
+.wrap {
+    height: 560px;
+    background: url();
+    background-repeat: no-repeat;
+    background-position: top center;
+    margin: 20px auto;
+    /* background-image: url(http://m.tuniucdn.com/fb2/t1/G2/M00/A1/A3/Cii-T1f4lhCITSjhAAMhh0OTedQAADJqwM5SCIAAyGf70.jpeg); */
+    background-image: url("${pageContext.request.contextPath }/components/login-background-image.jpg");
+    background-position-x:center;
+    background-position-y:center;
+    background-size: 100% 100%;
 }
 
-.loginBox {
-	padding: 45px 54px 38px;
-	border-radius: 4px;
-	border: 1px solid #e3e3e3;
-	height: 540px;
-	max-width: 960px;
-	max-height: 1024px;
-	padding-top: 50px;
-	margin: 40px auto auto auto; /* div 居中 */
+.content {
+    width: 1400px;
+    height: 560px;
+    margin: 0 auto;
+    position: relative;
 }
 
-.formWrap {
-	padding: 20px 28px
+.login-content {
+    position: absolute;
+    top: 60px;
+    right: 40px;
+    z-index: 10;
+    width: 400px;
+    height:380px;
+    box-shadow: 0 1px 4px rgba(51,51,51,.2);
 }
+
+.login-box-inner {
+    background: #fff;
+    width: 400px;
+    height:380px;
+}
+
+.login-tab {
+    margin: 0;
+    text-align: center;
+    list-style: none;
+    padding: 14.5px 0;
+    border-bottom: solid 1px #ebebeb;
+}
+
+.login-tab:after {
+    display: block;
+    clear: both;
+    content: "";
+    visibility: hidden;
+    height: 0;
+}
+
+.login-table {
+    margin: 0 auto;
+}
+
+.account-login{
+	width:400px;
+	height:380px;
+}
+.login-table {
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
 
 .loginTitle {
 	font-size: 24px;
 	margin-bottom: 24px;
-	font-weight: 800;
+	font-weight: 500;
 	/* text-align: center */
-	margin-left: 118px
+	margin-left: 118px;
+	font-family: "Helvetica Neue";
 }
 
-/* .clearfix {
-		overflow: hidden;
-		clear: both;
-		width: 0;
-		visibility: hidden;
-	} */
 .inputWrap {
 	width: 80%
 }
@@ -52,7 +99,7 @@
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box
 }
-/* .input{border-color:#ec5524} */
+
 .input {
 	*height: 20px;
 	*width: 306px
@@ -60,7 +107,23 @@
 
 .input {
 	height: 40px;
-	width: 332px
+	width: 332px;
+	border-radius: 4px; 
+	border: 1px solid #ccc;
+	padding-top: 6px;
+    padding-right: 12px;
+    padding-bottom: 6px;
+    padding-left: 44px;
+}
+
+#username{
+	background: url(${pageContext.request.contextPath }/components/login_icon.png) no-repeat;
+	background-position: 15px -9px;
+}
+
+#pwd{
+	background: url(${pageContext.request.contextPath }/components/login_icon.png) no-repeat;
+	background-position: 15px -48px;
 }
 
 .row {
@@ -82,7 +145,7 @@
 
 .btnRow .btn-block {
 	font-size: 20px;
-	padding: 13px 0;
+	padding: 10px 0;
 	*padding-top: 0;
 	*padding-bottom: 0;
 	*line-height: 48px;
@@ -110,7 +173,7 @@
 	border-color: #D94B40;
 	border-radius: 4px;
 	cursor: pointer;
-	margin: 30px 0;
+	margin: 10px 0;
 	padding: 0;
 }
 
@@ -120,6 +183,10 @@
 
 em{
 font-style: normal;
+}
+
+#line_3 td{
+	height:20px;
 }
 
 </style>
@@ -180,47 +247,88 @@ font-style: normal;
 	</header>
 	
 
-
-	<div class="loginBox formWrap">
-		<form name='f' action='/Struts2Spring4Test2/j_spring_security_check'
-			method='POST' onsubmit="return checkForNull()" style="margin: auto 0; top:5%; left:35%;  position: absolute;">
-			<h2 class="loginTitle">登录挖财</h2>
-			
-			<font color="red">  
-				${SPRING_SECURITY_LAST_EXCEPTION.message}
-			</font>
-			
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-			
-			<div class="row">
-				<div class="inputWrap">
-					<input type="text" class="input boxSize " id="username"
-						name="j_username" placeholder="请在这里输入用户名">
-				</div>
-				<!-- <span class="p-error">请输入正确格式的帐号</span> <span class="p-error-empty">请输入您的帐号</span> -->
+	<div id="loginWrap" class="wrap">
+		<div id="content" class="content">
+		
+		<div id="cent_link" class="cent_link">
+            <a style="display:block;" target="_blank" id="bg_img" href="http://tmc.tuniu.com/"></a>
+        </div>
+        
+		<!-- <div class="loginBox formWrap" > -->
+		<div id="login-content" class="login-content" style="background-color: #fff;">
+		<div id="login-box" class="login-box-inner" >
+			<!-- <ul id="login-tab" class="login-tab">
+	            <li id="login-tab-user" class="login-tab-li cur">账户登录<b></b></li>
+	            <li id="login-tab-pass" class="login-tab-li">扫码登录<b></b></li>
+	        </ul> -->
+			<div id="account-login" class="account-login">
+				<form name='f' action='/Struts2Spring4Test2/j_spring_security_check'
+					method='POST' onsubmit="return checkForNull()" style="margin: 0;padding-top: 20px;padding-left: 10px">
+					<h2 class="loginTitle">账户登录</h2>
+					
+					<table class="login-table">
+						<tbody>
+							<tr id="line_0">
+								<td>
+									<font color="red">  
+										${SPRING_SECURITY_LAST_EXCEPTION.message}
+									</font>
+								</td>
+							</tr>
+							
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+							
+							<tr id="line_1">
+								<td>
+									<div class="row">
+										<div class="inputWrap">
+											<input type="text" class="input boxSize " id="username"
+												name="j_username" placeholder="请在这里输入用户名">
+										</div>
+										<!-- <span class="p-error">请输入正确格式的帐号</span> <span class="p-error-empty">请输入您的帐号</span> -->
+									</div>
+								</td>
+							</tr>
+							
+							<tr id="line_2">
+								<td>
+									<div class="row">
+										<div class="inputWrap">
+											<input type="password" class="input  boxSize" id="pwd"
+												name="j_password" placeholder="您的密码">
+										</div>
+										<!-- <span class="p-error">请输入6到16位的密码</span> <span class="p-error-empty">请输入您的密码</span> -->
+									</div>
+								</td>
+							</tr>
+							
+							
+							<tr id="line_3">
+								<td>
+									<!-- <input id="_spring_security_remember_me" name="_spring_security_remember_me" type="checkbox" />自动登录 -->
+									<input id="_spring_security_remember_me" name="_spring_security_remember_me" type="checkbox" class="checkbix" data-text="自动登录">
+									<a href="javascript:void(0)" id="goDynamic" class="search_psw" style="float: right; color: #666;">忘记密码？</a>
+								</td>
+							</tr> 
+							
+							<tr id="line_4">
+								<td>
+									<div class="btnRow">
+										<button type="submit" name="submit"
+											class="btn btn-primary btn-block" id="verifyBtn">
+											<!-- <em class="loadingTxt"><i class="w_loading"></i>请稍候...</em>  -->
+											<em	class="subTxt">登&nbsp;录</em>
+										</button>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</form>
 			</div>
-
-			<div class="row">
-				<div class="inputWrap">
-					<input type="password" class="input  boxSize" id="pwd"
-						name="j_password" placeholder="您的密码">
-				</div>
-				<!-- <span class="p-error">请输入6到16位的密码</span> <span class="p-error-empty">请输入您的密码</span> -->
-			</div>
-			
-			
-			
-			<!-- <input id="_spring_security_remember_me" name="_spring_security_remember_me" type="checkbox" />自动登录 -->
-			<input id="_spring_security_remember_me" name="_spring_security_remember_me" type="checkbox" class="checkbix" data-text="自动登录"> 
-			<div class="row btnRow">
-				<button type="submit" name="submit"
-					class="btn btn-primary btn-block" id="verifyBtn">
-					<!-- <em class="loadingTxt"><i class="w_loading"></i>请稍候...</em>  -->
-					<em	class="subTxt">登&nbsp;录</em>
-				</button>
-			</div>
-			
-		</form>
+		</div>
+		</div>
+		</div>
 	</div>
 	
 	<section class="footer-evaluate">

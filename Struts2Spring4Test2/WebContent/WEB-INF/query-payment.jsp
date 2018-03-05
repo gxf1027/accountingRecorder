@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="../css/left-nav.css" />
 <link rel="stylesheet" type="text/css" href="../js/toastr/toastr.css" />
 <link rel="stylesheet" type="text/css" href="../js/select2/css/select2.min.css" />
- 
+
 
 	<style type="text/css"> 
 		.mainWidth {
@@ -74,20 +74,11 @@
 		}
 		
 		.record_biz tbody > tr:hover td{background-color: #eee;color: #494A5F;}
-		
-		.srlb_item {
-			  
-			  width: 120px;
-			  height: 32px;
-			}
 	</style>
 	
 	<script type="text/javascript" src="../js/jquery.js"></script>
 	<script type="text/javascript" src="../js/toastr/toastr.js"></script>
 	<script type="text/javascript" src="../js/select2/js/select2.min.js"></script>
-	
-	<link rel="stylesheet" type="text/css" href="../js/Selectric/selectric.css" />
-	<script type="text/javascript" src="../js/Selectric/jquery.selectric.min.js"></script>
 	
 	<script type="text/javascript">
 			
@@ -297,15 +288,7 @@
 					  "showMethod": "fadeIn",
 					  "hideMethod": "fadeOut"
 					};
-					
-			  $("#sel_lb").selectric();  
-			  $("#sel_lb_bak option").each(function(){
-					console.log($(this).val()+" "+$(this).text());
-					var option = $("<option>").val($(this).val()).text($(this).text());
-					$("#sel_lb").append(option);
-					
-				});
-			$('#sel_lb').selectric('refresh');
+			
 		})
 		
 		/* $(document).ready(function() {
@@ -580,10 +563,7 @@
 										<option value="AL">美国</option>	
 									  	<option value="GL">格陵兰</option>
 									 </select> --%>
-									 <div id="srlb_select" class="srlb_item">
-									 	<select  id="sel_lb" name="srlb_dm" multiple ></select>
-									 </div>
-									 <s:select id="sel_lb_bak" name="srlb_dm_bak" list="#request.srlb_dm" listKey="key" listValue="value"  headerKey="" headerValue="全部" theme="simple" class="selectInput" style="display:none;" /> 
+									 <s:select id="sel_lb" name="srlb_dm" list="#request.srlb_dm" listKey="key" listValue="value"  headerKey="" headerValue="全部" theme="simple" class="selectInput" />
 								</td>
 								
 								<th>发生时间起</th>
@@ -630,7 +610,6 @@
 							
 						</table>
 					</s:form>
-					
 					
 					<div style="min-height: 420px; margin-left: 170px; ">
 						<table id="queryResTable" class="record_biz" >
@@ -727,6 +706,7 @@
 									<th style="text-align: center;">时间</th>
 									<th style="text-align: center;">转出账号</th>
 									<th style="text-align: center;">转入账号</th>
+									<th style="text-align: center;">金额</th>
 									<th style="text-align: center;">备注</th>
 								</tr>
 							</thead>
@@ -738,6 +718,7 @@
 										<td>${fsrqToShowFull }</td>
 										<td>${srcZhmc }</td>
 										<td>${tgtZhmc }</td>
+										<td>${je }</td>
 										<td>${bz }</td> 
 									</tr>
 								</s:iterator>

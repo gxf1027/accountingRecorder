@@ -120,6 +120,20 @@ public class DmServiceImpl implements DmService {
 		return dmUtilDao.getPaymentXl();
 	}
 
+	@Cacheable(value="dmCache")
+	@Override
+	public Map<String, String> getOutgoCategory(Integer user_id) {
+		
+		return dmUtilDao.getOutgoCategory(user_id);
+	}
+
+	@Cacheable(value="dmCache")
+	@Override
+	public Map<String, String> getTransferType(Integer user_id) {
+		
+		return dmUtilDao.getTransferType(user_id);
+	}
+
 	
 	
 }

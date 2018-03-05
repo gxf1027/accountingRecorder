@@ -15,6 +15,7 @@ public class TransferDetail extends AccountObject implements Serializable{
 	private String srcZh_dm;
 	private String tgtZh_dm;
 	private Date shijian;
+	private String zzlx_dm;
 	private String bz;
 	private String yxbz;
 	private Date xgrq;
@@ -121,6 +122,14 @@ public class TransferDetail extends AccountObject implements Serializable{
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public String getZzlx_dm() {
+		return zzlx_dm;
+	}
+	
+	public void setZzlx_dm(String zzlx_dm) {
+		this.zzlx_dm = zzlx_dm;
 	}
 
 	public String getBz() {

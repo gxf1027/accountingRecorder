@@ -61,12 +61,13 @@ public class RegisterUserDaoImpl implements RegisterUserDao {
 
 	@Override
 	public void saveUser(UserLogin userLogin) {
-		String sql = "INSERT INTO user_ss(id,username, password, enabled, description) VALUES(:id, :username, :password, '1', null)";
+		String sql = "INSERT INTO user_ss(id,username, password, emailaddr, enabled, description) VALUES(:id, :username, :password, :emailaddr, '1', null)";
 		
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("id", userLogin.getId());
 		paramMap.put("username", userLogin.getUsername());
 		paramMap.put("password", userLogin.getPassword());
+		paramMap.put("emailaddr", userLogin.getEmailAddr());
 		
 		namedTemplate.update(sql, paramMap);
 		

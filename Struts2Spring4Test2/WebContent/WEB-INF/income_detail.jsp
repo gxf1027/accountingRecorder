@@ -277,11 +277,11 @@
 		<div class="g-layout-header">
 			<ul >
 				<li>
-					<a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home " bi="8013">退出</a>
+					<a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home " style=" text-decoration: none;">退出</a>
 				</li>
 				
 				<li>
-					<a href="frontStatistics!inputFront"  class="home before" bi="8012">首页</a>
+					<a href="frontStatistics!inputFront"  class="home before" style=" text-decoration: none;">首页</a>
 				</li>
 				
 				<li>

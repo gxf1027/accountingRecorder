@@ -61,6 +61,9 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.myrequest.put("ZH_INFO", dmService.getZhInfo(user.getId()));
 		
+		Map<String, String> map_cat = dmService.getOutgoCategory(user.getId());
+		this.myrequest.put("outgo_category", map_cat);
+		
 		return "PaymentInputOk";
 	}
 	
@@ -72,6 +75,9 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.myrequest.put("ZH_INFO", dmService.getZhInfo(user.getId()));
+		
+		Map<String, String> map_cat = dmService.getOutgoCategory(user.getId());
+		this.myrequest.put("outgo_category", map_cat);
 	}
 	
 	public String editShow(){

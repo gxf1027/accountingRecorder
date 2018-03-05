@@ -39,13 +39,13 @@
 			SELECT REPLACE(uuid(),'-','')
 		</selectKey>
 		
-  		 INSERT INTO account_transfer_detail(mxuuid, accuuid, user_id, je, srcZh_dm, tgtZh_dm, shijian, bz, yxbz, xgrq, lrrq) 
-				VALUES(#{mxuuid}, #{accuuid}, #{user_id}, #{je}, #{srcZh_dm}, #{tgtZh_dm}, #{shijian}, #{bz}, 'Y', null, NOW())
+  		 INSERT INTO account_transfer_detail(mxuuid, accuuid, user_id, je, srcZh_dm, tgtZh_dm, zzlx_dm, shijian, bz, yxbz, xgrq, lrrq) 
+				VALUES(#{mxuuid}, #{accuuid}, #{user_id}, #{je}, #{srcZh_dm}, #{tgtZh_dm}, #{zzlx_dm}, #{shijian}, #{bz}, 'Y', null, NOW())
   	</insert>
   	
   	<update id="updateOne" parameterType="TransferDetail">
   		  UPDATE account_transfer_detail SET je = #{je},  srcZh_dm = #{srcZh_dm}, 
-				tgtZh_dm = #{tgtZh_dm}, shijian = #{shijian}, bz = #{bz}, xgrq = #{xgrq}
+				tgtZh_dm = #{tgtZh_dm}, zzlx_dm = #{zzlx_dm}, shijian = #{shijian}, bz = #{bz}, xgrq = #{xgrq}
 				WHERE mxuuid = #{mxuuid}
   	</update>
   	

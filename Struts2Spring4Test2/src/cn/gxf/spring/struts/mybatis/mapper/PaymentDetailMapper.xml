@@ -38,13 +38,13 @@
 			SELECT REPLACE(uuid(),'-','')
 		</selectKey>
 		
-  		INSERT INTO account_payment_detail(mxuuid, accuuid, user_id, yhje, je, dl_dm, xl_dm, seller, zh_dm, shijian, bz, yxbz, xgrq, lrrq)
-			VALUES(#{mxuuid}, #{accuuid}, #{user_id}, #{yhje}, #{je}, #{dl_dm}, #{xl_dm}, #{seller}, #{zh_dm}, #{shijian}, #{bz}, 'Y', null, NOW())
+  		INSERT INTO account_payment_detail(mxuuid, accuuid, user_id, yhje, je, dl_dm, xl_dm, seller, zh_dm, shijian, category_dm, bz, yxbz, xgrq, lrrq)
+			VALUES(#{mxuuid}, #{accuuid}, #{user_id}, #{yhje}, #{je}, #{dl_dm}, #{xl_dm}, #{seller}, #{zh_dm}, #{shijian}, #{category_dm}, #{bz}, 'Y', null, NOW())
   	</insert>
   	
   	<update id="updateOne" parameterType="PaymentDetail">
 		UPDATE account_payment_detail SET yhje= #{yhje}, je = #{je}, dl_dm = #{dl_dm}, xl_dm = #{xl_dm}, seller= #{seller}, 
-				zh_dm = #{zh_dm}, shijian = #{shijian}, bz = #{bz}, xgrq = #{xgrq} 
+				zh_dm = #{zh_dm}, shijian = #{shijian}, category_dm = #{category_dm}, bz = #{bz}, xgrq = #{xgrq} 
 				WHERE mxuuid = #{mxuuid}
   	</update>
   	

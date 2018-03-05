@@ -47,12 +47,12 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 	
 	public void prepareInputTransfer(){
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
 		List<AccountBook> books = dmService.getZhInfo(user.getId());
-//		AccountBook b = new AccountBook();
-//		b.setZh_dm("z999");
-//		b.setZh_mc("ÐÂÔö");
-//		books.add(b);
+		Map<String, String> transfer_dm = dmService.getTransferType(user.getId());
+		
 		this.myrequest.put("ZH_INFO", books);
+		this.myrequest.put("dm_zzlx", transfer_dm);
 	}
 	
 	public String inputTransfer()
@@ -72,6 +72,8 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		List<AccountBook> books = dmService.getZhInfo(user.getId());
 		this.myrequest.put("ZH_INFO", books);
 		
+		Map<String, String> transfer_dm = dmService.getTransferType(user.getId());
+		this.myrequest.put("dm_zzlx", transfer_dm);
 	}
 	
 	public String editShow(){

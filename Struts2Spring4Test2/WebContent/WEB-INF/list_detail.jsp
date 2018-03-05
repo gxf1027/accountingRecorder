@@ -237,6 +237,12 @@
 
 </style>
 	<script type="text/javascript" src="../js/jquery.js"></script>
+	<!-- Bootstrap CDN -->
+	<%-- <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> --%>
+	<!-- 本地Bootstrap -->
+	<%-- <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<script src="../bootstrap/js/bootstrap.min.js"></script> --%>
 	<script src="../js/checkbix/js/checkbix.min.js"></script>
 	<script>
 		Checkbix.init();
@@ -529,17 +535,18 @@
 		<div class="g-layout-header">
 			<ul >
 				<li>
-					<a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home " bi="8013" style=" text-decoration: none;">退出</a>
+					<a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home " style=" text-decoration: none;">退出</a>
 				</li>
 				
 				<li>
-					<a href="frontStatistics!inputFront" class="home before" bi="8012" style=" text-decoration: none;" >首页</a>
+					<a href="frontStatistics!inputFront" class="home before" style=" text-decoration: none;" >首页</a>
 				</li>
 				
 				<li>
 					<%-- <springsec:authentication property="name"/> --%>
-					<div class="subNavTitle rel">
-						<i class="g-icon-header"></i>
+					<div class=" rel">
+						<i class="g-icon-header"></i> <!-- 用户图标 -->
+						<%-- <span class="glyphicon glyphicon-user"></span> --%>
 						<span class="userAccount"><span>${pageContext.request.userPrincipal.name}</span></span>
 					</div>
 					

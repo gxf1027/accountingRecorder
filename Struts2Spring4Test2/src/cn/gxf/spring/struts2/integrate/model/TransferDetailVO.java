@@ -10,6 +10,7 @@ public class TransferDetailVO extends AccountingDetailVO {
 	private String mxuuid;
 	private String srcZhmc;
 	private String tgtZhmc;
+	private String zzlxmc;
 	
 	public String getMxuuid() {
 		return mxuuid;
@@ -33,6 +34,14 @@ public class TransferDetailVO extends AccountingDetailVO {
 
 	public void setTgtZhmc(String tgtZhmc) {
 		this.tgtZhmc = tgtZhmc;
+	}
+	
+	public String getZzlxmc() {
+		return zzlxmc;
+	}
+	
+	public void setZzlxmc(String zzlxmc) {
+		this.zzlxmc = zzlxmc;
 	}
 
 	@Override

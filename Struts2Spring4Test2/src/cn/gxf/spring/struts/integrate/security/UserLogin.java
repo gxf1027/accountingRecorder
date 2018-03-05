@@ -17,6 +17,7 @@ public class UserLogin implements UserDetails {
 	private String password;
 	private String enabled;
 	private String description;
+	private String emailAddr;
 	private Collection<? extends GrantedAuthority> authorities;
 	
 	
@@ -55,6 +56,14 @@ public class UserLogin implements UserDetails {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public String getEmailAddr() {
+		return emailAddr;
+	}
+	
+	public void setEmailAddr(String emailAddr) {
+		this.emailAddr = emailAddr;
 	}
 
 	@Override

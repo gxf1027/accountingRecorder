@@ -174,7 +174,7 @@ public class DmUtilDaoImplJdbc implements DmUtilDao{
 
 			@Override
 			public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
-				// TODO Auto-generated method stub
+				
 				Map<String, String> map = new HashMap<String, String>();
 				while(rs.next()){
 					map.put(rs.getString("zhlx_dm"), rs.getString("zhlx_mc"));
@@ -183,6 +183,65 @@ public class DmUtilDaoImplJdbc implements DmUtilDao{
 			}
 
 			
+		});
+	}
+
+
+	@Override
+	public Map<String, String> getOutgoCategory(Integer user_id) {
+		String sql = "SELECT outgo_category_dm, outgo_category_mc"
+					+ " FROM dm_outgo_category "
+					+ "WHERE (user_id = ? or user_id is NULL) AND yxbz='Y' and xybz='Y'"
+					+ "ORDER BY outgo_category_dm";
+		
+		
+		PreparedStatementSetter pss = new PreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setString(1, user_id.toString());
+			}
+		};
+		
+		return jdbcTemplate.query(sql, pss, new ResultSetExtractor<Map<String, String>>() {
+
+			@Override
+			public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Map<String, String> map = new TreeMap<String, String>();
+				while(rs.next()){
+					map.put(rs.getString("outgo_category_dm"), rs.getString("outgo_category_mc"));
+				}
+				return map;
+			}
+		});
+	}
+
+
+	@Override
+	public Map<String, String> getTransferType(Integer user_id) {
+		String sql = "SELECT zzlx_dm, zzlx_mc"
+				+ " FROM dm_zzlx "
+				+ "WHERE (user_id = ? or user_id is NULL) AND yxbz='Y' and xybz='Y'"
+				+ "ORDER BY zzlx_dm";
+		
+		PreparedStatementSetter pss = new PreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setString(1, user_id.toString());
+			}
+		};
+		
+		return jdbcTemplate.query(sql, pss, new ResultSetExtractor<Map<String, String>>() {
+
+			@Override
+			public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Map<String, String> map = new TreeMap<String, String>();
+				while(rs.next()){
+					map.put(rs.getString("zzlx_dm"), rs.getString("zzlx_mc"));
+				}
+				return map;
+			}
 		});
 	}
 	
