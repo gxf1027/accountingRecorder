@@ -22,7 +22,6 @@ import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
 import cn.gxf.spring.struts2.integrate.model.IncomeDetailVO;
 import cn.gxf.spring.struts2.integrate.model.PaymentDetailVO;
-import cn.gxf.spring.struts2.integrate.model.StatByMonth;
 import cn.gxf.spring.struts2.integrate.model.TransferDetailVO;
 import cn.gxf.spring.struts2.integrate.service.CustomTailorQueryService;
 import cn.gxf.spring.struts2.integrate.service.DmService;
@@ -127,6 +126,7 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 	
 	
 	public String paymentQuery(){
+		
 		// …Ë÷√≤Œ ˝
 		Map<String, Object> params = new HashMap<>();
 		if ( 1 == this.checkDmList(this.paydl_dm)){

@@ -3,6 +3,7 @@ package cn.gxf.spring.quartz.job;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.gxf.spring.quartz.job.dao.CreditCardBillDao;
+import cn.gxf.spring.quartz.job.model.CreditCardBill;
 import cn.gxf.spring.quartz.job.model.CreditCardTransRecord;
 
 @Service
@@ -29,6 +31,9 @@ public class CreditCardsBillProcessor {
 	
 	@Autowired
 	private CreditCardBillDao creditCardBillDao;
+	
+	@Autowired
+	private MailMqSender mailSender;
 
 
 	@Transactional(propagation=Propagation.REQUIRED)
@@ -61,9 +66,13 @@ public class CreditCardsBillProcessor {
         // 3. 将可能存在过时数据置为无效
         deleteInvalidRecord(jyqq, jyqz);
         
-        System.out.println("--========================");
+        
         // 4. 将账单信息插入账单表
         saveTranscationRecordInZDQ(recList, jyqq, jyqz);
+        
+        // 5. 发送至JMS
+        sendToJMS(recList, jyqq, jyqz); 
+        
   
 		return 1;
 	}
@@ -155,5 +164,36 @@ public class CreditCardsBillProcessor {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void sendToJMS(List<CreditCardTransRecord> recList, Date jyqq, Date jyqz){
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
+		Map<String, CreditCardBill> ccbMap = new HashMap<>();
+		
+        for(CreditCardTransRecord cctr : recList){
+        	CreditCardBill ccb = ccbMap.get(cctr.getUser_id());
+        	if  (null == ccb){
+        		ccb = new CreditCardBill();
+        		ccb.setUser_id(cctr.getUser_id().intValue());
+        		ccb.setSsqq(sdf.format(jyqq));
+        		ccb.setSsqz(sdf.format(jyqz));
+        		ccb.setYhkje(0);
+        		ccb.setCctrList(new ArrayList<CreditCardTransRecord>());
+        		ccb.getCctrList().add(cctr);
+        		ccbMap.put(cctr.getUser_id().toString(), ccb);
+        	}else{
+        		ccb.getCctrList().add(cctr);
+        		ccb.setYhkje(ccb.getYhkje()+cctr.getJe());
+        	}
+        }
+        
+        System.out.println(ccbMap);
+        
+        
+        for(String key : ccbMap.keySet()){
+        	
+        	mailSender.send(ccbMap.get(key));
+        }
 	}
 }

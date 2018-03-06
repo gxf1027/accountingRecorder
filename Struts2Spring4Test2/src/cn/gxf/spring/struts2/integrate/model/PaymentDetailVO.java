@@ -6,6 +6,7 @@ public class PaymentDetailVO extends AccountingDetailVO {
 	private String mxuuid;
 	private String lbmc;
 	private String xlmc; // –°¿‡
+	private String category_mc;
 	private String seller;
 
 	public String getMxuuid() {
@@ -31,6 +32,14 @@ public class PaymentDetailVO extends AccountingDetailVO {
 	public void setXlmc(String xlmc) {
 		this.xlmc = xlmc;
 	}
+	
+	public String getCategory_mc() {
+		return category_mc;
+	}
+	
+	public void setCategory_mc(String category_mc) {
+		this.category_mc = category_mc;
+	}
 
 	public String getSeller() {
 		return seller;
@@ -40,11 +49,10 @@ public class PaymentDetailVO extends AccountingDetailVO {
 		this.seller = seller;
 	}
 
-
 	@Override
 	public String toString() {
-		
-		return "PaymentDetailVO [mxuuid=" + mxuuid + ", lbmc=" + lbmc + ", xlmc=" + xlmc + ", seller=" + seller + "]" + " " + super.toString();
+		return "PaymentDetailVO [mxuuid=" + mxuuid + ", lbmc=" + lbmc + ", xlmc=" + xlmc + ", category_mc="
+				+ category_mc + ", seller=" + seller + "]";
 	}
 
 	@Override

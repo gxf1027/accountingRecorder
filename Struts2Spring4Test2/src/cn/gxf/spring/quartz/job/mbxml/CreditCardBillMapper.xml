@@ -41,7 +41,7 @@
 				t.tgtZh_dm as zh_dm, 
 				z.zh_mc as zh_mc, 
 				t.user_id as user_id,
-				t.je as je, 
+				-1.0*t.je as je, 
 				t.shijian as jysj, 
 				'还款' as dl_mc, 
 				'无' as xl_mc, 

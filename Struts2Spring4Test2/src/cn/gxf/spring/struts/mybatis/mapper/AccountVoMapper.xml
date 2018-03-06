@@ -6,7 +6,8 @@
  	<!-- <cache eviction="FIFO"  flushInterval="300000"  size="512"  readOnly="true"/> -->
  	
   	<select id="getPaymentVo" parameterType="Map" resultType="PaymentDetailVO">
-  		SELECT p.accuuid, p.mxuuid, p.user_id,  DATE_FORMAT(p.shijian, '%Y-%m-%d %H:%i:00') fsrq, p.je je, CONCAT(dl.dl_mc, '-',xl.xl_mc) lbmc, 
+  		SELECT p.accuuid, p.mxuuid, p.user_id,  DATE_FORMAT(p.shijian, '%Y-%m-%d %H:%i:00') fsrq, p.je je, CONCAT(dl.dl_mc, '-',xl.xl_mc) lbmc,
+  				(SELECT outgo_category_mc FROM dm_outgo_category c WHERE p.category_dm = c.outgo_category_dm) category_mc, 
 				 p.seller seller,p.bz,	2 AS type 
 			 FROM account_payment_detail p, dm_dl dl, dm_xl xl 
 			 WHERE p.dl_dm = dl.dl_dm and p.xl_dm = xl.xl_dm
