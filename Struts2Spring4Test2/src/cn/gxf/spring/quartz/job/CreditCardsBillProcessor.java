@@ -172,7 +172,7 @@ public class CreditCardsBillProcessor {
 		Map<String, CreditCardBill> ccbMap = new HashMap<>();
 		
         for(CreditCardTransRecord cctr : recList){
-        	CreditCardBill ccb = ccbMap.get(cctr.getUser_id());
+        	CreditCardBill ccb = ccbMap.get(cctr.getUser_id().toString());
         	if  (null == ccb){
         		ccb = new CreditCardBill();
         		ccb.setUser_id(cctr.getUser_id().intValue());
