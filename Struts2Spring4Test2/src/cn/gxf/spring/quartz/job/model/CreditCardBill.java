@@ -8,10 +8,12 @@ public class CreditCardBill implements Serializable{
 	private static final long serialVersionUID = -3175017787487738311L;
 	private String username;
 	private int user_id;
+	private String zh_dm;
+	private String zh_mc;
 	private String ssqq;
 	private String ssqz;
 	private float yhkje; // 本期需还款金额
-	private List<CreditCardTransRecord> cctrList;
+	private List<CreditCardRecordSimplified> cctrList;
 	
 	
 	public String getUsername() {
@@ -35,11 +37,27 @@ public class CreditCardBill implements Serializable{
 		return ssqq;
 	}
 
+	public String getZh_dm() {
+		return zh_dm;
+	}
+
+
+	public void setZh_dm(String zh_dm) {
+		this.zh_dm = zh_dm;
+	}
+	
+	public String getZh_mc() {
+		return zh_mc;
+	}
+	
+	public void setZh_mc(String zh_mc) {
+		this.zh_mc = zh_mc;
+	}
+
 
 	public void setSsqq(String ssqq) {
 		this.ssqq = ssqq;
 	}
-
 
 	public String getSsqz() {
 		return ssqz;
@@ -60,21 +78,21 @@ public class CreditCardBill implements Serializable{
 		this.yhkje = yhkje;
 	}
 
-
-	public List<CreditCardTransRecord> getCctrList() {
+	public List<CreditCardRecordSimplified> getCctrList() {
 		return cctrList;
 	}
 
 
-	public void setCctrList(List<CreditCardTransRecord> cctrList) {
+	public void setCctrList(List<CreditCardRecordSimplified> cctrList) {
 		this.cctrList = cctrList;
 	}
 
 
 	@Override
 	public String toString() {
-		return "CreditCardBill [username=" + username + ", ssqq=" + ssqq + ", ssqz=" + ssqz + ", yhkje=" + yhkje
-				+ ", cctrList=" + cctrList + "]";
+		return "CreditCardBill [username=" + username + ", user_id=" + user_id + ", zh_dm=" + zh_dm + ", zh_mc=" + zh_mc
+				+ ", ssqq=" + ssqq + ", ssqz=" + ssqz + ", yhkje=" + yhkje + ", cctrList=" + cctrList + "]";
 	}
 	
+
 }

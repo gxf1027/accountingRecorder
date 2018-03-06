@@ -30,7 +30,6 @@ import cn.gxf.spring.quartz.job.model.CreditCardTransRecord;
 
 public class CreditCardsBillJob implements Job{
 	
-
 	
 	@Override
 	public void execute(JobExecutionContext jetc) throws JobExecutionException {

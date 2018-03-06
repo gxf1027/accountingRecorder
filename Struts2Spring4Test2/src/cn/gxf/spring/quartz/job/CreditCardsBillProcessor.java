@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.gxf.spring.quartz.job.dao.CreditCardBillDao;
 import cn.gxf.spring.quartz.job.model.CreditCardBill;
+import cn.gxf.spring.quartz.job.model.CreditCardRecordSimplified;
 import cn.gxf.spring.quartz.job.model.CreditCardTransRecord;
 
 @Service
@@ -172,18 +173,21 @@ public class CreditCardsBillProcessor {
 		Map<String, CreditCardBill> ccbMap = new HashMap<>();
 		
         for(CreditCardTransRecord cctr : recList){
-        	CreditCardBill ccb = ccbMap.get(cctr.getUser_id().toString());
+        	String keystr = cctr.getUser_id().toString() +"-"+ cctr.getZh_dm();
+        	CreditCardBill ccb = ccbMap.get(keystr);
         	if  (null == ccb){
         		ccb = new CreditCardBill();
         		ccb.setUser_id(cctr.getUser_id().intValue());
+        		ccb.setZh_dm(cctr.getZh_dm());
+        		ccb.setZh_mc(cctr.getZh_mc());
         		ccb.setSsqq(sdf.format(jyqq));
         		ccb.setSsqz(sdf.format(jyqz));
         		ccb.setYhkje(0);
-        		ccb.setCctrList(new ArrayList<CreditCardTransRecord>());
-        		ccb.getCctrList().add(cctr);
-        		ccbMap.put(cctr.getUser_id().toString(), ccb);
+        		ccb.setCctrList(new ArrayList<CreditCardRecordSimplified>());
+        		ccb.getCctrList().add(new CreditCardRecordSimplified(cctr));
+        		ccbMap.put(keystr, ccb);
         	}else{
-        		ccb.getCctrList().add(cctr);
+        		ccb.getCctrList().add(new CreditCardRecordSimplified(cctr));
         		ccb.setYhkje(ccb.getYhkje()+cctr.getJe());
         	}
         }
