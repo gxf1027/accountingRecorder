@@ -37,8 +37,13 @@
 		<property name="destination" ref="mailQueueDest" />
 		<property name="messageListener" ref="creditCardBillMsgListener" />
 		<property name="receiveTimeout" value="10000" />
+		<!-- 当在接收消息时监听器执行失败时，JMS(activemq)就会对接收到的消息进行回滚 -->
+		<property name="transactionManager" ref="jtaTransactionManager"/>  
 	</bean>
     
+    
+    <bean id="jtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"/> 
+    <tx:annotation-driven transaction-manager="jtaTransactionManager"/>  
     
     <!-- 配置QueueJms模板  -->
 	<bean id="jmsQueueTemplate"
