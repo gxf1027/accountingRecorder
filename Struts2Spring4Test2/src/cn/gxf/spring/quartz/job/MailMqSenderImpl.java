@@ -36,7 +36,7 @@ public class MailMqSenderImpl implements MailMqSender{
 		};
 
 		jmsTemplate.send(messageCreator);
-	
+		
 	}
 	
 }

@@ -22,7 +22,7 @@
 		<!-- 这个/demo是struts.xml的namespace, myLogin.jsp在web-inf之外，
 			所以访问myLogin.jsp的url是http://localhost:8080/Struts2Spring4Test2/myLogin.jsp，
 			在下面这个过滤器之外 -->
-		<intercept-url pattern="/demo/**" access="hasRole('ROLE_USER')" requires-channel="https" />
+		<intercept-url pattern="/demo/**" access="hasRole('ROLE_USER')" />
 		<form-login login-page="/myLoginWcai.jsp" default-target-url="/demo/frontStatistics!inputFront" always-use-default-target="false" />
 		<logout logout-success-url="/myLoginWcai.jsp" invalidate-session="true" />
 		

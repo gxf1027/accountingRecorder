@@ -62,14 +62,21 @@
 	<insert id="saveTranscationRecordInZDQ" parameterType="java.util.List">
 		INSERT INTO zh_detail_ccbill(billuuid, user_id, bill_ssqq, bill_ssqz, zh_dm, zh_mc, jysj, jylx, jyf, je, bz, yxbz, lrrq, xgrq, mailed)
 		VALUES
-		<foreach collection="list" item="item" index="index" separator=",">
-            (uuid(), #{item.user_id}, #{item.bill_ssqq}, #{item.bill_ssqz}, #{item.zh_dm}, #{item.zh_mc}, #{item.jysj}, #{item.jylx}, #{item.jyf}, #{item.je}, #{item.bz}, 'Y', now(), null, #{item.isMailed})
-        </foreach>
+		<if test="list != null and list.size()>0">
+			<foreach collection="list" item="item" index="index" separator=",">
+	            (uuid(), #{item.user_id}, #{item.bill_ssqq}, #{item.bill_ssqz}, #{item.zh_dm}, #{item.zh_mc}, #{item.jysj}, #{item.jylx}, #{item.jyf}, #{item.je}, #{item.bz}, 'Y', now(), null, #{item.isMailed})
+	        </foreach>
+        </if>
 	</insert>
 	
 	<update id="deleteInvalidRecord" parameterType="map">
 		UPDATE zh_detail_ccbill SET yxbz='N', xgrq = now()
-		WHERE bill_ssqq = #{ssqq} AND bill_ssqz = #{ssqz} AND yxbz='Y' AND mailed='N'
+		WHERE bill_ssqq = #{ssqq} AND bill_ssqz = #{ssqz}
+		AND zh_dm IN
+		<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
+			#{dm}
+		</foreach>
+		AND yxbz='Y' AND mailed='N'
 	</update>
 </mapper>
 

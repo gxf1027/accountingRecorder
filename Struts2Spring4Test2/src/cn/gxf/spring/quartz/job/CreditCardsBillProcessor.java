@@ -36,7 +36,7 @@ public class CreditCardsBillProcessor {
 	@Autowired
 	private MailMqSender mailSender;
 
-
+	// 在一个事务内，如果数据库/JMS抛出异常，会回滚
 	@Transactional(propagation=Propagation.REQUIRED)
 	public int processCreditCardBill(){
 		// 1. 获取需要处理的账户代码
@@ -65,11 +65,12 @@ public class CreditCardsBillProcessor {
         System.out.println(recList);
  
         // 3. 将可能存在过时数据置为无效
-        deleteInvalidRecord(jyqq, jyqz);
+        deleteInvalidRecord(zzdmList, jyqq, jyqz);
         
         
         // 4. 将账单信息插入账单表
         saveTranscationRecordInZDQ(recList, jyqq, jyqz);
+        System.out.println("after save: " + recList);
         
         // 5. 发送至JMS
         sendToJMS(recList, jyqq, jyqz); 
@@ -154,9 +155,10 @@ public class CreditCardsBillProcessor {
 	}
 	
 	@Transactional(propagation=Propagation.REQUIRED)
-	public void deleteInvalidRecord(Date jyqq, Date jyqz){
+	public void deleteInvalidRecord(List<String> zzdmList, Date jyqq, Date jyqz){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 交易日起为本日
 		Map<String, Object> paramsMap = new HashMap<>();
+		paramsMap.put("zh_dm", zzdmList);
 		paramsMap.put("ssqq", sdf.format(jyqq));
 		paramsMap.put("ssqz", sdf.format(jyqz));
 		try {
