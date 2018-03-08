@@ -8,6 +8,7 @@ public class CreditCardBill implements Serializable{
 	private static final long serialVersionUID = -3175017787487738311L;
 	private String username;
 	private int user_id;
+	private String email;
 	private String zh_dm;
 	private String zh_mc;
 	private String ssqq;
@@ -32,6 +33,15 @@ public class CreditCardBill implements Serializable{
 	public void setUser_id(int user_id) {
 		this.user_id = user_id;
 	}
+	
+	public String getEmail() {
+		return email;
+	}
+	
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
 
 	public String getSsqq() {
 		return ssqq;
@@ -90,9 +100,11 @@ public class CreditCardBill implements Serializable{
 
 	@Override
 	public String toString() {
-		return "CreditCardBill [username=" + username + ", user_id=" + user_id + ", zh_dm=" + zh_dm + ", zh_mc=" + zh_mc
-				+ ", ssqq=" + ssqq + ", ssqz=" + ssqz + ", yhkje=" + yhkje + ", cctrList=" + cctrList + "]";
+		return "CreditCardBill [username=" + username + ", user_id=" + user_id + ", email=" + email + ", zh_dm=" + zh_dm
+				+ ", zh_mc=" + zh_mc + ", ssqq=" + ssqq + ", ssqz=" + ssqz + ", yhkje=" + yhkje + ", cctrList="
+				+ cctrList + "]";
 	}
-	
+
+
 
 }

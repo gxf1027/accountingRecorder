@@ -12,7 +12,7 @@
 
 	<select id="getCreditCardTranscationRecordInZDQ"  parameterType="map" 
 			resultType="CreditCardTransRecord">
-		SELECT zh_dm, zh_mc, user_id, jysj, CONCAT(dl_mc,'-',xl_mc) jylx, jyf, je, bz 
+		SELECT uuid() AS billuuid, zh_dm, zh_mc, user_id, jysj, CONCAT(dl_mc,'-',xl_mc) jylx, jyf, je, bz 
 			FROM (
 			SELECT
 				t.zh_dm as zh_dm, 

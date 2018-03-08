@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -23,6 +24,8 @@ import cn.gxf.spring.quartz.job.dao.CreditCardBillDao;
 import cn.gxf.spring.quartz.job.model.CreditCardBill;
 import cn.gxf.spring.quartz.job.model.CreditCardRecordSimplified;
 import cn.gxf.spring.quartz.job.model.CreditCardTransRecord;
+import cn.gxf.spring.struts.integrate.security.UserLogin;
+import cn.gxf.spring.struts2.integrate.service.UserService;
 
 @Service
 public class CreditCardsBillProcessor {
@@ -35,6 +38,9 @@ public class CreditCardsBillProcessor {
 	
 	@Autowired
 	private MailMqSender mailSender;
+	
+	@Autowired
+	private UserService userService;
 
 	// 在一个事务内，如果数据库/JMS抛出异常，会回滚
 	@Transactional(propagation=Propagation.REQUIRED)
@@ -73,9 +79,14 @@ public class CreditCardsBillProcessor {
         System.out.println("after save: " + recList);
         
         // 5. 发送至JMS
-        sendToJMS(recList, jyqq, jyqz); 
+        try {
+        	sendToJMS(recList, jyqq, jyqz); 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
         
-  
+       
+        
 		return 1;
 	}
 	
@@ -173,8 +184,9 @@ public class CreditCardsBillProcessor {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
 		Map<String, CreditCardBill> ccbMap = new HashMap<>();
-		
+		Map<String, String> userMap = new HashMap<>();
         for(CreditCardTransRecord cctr : recList){
+        	userMap.put(cctr.getUser_id().toString(), "1");
         	String keystr = cctr.getUser_id().toString() +"-"+ cctr.getZh_dm();
         	CreditCardBill ccb = ccbMap.get(keystr);
         	if  (null == ccb){
@@ -193,7 +205,13 @@ public class CreditCardsBillProcessor {
         		ccb.setYhkje(ccb.getYhkje()+cctr.getJe());
         	}
         }
-        
+       
+        // 获得email数据
+        Map<String, String> userEmails = userService.getUserEmail(new ArrayList<>(userMap.keySet()));
+        for(String key : ccbMap.keySet()){
+        	ccbMap.get(key).setEmail(userEmails.get(key.split("-")[0])); 
+        }
+
         System.out.println(ccbMap);
         
         
