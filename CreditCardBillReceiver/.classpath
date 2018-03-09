@@ -29,7 +29,7 @@
 	<classpathentry kind="lib" path="lib/spring-beans-4.0.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-build-src-4.0.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-context-4.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/spring-context-support-4.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-context-support-4.0.4.RELEASE.jar" sourcepath="C:/Users/dell/.m2/repository/org/springframework/spring-context-support/4.0.4.RELEASE/spring-context-support-4.0.4.RELEASE-sources.jar"/>
 	<classpathentry kind="lib" path="lib/spring-core-4.0.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-expression-4.0.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-framework-bom-4.0.4.RELEASE.jar"/>
@@ -52,6 +52,7 @@
 	<classpathentry kind="lib" path="lib/spring-webmvc-4.0.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-webmvc-portlet-4.0.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-websocket-4.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/mail-1.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/CreditCardBill.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

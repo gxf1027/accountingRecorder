@@ -5,6 +5,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
+import cn.gxf.spring.bill.mailsender.MailSenderService;
 import cn.gxf.spring.quartz.job.model.CreditCardBill;
 
 
@@ -12,6 +13,16 @@ import cn.gxf.spring.quartz.job.model.CreditCardBill;
 
 public class CreditCardBillMsgListener implements MessageListener {
 
+	private MailSenderService mailSenderService;
+	
+	public MailSenderService getMailSenderService() {
+		return mailSenderService;
+	}
+	
+	public void setMailSenderService(MailSenderService mailSenderService) {
+		this.mailSenderService = mailSenderService;
+	}
+	
 	@Override
 	public void onMessage(Message message) {
 		
@@ -24,6 +35,7 @@ public class CreditCardBillMsgListener implements MessageListener {
 			try {
 				bill = (CreditCardBill)objectMsg.getObject();
 				System.out.println("bill: " + bill);
+				this.mailSenderService.senderOne(bill);
 			} catch (JMSException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

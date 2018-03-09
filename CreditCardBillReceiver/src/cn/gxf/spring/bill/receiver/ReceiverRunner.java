@@ -6,7 +6,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class ReceiverRunner {
 	public static void main(String[] args) {
 		
-		ApplicationContext appContext = new ClassPathXmlApplicationContext( "applicationContext.xml");
+		ApplicationContext appContext = new ClassPathXmlApplicationContext( "applicationContext*.xml");
 		System.out.println("Spring Context startup...");
 		
 	}
