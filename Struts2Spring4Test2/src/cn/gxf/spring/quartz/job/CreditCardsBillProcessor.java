@@ -37,7 +37,7 @@ public class CreditCardsBillProcessor {
 	private CreditCardBillDao creditCardBillDao;
 	
 	@Autowired
-	private MailMqSender mailSender;
+	private JMSSender mailSender;
 	
 	@Autowired
 	private UserService userService;
