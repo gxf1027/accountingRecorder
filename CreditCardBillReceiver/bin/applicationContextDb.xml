@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"   
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+     http://www.springframework.org/schema/cache 
+     http://www.springframework.org/schema/cache/spring-cache-4.0.xsd
+     http://activemq.apache.org/schema/core
+     http://activemq.apache.org/schema/core/activemq-core-5.13.0.xsd">
+    
+    <!-- https://www.atomikos.com/Documentation/TomcatSpringActiveMQMySQLJMXIntegration#Example_Middleware_application -->
+    <context:component-scan base-package="cn" />
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+    
+	<!-- 分布式事务 -->
+	<bean id="XADataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean">
+        <property name="uniqueResourceName" value="xads11" />
+        <property name="xaDataSourceClassName">
+            <value>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</value>
+        </property>
+        <property name="xaProperties">
+            <props>
+                <prop key="user">root</prop>
+                <prop key="password">12345</prop>
+                <prop key="URL">jdbc:mysql://localhost:3306/test</prop>
+            </props>
+        </property>     
+        <property name="poolSize" value="10"/>
+    </bean>
+    
+    <bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+		<constructor-arg ref="XADataSource" />
+	</bean>
+</beans>

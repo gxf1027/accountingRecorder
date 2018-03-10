@@ -2,6 +2,7 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://www.springframework.org/schema/beans" 
 	xmlns:context="http://www.springframework.org/schema/context"   
+	xmlns:amq="http://activemq.apache.org/schema/core"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:cache="http://www.springframework.org/schema/cache"
@@ -14,18 +15,47 @@
      http://www.springframework.org/schema/aop
      http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
      http://www.springframework.org/schema/cache 
-     http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
+     http://www.springframework.org/schema/cache/spring-cache-4.0.xsd
+     http://activemq.apache.org/schema/core
+     http://activemq.apache.org/schema/core/activemq-core-5.13.0.xsd">
     
+    <!-- https://www.atomikos.com/Documentation/TomcatSpringActiveMQMySQLJMXIntegration#Example_Middleware_application -->
+    <context:component-scan base-package="cn" />
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
     
-    <bean id="creditCardBillMsgListener" class="cn.gxf.spring.bill.receiver.CreditCardBillMsgListener">
+<!--     <bean id="creditCardBillMsgListener" class="cn.gxf.spring.bill.receiver.CreditCardBillMsgListener">
     	<property name="mailSenderService" ref="mailSenderServiceImpl"></property>
-    </bean>
+    </bean> -->
     
+    
+    <!-- activeMQ连接信息，XA事务。以下两个配置任选一个 -->
+    <!-- <amq:xaConnectionFactory id="jmsXaConnectionFactory"
+        brokerURL="tcp://localhost:61616?jms.redeliveryPolicy.maximumRedeliveries=2" 
+        userName="admin" 
+        password="admin"/> -->
+        
+    <bean id="jmsXaConnectionFactory" class="org.apache.activemq.ActiveMQXAConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61616" />
+        <property name="redeliveryPolicy">
+        	<bean id="redeliveryPolicy" class="org.apache.activemq.RedeliveryPolicy">
+        		<property name="useExponentialBackOff" value="true"></property>
+        		<property name="maximumRedeliveries" value="2"></property>
+        	</bean>
+        </property>
+	</bean>
+        
+    <bean id="amqConnectionFactory"  
+          class="com.atomikos.jms.AtomikosConnectionFactoryBean" init-method="init" destroy-method="close">  
+        <property name="uniqueResourceName" value="XAactiveMQ"/>  
+        <property name="xaConnectionFactory" ref="jmsXaConnectionFactory"/>  
+        <property name="poolSize" value="10"/>
+    </bean>
+        
     <!-- 配置JMS连接工厂 -->
-	<bean id="connectionFactory"
+	<!-- <bean id="connectionFactory"
 		class="org.apache.activemq.ActiveMQConnectionFactory">
 		<property name="brokerURL" value="tcp://localhost:61616" />
-	</bean>
+	</bean> -->
     
     <!-- 接收消息的队列  -->
 	<bean id="mailQueueDest"
@@ -35,25 +65,42 @@
 	</bean>
     
     <bean id="myMsgQueuelistenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="connectionFactory" ref="amqConnectionFactory" />
 		<property name="destination" ref="mailQueueDest" />
 		<property name="messageListener" ref="creditCardBillMsgListener" />
 		<property name="receiveTimeout" value="10000" />
+		<property name="sessionTransacted" value="true"/>
 		<!-- 当在接收消息时监听器执行失败时，JMS(activemq)就会对接收到的消息进行回滚 -->
-		<!-- <property name="transactionManager" ref="jtaTransactionManager"/>  --> 
+		<property name="transactionManager" ref="springJtaTxManager"/>
 	</bean>
+	
+	<!-- atomikos事务管理器 -->
+    <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
+        init-method="init" destroy-method="close">
+        <description>UserTransactionManager</description>
+        <property name="forceShutdown" value="true" />
+    </bean>
     
+    <bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
+        <property name="transactionTimeout" value="300" />
+    </bean>
     
-    <!-- <bean id="jtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"/>  -->
-    <tx:annotation-driven transaction-manager="jtaTransactionManager"/>  
+    <!-- spring 事务管理器 -->
+    <bean id="springJtaTxManager"
+        class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="transactionManager" ref="atomikosTransactionManager" />
+        <property name="userTransaction" ref="atomikosUserTransaction" />
+    </bean>
+    
+    <tx:annotation-driven transaction-manager="springJtaTxManager"/> 
     
     <!-- 配置QueueJms模板  -->
-	<bean id="jmsQueueTemplate"
+	<!-- <bean id="jmsQueueTemplate"
 		class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="connectionFactory" />
 		<property name="defaultDestination" ref="mailQueueDest" />
 		<property name="receiveTimeout" value="10000" />
-	</bean>
+	</bean> -->
     
     
     

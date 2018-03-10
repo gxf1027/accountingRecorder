@@ -1,19 +1,29 @@
 package cn.gxf.spring.bill.receiver;
 
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import cn.gxf.spring.bill.dao.MailDao;
 import cn.gxf.spring.bill.mailsender.MailSenderService;
 import cn.gxf.spring.quartz.job.model.CreditCardBill;
 
 
 
-
+@Service
 public class CreditCardBillMsgListener implements MessageListener {
 
+	private static int count=1;
+	
+	@Autowired
 	private MailSenderService mailSenderService;
+	
+	@Autowired
+	private MailDao maiDao;
 	
 	public MailSenderService getMailSenderService() {
 		return mailSenderService;
@@ -23,20 +33,32 @@ public class CreditCardBillMsgListener implements MessageListener {
 		this.mailSenderService = mailSenderService;
 	}
 	
+	@Transactional
 	@Override
 	public void onMessage(Message message) {
 		
 		if(message instanceof ObjectMessage){
-			System.out.println("onMessage...");
+			
+			maiDao.testXA();
+			
+			System.out.println("onMessage count: " + count);
+			count++;
 			
 			ObjectMessage objectMsg =  (ObjectMessage)message;
 			System.out.println("Object Message: " + objectMsg);
 			CreditCardBill bill;
 			try {
+				//int i = 1/0; 
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new RuntimeException("Error");  
+			}
+			
+			try {
 				bill = (CreditCardBill)objectMsg.getObject();
 				System.out.println("bill: " + bill);
 				this.mailSenderService.senderOne(bill);
-			} catch (JMSException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

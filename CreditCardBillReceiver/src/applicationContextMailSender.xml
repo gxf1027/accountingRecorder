@@ -17,6 +17,8 @@
      http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
     
     
+    <context:component-scan base-package="cn" />
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
     <!-- 引入属性文件 -->  
     <context:property-placeholder location="classpath:mailsender.properties" /> 
     
@@ -35,7 +37,7 @@
         </property>    
     </bean>    
     
-    <bean id="mailSenderServiceImpl" class="cn.gxf.spring.bill.mailsender.MailSenderServiceImpl">
+    <bean id="mailSenderService" class="cn.gxf.spring.bill.mailsender.MailSenderServiceImpl">
     	<property name="mailSender" ref="mailSender"></property>
     </bean>
     
