@@ -42,12 +42,45 @@
 		<property name="dataSource" ref="datasource" />
 	</bean>
 	
-	
-	
 	<bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="datasource"></property>
+		<qualifier value="dsTransactionManager"></qualifier>
 	</bean>
-	<tx:annotation-driven transaction-manager="dataSourceTransactionManager" />
+	<tx:annotation-driven/>
+	
+	<!-- 分布式事务 -->
+	<bean id="XADataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean">
+        <property name="uniqueResourceName" value="xads11" />
+        <property name="xaDataSourceClassName">
+            <value>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</value>
+        </property>
+        <property name="xaProperties">
+            <props>
+                <prop key="user">root</prop>
+                <prop key="password">12345</prop>
+                <prop key="URL">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8</prop>
+            </props>
+        </property>     
+        <property name="poolSize" value="10"/>
+    </bean>
+	<!-- atomikos事务管理器 -->
+    <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
+        init-method="init" destroy-method="close">
+        <description>UserTransactionManager</description>
+        <property name="forceShutdown" value="true" />
+    </bean>
+    
+    <bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
+        <property name="transactionTimeout" value="3000" />
+    </bean>
+	
+	<!-- spring 事务管理器 -->
+    <bean id="springJtaTxManager"
+        class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="transactionManager" ref="atomikosTransactionManager" />
+        <property name="userTransaction" ref="atomikosUserTransaction" />
+        <qualifier value="JtaXAManager"></qualifier>
+    </bean>
 	
 	<!-- 一定要加上scope为prototype -->
 	<bean id="account_action" 

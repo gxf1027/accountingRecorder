@@ -43,7 +43,7 @@ public class CreditCardsBillProcessor {
 	private UserService userService;
 
 	// 在一个事务内，如果数据库/JMS抛出异常，会回滚
-	@Transactional(propagation=Propagation.REQUIRED)
+	@Transactional(value="dsTransactionManager",propagation=Propagation.REQUIRED)
 	public int processCreditCardBill(){
 		// 1. 获取需要处理的账户代码
 		List<String> zzdmList = this.getCreditCardInZDR();

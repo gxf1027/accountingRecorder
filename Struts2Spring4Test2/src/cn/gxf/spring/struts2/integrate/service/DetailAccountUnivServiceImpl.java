@@ -98,7 +98,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	}
 	
 	@CacheEvict(value="statCache", allEntries=true)
-	@Transactional
+	@Transactional("dsTransactionManager")
 	public void saveOne(T detail) {
 		
 		AccountingDetail accountingDetail = new AccountingDetail();
@@ -113,7 +113,12 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		
 		// 使用mybatis 主键回填功能
 		accountDetailMBDao.addOne(accountingDetail);
-		
+		try {
+			//int i  = 1/0;
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw new RuntimeException();
+		}
 		detail.setAccuuid(accountingDetail.getAccuuid());
 		//detail.setMxuuid(accUtil.generateUuid());
 		//repository.addOne(detail);
@@ -134,7 +139,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	}
 
 	@CacheEvict(value="statCache", allEntries=true)
-	@Transactional
+	@Transactional("dsTransactionManager")
 	public void updateOne(T detail) {
 		
 		AccountingDetail accountingDetail = accountDetailMBDao.getAccountingDetailByUuid(detail.getAccuuid());
@@ -186,7 +191,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	}
 	
 	@CacheEvict(value="statCache", allEntries=true)
-	@Transactional
+	@Transactional("dsTransactionManager")
 	public void deleteOne(T detail){
 		
 		Date xgrq = new Date();
@@ -218,7 +223,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	
 	
 	@CacheEvict(value="statCache", allEntries=true)
-	@Transactional
+	@Transactional("dsTransactionManager")
 	public void deletePatch(List<T> detailObjs){
 		if (detailObjs.size() == 0){
 			System.out.println("deletePatch size==0");
@@ -258,7 +263,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	}
 	
 	@CacheEvict(value="statCache", allEntries=true)
-	@Transactional
+	@Transactional("dsTransactionManager")
 	public void deletePatchByAccuuid(List<AccountingDetail> list){
 		if (list.size() == 0){
 			System.out.println("deletePatch size==0");
