@@ -10,10 +10,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.ObjectMessage;
+import javax.jms.Session;
+
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -29,6 +37,7 @@ import cn.gxf.spring.struts2.integrate.service.UserService;
 
 @Service
 public class CreditCardsBillProcessor {
+
 	
 	@Autowired
 	private NamedParameterJdbcTemplate namedJdbcTemplate;
@@ -43,7 +52,7 @@ public class CreditCardsBillProcessor {
 	private UserService userService;
 
 	// 在一个事务内，如果数据库/JMS抛出异常，会回滚
-	@Transactional(value="dsTransactionManager",propagation=Propagation.REQUIRED)
+	@Transactional(value="JtaXAManager",propagation=Propagation.REQUIRED)
 	public int processCreditCardBill(){
 		// 1. 获取需要处理的账户代码
 		List<String> zzdmList = this.getCreditCardInZDR();
@@ -79,13 +88,10 @@ public class CreditCardsBillProcessor {
         System.out.println("after save: " + recList);
         
         // 5. 发送至JMS
-        try {
-        	sendToJMS(recList, jyqq, jyqz); 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        sendToJMS(recList, jyqq, jyqz);
         
-       
+        
+        //int i=1/0;
         
 		return 1;
 	}
@@ -140,13 +146,14 @@ public class CreditCardsBillProcessor {
 			recList = creditCardBillDao.getCreditCardTranscationRecordInZDQ(params);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new RuntimeException();
 		}
 		
 		System.out.println("getCreditCardTranscationRecordInZDQ end...");
 		return recList;
 	}
 	
-	@Transactional(propagation=Propagation.REQUIRED)
+	@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
 	public void saveTranscationRecordInZDQ(List<CreditCardTransRecord> cctrList, Date jyqq, Date jyqz){
 		
 		for (CreditCardTransRecord cctr : cctrList){
@@ -161,11 +168,12 @@ public class CreditCardsBillProcessor {
 			System.out.println("保存"+num+"条数据");
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new RuntimeException();
 		}
 		
 	}
 	
-	@Transactional(propagation=Propagation.REQUIRED)
+	@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
 	public void deleteInvalidRecord(List<String> zzdmList, Date jyqq, Date jyqz){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 交易日起为本日
 		Map<String, Object> paramsMap = new HashMap<>();
@@ -176,10 +184,12 @@ public class CreditCardsBillProcessor {
 			creditCardBillDao.deleteInvalidRecord(paramsMap);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new RuntimeException();
 		}
 		
 	}
 	
+	@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
 	public void sendToJMS(List<CreditCardTransRecord> recList, Date jyqq, Date jyqz){
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 

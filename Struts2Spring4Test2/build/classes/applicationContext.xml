@@ -161,7 +161,7 @@
         <property name="mapperLocations">
         	<list>
                 <value>classpath:cn/gxf/spring/struts/mybatis/mapper/*.xml</value>
-                <value>classpath:cn/gxf/spring/quartz/job/mbxml/*.xml</value>
+                <!-- <value>classpath:cn/gxf/spring/quartz/job/mbxml/*.xml</value> -->
             </list>
         </property>
         <property name="configLocation" value="classpath:mybatis-config.xml" />
@@ -178,13 +178,30 @@
 	            </bean>
 	        </array>
 	    </property>
-	    
     </bean>
     
-     <!-- DAO接口所在包名，Spring会自动查找其下的类 ,包下的类需要使用@MapperScan注解,否则容器注入会失败 -->
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="cn.gxf.spring.struts.mybatis.dao,cn.gxf.spring.quartz.job.dao" />
+    <!-- XA -->
+    <bean id="sqlSessionFactoryXA" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="XADataSource" />
+        <!-- 自动扫描mapping.xml文件，**表示迭代查找 -->
+        
+        <property name="mapperLocations">
+        	<list>
+                <value>classpath:cn/gxf/spring/quartz/job/mbxml/*.xml</value>
+            </list>
+        </property>
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+    </bean>
+    
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 ,包下的类需要使用@MapperScan注解,否则容器注入会失败 -->
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="cn.gxf.spring.struts.mybatis.dao" />
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+    </bean>
+    
+    <bean id="mapperScannerConfigurerXA" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="cn.gxf.spring.quartz.job.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryXA" />
     </bean>
     
 </beans>
