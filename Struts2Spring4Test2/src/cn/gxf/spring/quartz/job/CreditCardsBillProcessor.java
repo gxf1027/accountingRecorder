@@ -134,7 +134,7 @@ public class CreditCardsBillProcessor {
 	
 	// 获取某个账单期内的信用卡账单明细记录
 	private List<CreditCardTransRecord> getCreditCardTranscationRecordInZDQ( List<String> zhdmList, Date jyqq, Date jyqz){
-		System.out.println("getCreditCardTranscationRecordInZDQ start...");
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 交易日起为本日
 		
 		Map<String, Object> params = new HashMap<>();
@@ -149,7 +149,6 @@ public class CreditCardsBillProcessor {
 			throw new RuntimeException();
 		}
 		
-		System.out.println("getCreditCardTranscationRecordInZDQ end...");
 		return recList;
 	}
 	

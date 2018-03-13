@@ -73,5 +73,9 @@
 		<Logger name="cn.gxf.spring.struts.integrate.test" level="DEBUG">
 			<AppenderRef ref="Console" />
 		</Logger>
+		<!-- https://www.atomikos.com/Documentation/ConfiguringTheLogs -->
+		<Logger name="com.atomikos" level="DEBUG">
+	        <AppenderRef ref="Console" />
+	    </Logger>
 	</Loggers>
 </Configuration>  
