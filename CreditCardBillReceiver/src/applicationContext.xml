@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://www.springframework.org/schema/beans" 
-	xmlns:context="http://www.springframework.org/schema/context"   
-	xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:jms="http://www.springframework.org/schema/jms"  
+	xmlns:amq="http://activemq.apache.org/schema/core" 
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:cache="http://www.springframework.org/schema/cache"
@@ -17,7 +18,9 @@
      http://www.springframework.org/schema/cache 
      http://www.springframework.org/schema/cache/spring-cache-4.0.xsd
      http://activemq.apache.org/schema/core
-     http://activemq.apache.org/schema/core/activemq-core-5.13.0.xsd">
+     http://activemq.apache.org/schema/core/activemq-core-5.13.0.xsd
+     http://www.springframework.org/schema/jms
+     http://www.springframework.org/schema/jms/spring-jms-4.0.xsd">
     
     <!-- https://www.atomikos.com/Documentation/TomcatSpringActiveMQMySQLJMXIntegration#Example_Middleware_application -->
     <context:component-scan base-package="cn" />
@@ -64,15 +67,35 @@
 		<constructor-arg index="0" value="mailQueue" />
 	</bean>
     
-    <bean id="myMsgQueuelistenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <!-- 监听方式一：使用实现MessageListener的类的onMessage()方法进行监听 -->
+    <!-- creditCardBillMsgListener implements MessageListener -->
+    <!-- <bean id="myMsgQueuelistenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 		<property name="connectionFactory" ref="amqConnectionFactory" />
 		<property name="destination" ref="mailQueueDest" />
-		<property name="messageListener" ref="creditCardBillMsgListener" />
+		<property name="messageListener" ref="creditCardBillMsgListener" />  
 		<property name="receiveTimeout" value="10000" />
 		<property name="sessionTransacted" value="true"/>
-		<!-- 当在接收消息时监听器执行失败时，JMS(activemq)就会对接收到的消息进行回滚 -->
+		当在接收消息时监听器执行失败时，JMS(activemq)就会对接收到的消息进行回滚
 		<property name="transactionManager" ref="springJtaTxManager"/>
+	</bean> -->
+	
+	 <!-- 监听方式二：将POJO作为message处理类，处理消息的方法可以任意设置-->
+	<bean id="messageAdapter"
+	      class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+	    <constructor-arg>
+	        <bean class="cn.gxf.spring.bill.receiver.BillProcessor"/> <!-- 将POJO作为message处理类 -->
+	    </constructor-arg>
+	    <property name="defaultListenerMethod" value="billProcessing"/> <!-- 处理消息的方法 -->
 	</bean>
+	
+	<bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	    <property name="connectionFactory" ref="amqConnectionFactory"/>
+	    <property name="destination" ref="mailQueueDest"/>
+	    <property name="messageListener" ref="messageAdapter" /> <!-- 使用MessageListenerAdapter来作为消息监听器 -->
+	    <property name="sessionTransacted" value="true"/>
+	    <property name="transactionManager" ref="springJtaTxManager"/> <!-- 配置后函数不需要使用@Transactional注解 -->
+	</bean>
+	
 	
 	<!-- atomikos事务管理器 -->
     <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
