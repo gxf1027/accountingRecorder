@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="lib"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_131"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_60"/>
 	<classpathentry kind="lib" path="lib/activemq-all-5.9.0.jar"/>
 	<classpathentry kind="lib" path="lib/asm-3.3.jar"/>
 	<classpathentry kind="lib" path="lib/asm-commons-3.3.jar"/>
@@ -24,7 +24,7 @@
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.42-bin.jar"/>
 	<classpathentry kind="lib" path="lib/quartz-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.7.jar"/>
-	<classpathentry kind="lib" path="lib/spring-aop-4.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-aop-4.0.4.RELEASE.jar" sourcepath="C:/Users/dell/.m2/repository/org/springframework/spring-aop/4.0.4.RELEASE/spring-aop-4.0.4.RELEASE-sources.jar"/>
 	<classpathentry kind="lib" path="lib/spring-aspects-4.0.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-beans-4.0.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-build-src-4.0.4.RELEASE.jar"/>
@@ -72,5 +72,7 @@
 	<classpathentry kind="lib" path="atomikos-4.0.4/transactions-jms-4.0.4.jar"/>
 	<classpathentry kind="lib" path="atomikos-4.0.4/transactions-jta-4.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/xbean-spring-4.5.jar"/>
+	<classpathentry kind="lib" path="lib/thymeleaf-3.0.7.RELEASE.jar" sourcepath="C:/Users/dell/.m2/repository/org/thymeleaf/thymeleaf/3.0.7.RELEASE/thymeleaf-3.0.7.RELEASE-sources.jar"/>
+	<classpathentry kind="lib" path="lib/thymeleaf-spring4-3.0.7.RELEASE.jar" sourcepath="C:/Users/dell/.m2/repository/org/thymeleaf/thymeleaf-spring4/3.0.7.RELEASE/thymeleaf-spring4-3.0.7.RELEASE-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

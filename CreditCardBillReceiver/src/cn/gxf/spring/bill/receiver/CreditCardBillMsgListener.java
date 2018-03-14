@@ -39,7 +39,7 @@ public class CreditCardBillMsgListener implements MessageListener {
 		
 		if(message instanceof ObjectMessage){
 			
-			maiDao.testXA();
+			//maiDao.testXA();
 			
 			System.out.println("onMessage count: " + count);
 			count++;
@@ -57,10 +57,12 @@ public class CreditCardBillMsgListener implements MessageListener {
 			try {
 				bill = (CreditCardBill)objectMsg.getObject();
 				System.out.println("bill: " + bill);
-				this.mailSenderService.senderOne(bill);
+				this.mailSenderService.sendSimpleMailTxt(bill);
+				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
+				throw new RuntimeException("Error");  
 			}
 			
 		}

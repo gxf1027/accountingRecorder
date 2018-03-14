@@ -38,7 +38,29 @@
     </bean>    
     
     <bean id="mailSenderService" class="cn.gxf.spring.bill.mailsender.MailSenderServiceImpl">
-    	<property name="mailSender" ref="mailSender"></property>
+    	<property name="mailSender" ref="mailSender" />
+    	<property name="templateEngine" ref="springTemplateEngine" />
     </bean>
     
+    <!-- Thymeleaf View Resolver - implementation of Spring's ViewResolver interface -->
+   <!--  <bean id="viewResolver" class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+        <property name="templateEngine" ref="springTemplateEngine" />
+        <property name="characterEncoding" value="UTF-8" />
+    </bean> -->
+    
+	<bean id="classLoaderTemplateResolver"  class="org.thymeleaf.templateresolver.ClassLoaderTemplateResolver">  
+	        <property name="order" value="1" />  
+	        <property name="prefix" value="/" />   
+	        <property name="suffix" value=".html" />  
+	        <property name="templateMode" value="HTML5" />  
+	        <property name="characterEncoding" value="UTF-8" />
+	</bean>  
+	
+	<bean id="springTemplateEngine"   class="org.thymeleaf.spring4.SpringTemplateEngine">
+	     <property name="templateResolvers">
+            <set>
+                <ref bean="classLoaderTemplateResolver" />
+            </set>
+        </property>
+	</bean>
 </beans>
