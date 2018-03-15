@@ -13,4 +13,5 @@ public interface CreditCardBillDao {
 	public List<CreditCardTransRecord> getCreditCardTranscationRecordInZDQ(Map<String, Object> params);
 	public int saveTranscationRecordInZDQ(List<CreditCardTransRecord> cctrList);
 	public void deleteInvalidRecord(Map<String, Object> params);
+	public void setMailed(List<String> uuidList);
 }

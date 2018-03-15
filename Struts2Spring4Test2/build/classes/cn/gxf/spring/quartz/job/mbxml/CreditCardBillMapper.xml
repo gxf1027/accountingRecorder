@@ -78,5 +78,13 @@
 		</foreach>
 		AND yxbz='Y' AND mailed='N'
 	</update>
+	
+	<update id="setMailed" parameterType="java.util.List">
+		UPDATE zh_detail_ccbill SET  mailed = 'Y'
+		WHERE billuuid IN 
+		<foreach collection="uuidList" index="index" item="uuid" open="(" separator="," close=")">
+			#{uuid}
+		</foreach>
+	</update>
 </mapper>
 
