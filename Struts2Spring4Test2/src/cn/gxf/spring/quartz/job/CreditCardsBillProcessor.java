@@ -205,7 +205,7 @@ public class CreditCardsBillProcessor {
         		ccb.setZh_mc(cctr.getZh_mc());
         		ccb.setSsqq(sdf.format(jyqq));
         		ccb.setSsqz(sdf.format(jyqz));
-        		ccb.setYhkje(0);
+        		ccb.setYhkje(cctr.getJe());
         		ccb.setCctrList(new ArrayList<CreditCardRecordSimplified>());
         		ccb.getCctrList().add(new CreditCardRecordSimplified(cctr));
         		ccbMap.put(keystr, ccb);
