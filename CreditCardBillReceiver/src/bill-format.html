@@ -8,6 +8,7 @@
 		账户名称：<span th:text="${bill.zh_mc}"></span><br>
 		账单日起：<span th:text="${bill.ssqq}"></span><br>
 		账单日止：<span th:text="${bill.ssqz}"></span><br>
+		还款金额：<span th:text="${bill.yhkje}"></span><br>
 		<table border="1" cellspacing="0">
 			<thead>
 				<tr>
@@ -22,7 +23,7 @@
 				<tr th:each="record : ${bill.cctrList}">
 					<td th:text="${recordStat.count}">1</td>
 					<td th:text="${#dates.format(record.jysj, 'dd-MMM-yyyy')}">28-Jun-2013</td>
-					<td th:text="${'Y' + #numbers.formatDecimal(record.je, 1, 2)}">Y350</td>
+					<td th:text="${'¥' + #numbers.formatDecimal(record.je, 1, 2)}">Y350</td>
 					<td th:text="${record.jylx}">jylx</td>
 					<td th:text="${record.bz}">备注</td>
 				</tr>

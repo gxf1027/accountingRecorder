@@ -7,5 +7,7 @@ import cn.gxf.spring.quartz.job.model.CreditCardBill;
 public interface MailSenderService {
 	public void sendSimpleMailTxt(CreditCardBill bill);
 	public void sendSimpleMailThymeleaf(CreditCardBill bill);
-	public void senderBatch(List<CreditCardBill> bills);
+	public void sendBatch(List<CreditCardBill> bills);
+	
+	public void sendTest();
 }

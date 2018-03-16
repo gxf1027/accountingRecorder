@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
+
+	<p th:text ="'Hello,' + ${message} + '!'" ></p>
 	账户名称：建设银行<br>
 	账单日起：2018-02-09<br>
 	账单日止：2018-03-09<br>

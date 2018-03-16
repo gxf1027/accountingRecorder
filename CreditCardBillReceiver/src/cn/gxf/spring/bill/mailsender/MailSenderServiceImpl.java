@@ -22,14 +22,12 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import cn.gxf.spring.quartz.job.model.CreditCardBill;
 import cn.gxf.spring.quartz.job.model.CreditCardRecordSimplified;
 
-public class MailSenderServiceImpl implements MailSenderService, ApplicationContextAware {
+public class MailSenderServiceImpl implements MailSenderService {
 
 	private ApplicationContext applicationContext;
-	private static final String EMAIL_SIMPLE_TEMPLATE_NAME = "bill-format.html";
+	private static final String EMAIL_SIMPLE_TEMPLATE_NAME = "bill-format";
 	
 	private JavaMailSenderImpl mailSender;
-	
-    private TemplateEngine htmlTemplateEngine;
     private SpringTemplateEngine templateEngine;
     
 
@@ -104,7 +102,7 @@ public class MailSenderServiceImpl implements MailSenderService, ApplicationCont
 	}
 	
 	@Override
-	public void senderBatch(List<CreditCardBill> bills) {
+	public void sendBatch(List<CreditCardBill> bills) {
 		
 		if (null == bills || bills.size() == 0){
 			System.out.println("没有需要发送的账单");
@@ -123,7 +121,7 @@ public class MailSenderServiceImpl implements MailSenderService, ApplicationCont
 	/* 
      * Send HTML mail (simple) 
      */
-    public void sendSimpleMailThymeleaf (CreditCardBill bill){
+    public void sendSimpleMailThymeleaf(CreditCardBill bill){
 
     	
         // Prepare the evaluation context
@@ -138,8 +136,8 @@ public class MailSenderServiceImpl implements MailSenderService, ApplicationCont
 		    message.setTo(bill.getEmail()); //收件人
 
 		    // Create the HTML body using Thymeleaf
-		    //final String htmlContent = this.templateEngine.process(EMAIL_SIMPLE_TEMPLATE_NAME, ctx);
-		    String htmlContent = this.templateEngine().process("E:\\javaxf\\CreditCardBillReceiver\\src\\NewFile.html", ctx);
+		    final String htmlContent = this.templateEngine.process(EMAIL_SIMPLE_TEMPLATE_NAME, ctx);
+		    System.out.println("mail content: " + htmlContent);
 		    message.setText(htmlContent, true /* isHtml */);
 		} catch (Exception e) {
 			System.out.println(e);
@@ -152,25 +150,37 @@ public class MailSenderServiceImpl implements MailSenderService, ApplicationCont
         this.mailSender.send(mimeMessage);
     }
     
-    private ITemplateResolver templateResolver() {
-        SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
-        resolver.setApplicationContext(applicationContext);
-        resolver.setPrefix("/");
-        resolver.setTemplateMode(TemplateMode.HTML);
-        return resolver;
-      }
-    
-    public TemplateEngine templateEngine() {
-        SpringTemplateEngine engine = new SpringTemplateEngine();
-        engine.setEnableSpringELCompiler(true);
-        engine.setTemplateResolver(templateResolver());
-        return engine;
-      }
 
 	@Override
-	public void setApplicationContext(ApplicationContext arg0) throws BeansException {
+	public void sendTest() {
 		
-		this.applicationContext = arg0; 
+		// Prepare the evaluation context
+        final Context ctx = new Context();
+        ctx.setVariable("message", "HAHA");
+        // Prepare message using a Spring helper
+        final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+        final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
+        try {
+			message.setSubject("11111");
+			message.setFrom("gxf"); // 发件人
+		    message.setTo("gxf1027@126.com"); //收件人
+
+		    System.out.println("before process...");
+		    // Create the HTML body using Thymeleaf
+		    final String htmlContent = this.templateEngine.process("NewFile", ctx);
+
+		    System.out.println("html: " + htmlContent);
+		    message.setText(htmlContent, true /* isHtml */);
+		    System.out.println("after process...");
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+       
+
+        // Send email
+        //this.mailSender.send(mimeMessage);
 	}
 
 }

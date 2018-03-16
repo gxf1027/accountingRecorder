@@ -51,9 +51,10 @@ public class BillProcessor {
 			throw new RuntimeException();
 		} 
 		
-		this.mailSenderService.sendSimpleMailTxt(bill);
-		
+		//this.mailSenderService.sendSimpleMailTxt(bill);
+		this.mailSenderService.sendSimpleMailThymeleaf(bill);
 		
 		
 	}
+	
 }
