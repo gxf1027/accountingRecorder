@@ -67,18 +67,18 @@
 	<!-- atomikos事务管理器 -->
 	<!-- 在JMS没有启动的情况下，启动本应用，会报错。  com.atomikos.datasource.ResourceException: Error in getting XA resource -->
     <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
-        init-method="init" destroy-method="close">
+        init-method="init" destroy-method="close" lazy-init="true">
         <description>UserTransactionManager</description>
         <property name="forceShutdown" value="true" />
     </bean>
     
-    <bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
+    <bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp" lazy-init="true">
         <property name="transactionTimeout" value="3000" />
     </bean>
 	
 	<!-- spring 事务管理器 -->
     <bean id="springJtaTxManager"
-        class="org.springframework.transaction.jta.JtaTransactionManager">
+        class="org.springframework.transaction.jta.JtaTransactionManager" lazy-init="true">
         <property name="transactionManager" ref="atomikosTransactionManager" />
         <property name="userTransaction" ref="atomikosUserTransaction" />
         <qualifier value="JtaXAManager"></qualifier>
@@ -204,6 +204,10 @@
     <bean id="mapperScannerConfigurerXA" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="cn.gxf.spring.quartz.job.dao" />
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryXA" />
+    </bean>
+    
+    <bean class="org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter">
+        <property name="baseAddress" value="http://localhost:9809/services/"/>
     </bean>
     
 </beans>

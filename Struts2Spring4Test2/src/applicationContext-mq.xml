@@ -22,7 +22,7 @@
 		<property name="brokerURL" value="tcp://localhost:61616" />
 	</bean> -->
 	
-	<bean id="jmsXaConnectionFactory" class="org.apache.activemq.ActiveMQXAConnectionFactory">
+	<bean id="jmsXaConnectionFactory" class="org.apache.activemq.ActiveMQXAConnectionFactory" lazy-init="true">
         <property name="brokerURL" value="tcp://localhost:61616" />
         <property name="redeliveryPolicy">
         	<bean id="redeliveryPolicy" class="org.apache.activemq.RedeliveryPolicy">
@@ -33,7 +33,7 @@
 	</bean>
 	
 	 <bean id="amqConnectionFactory"  
-          class="com.atomikos.jms.AtomikosConnectionFactoryBean" init-method="init" destroy-method="close">  
+          class="com.atomikos.jms.AtomikosConnectionFactoryBean" init-method="init" destroy-method="close" lazy-init="true">  
         <property name="uniqueResourceName" value="XAactiveMQ"/>  
         <property name="xaConnectionFactory" ref="jmsXaConnectionFactory"/>  
         <property name="poolSize" value="10"/>
@@ -48,7 +48,7 @@
     
     <!-- 配置QueueJms模板  -->
 	<bean id="jmsQueueTemplate"
-		class="org.springframework.jms.core.JmsTemplate">
+		class="org.springframework.jms.core.JmsTemplate" lazy-init="true">
 		<property name="connectionFactory" ref="amqConnectionFactory" />
 		<property name="defaultDestination" ref="mailQueueDest" />
 		<property name="receiveTimeout" value="10000" />
