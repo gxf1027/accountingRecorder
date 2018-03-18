@@ -191,27 +191,19 @@ public class CreditCardsBillProcessor {
 	@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
 	public void sendToJMS(List<CreditCardTransRecord> recList, Date jyqq, Date jyqz){
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
 		Map<String, CreditCardBill> ccbMap = new HashMap<>();
 		Map<String, String> userMap = new HashMap<>();
+		
         for(CreditCardTransRecord cctr : recList){
         	userMap.put(cctr.getUser_id().toString(), "1");
         	String keystr = cctr.getUser_id().toString() +"-"+ cctr.getZh_dm();
         	CreditCardBill ccb = ccbMap.get(keystr);
         	if  (null == ccb){
         		ccb = new CreditCardBill();
-        		ccb.setUser_id(cctr.getUser_id().intValue());
-        		ccb.setZh_dm(cctr.getZh_dm());
-        		ccb.setZh_mc(cctr.getZh_mc());
-        		ccb.setSsqq(sdf.format(jyqq));
-        		ccb.setSsqz(sdf.format(jyqz));
-        		ccb.setYhkje(cctr.getJe());
-        		ccb.setCctrList(new ArrayList<CreditCardRecordSimplified>());
-        		ccb.getCctrList().add(new CreditCardRecordSimplified(cctr));
+        		ccb.init(cctr, jyqq, jyqz);
         		ccbMap.put(keystr, ccb);
         	}else{
-        		ccb.getCctrList().add(new CreditCardRecordSimplified(cctr));
-        		ccb.setYhkje(ccb.getYhkje()+cctr.getJe());
+        		ccb.add(cctr);
         	}
         }
        

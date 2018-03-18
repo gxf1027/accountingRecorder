@@ -133,14 +133,14 @@
 		class="cn.gxf.spring.struts.integrate.actions.FrontStatisticsAction"
 		scope="prototype" />
 
-	<bean id="loanServiceProxy"
+	<!-- <bean id="loanServiceProxy"
 		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean" lazy-init="true" >
 		<property name="wsdlDocumentUrl" value="http://localhost:9809/services/LoanService?wsdl" />
 		<property name="serviceName" value="LoanService" />
 		<property name="portName" value="LoanServiceImplPort"></property>
 		<property name="serviceInterface" value="cn.loan.ws.service.LoanService" />
 		<property name="namespaceUri" value="http://service.ws.loan.cn/" />
-	</bean>
+	</bean> -->
 	
 	<!-- spring基于EhCache的缓存配置 -->
 	<cache:annotation-driven cache-manager="cacheManager" key-generator="userKeyGenerator" />  
@@ -206,8 +206,8 @@
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryXA" />
     </bean>
     
-    <bean class="org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter">
+    <!-- <bean class="org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter">
         <property name="baseAddress" value="http://localhost:9809/services/"/>
-    </bean>
+    </bean> -->
     
 </beans>

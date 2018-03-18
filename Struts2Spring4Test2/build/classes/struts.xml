@@ -4,7 +4,7 @@
 	"http://struts.apache.org/dtds/struts-2.3.dtd">
 
 <struts>
-
+	<constant name="struts.action.excludePattern" value="/services/.*" />
     <constant name="struts.devMode" value="true" />
     <!-- 此版本一定要加這個常量，否則不無法開啟DMI -->
 	<constant name="struts.enable.DynamicMethodInvocation" value="true" />

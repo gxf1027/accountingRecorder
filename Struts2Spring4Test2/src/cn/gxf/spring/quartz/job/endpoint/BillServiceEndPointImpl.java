@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import cn.gxf.spring.quartz.job.service.BillService;
 
 @Component
-@WebService(serviceName="BillService", endpointInterface="cn.gxf.spring.quartz.job.endpoint.BillServiceEndpoint")
+@WebService(endpointInterface="cn.gxf.spring.quartz.job.endpoint.BillServiceEndpoint")
 public class BillServiceEndPointImpl implements BillServiceEndpoint {
 
 	@Autowired

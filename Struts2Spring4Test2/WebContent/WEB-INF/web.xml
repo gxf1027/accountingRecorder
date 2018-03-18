@@ -87,9 +87,20 @@
 	</filter-mapping>
 	
 
-	
+	<servlet>
+        <description>CXF Endpoint</description>
+        <display-name>cxf</display-name>
+        <servlet-name>cxf</servlet-name>
+        <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>cxf</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+    </servlet-mapping>
+    
 	<session-config>
-		<session-timeout>10</session-timeout>
+		<session-timeout>20</session-timeout>
 	</session-config>
 
 
