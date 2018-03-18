@@ -36,7 +36,7 @@ import cn.gxf.spring.struts.integrate.security.UserLogin;
 import cn.gxf.spring.struts2.integrate.service.UserService;
 
 @Service
-public class CreditCardsBillProcessor {
+public class BillProcessor {
 
 	
 	@Autowired
@@ -83,7 +83,7 @@ public class CreditCardsBillProcessor {
         deleteInvalidRecord(zzdmList, jyqq, jyqz);
         
         
-        // 4. 将账单信息插入账单表
+        // 4. 将账单信息插入账单明细表
         saveTranscationRecordInZDQ(recList, jyqq, jyqz);
         System.out.println("after save: " + recList);
         
@@ -200,18 +200,25 @@ public class CreditCardsBillProcessor {
         	CreditCardBill ccb = ccbMap.get(keystr);
         	if  (null == ccb){
         		ccb = new CreditCardBill();
-        		ccb.init(cctr, jyqq, jyqz);
+        		ccb.init(cctr, jyqq, jyqz); // 会生成批次号
         		ccbMap.put(keystr, ccb);
         	}else{
         		ccb.add(cctr);
         	}
         }
        
+        
         // 获得email数据
         Map<String, String> userEmails = userService.getUserEmail(new ArrayList<>(userMap.keySet()));
         for(String key : ccbMap.keySet()){
-        	ccbMap.get(key).setEmail(userEmails.get(key.split("-")[0])); 
+        	CreditCardBill bill = ccbMap.get(key);
+        	bill.setEmail(userEmails.get(key.split("-")[0]));
+        	
+        	// 将pch回写到明细中
+        	System.out.println("uuidList:"+bill.getMxUuidList());
+        	creditCardBillDao.setTranscationRecordPch(bill.getMxUuidList(), bill.getPch());
         }
+        creditCardBillDao.saveCreditCardBill(new ArrayList<CreditCardBill>(ccbMap.values()));
 
         System.out.println(ccbMap);
         
@@ -221,4 +228,6 @@ public class CreditCardsBillProcessor {
         	mailSender.send(ccbMap.get(key));
         }
 	}
+	
+	
 }

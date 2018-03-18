@@ -4,11 +4,6 @@
 
 
 <mapper namespace="cn.gxf.spring.quartz.job.dao.CreditCardBillDao">
-	
-	<select id="getIncomeDetailByUserId" parameterType="int" 
-		resultType="IncomeDetail">
-		SELECT * from account_income_detail WHERE user_id = #{user_id} AND yxbz='Y'
-	</select>
 
 	<select id="getCreditCardTranscationRecordInZDQ"  parameterType="map" 
 			resultType="CreditCardTransRecord">
@@ -60,17 +55,36 @@
 	</select>
 	
 	<insert id="saveTranscationRecordInZDQ" parameterType="java.util.List">
-		INSERT INTO zh_detail_ccbill(billuuid, user_id, bill_ssqq, bill_ssqz, zh_dm, zh_mc, jysj, jylx, jyf, je, bz, yxbz, lrrq, xgrq, mailed)
+		INSERT INTO zh_detail_ccbill_mx(billuuid, user_id, bill_ssqq, bill_ssqz, zh_dm, zh_mc, jysj, jylx, jyf, je, bz, yxbz, lrrq, xgrq, mailed)
 		VALUES
 		<if test="list != null and list.size()>0">
 			<foreach collection="list" item="item" index="index" separator=",">
-	            (uuid(), #{item.user_id}, #{item.bill_ssqq}, #{item.bill_ssqz}, #{item.zh_dm}, #{item.zh_mc}, #{item.jysj}, #{item.jylx}, #{item.jyf}, #{item.je}, #{item.bz}, 'Y', now(), null, #{item.isMailed})
+	            (#{item.billuuid}, #{item.user_id}, #{item.bill_ssqq}, #{item.bill_ssqz}, #{item.zh_dm}, #{item.zh_mc}, #{item.jysj}, #{item.jylx}, #{item.jyf}, #{item.je}, #{item.bz}, 'Y', now(), null, #{item.isMailed})
 	        </foreach>
         </if>
 	</insert>
 	
+	<insert id="saveCreditCardBill" parameterType="java.util.List">
+		INSERT INTO zh_detail_ccbill(pch, user_id, username, emailaddr, zh_dm, zh_mc, ssqq, ssqz, yhkje, mailedrq, lrrq, yxbz)
+		VALUES
+		<if test="list != null and list.size()>0">
+			<foreach collection="list" item="item" index="index" separator=",">
+	            (#{item.pch}, #{item.user_id}, #{item.username}, #{item.email}, #{item.zh_dm}, #{item.zh_mc}, #{item.ssqq}, #{item.ssqz},  #{item.yhkje},  null, now(), 'Y')
+	        </foreach>
+        </if>
+	</insert>
+	
+	<update id="setTranscationRecordPch">
+		UPDATE zh_detail_ccbill_mx 
+		SET pch = #{pch} 
+		WHERE billuuid IN 
+		<foreach collection="uuidList" index="index" item="uuid" open="(" separator="," close=")">
+			#{uuid}
+	    </foreach>
+	</update>
+	
 	<update id="deleteInvalidRecord" parameterType="map">
-		UPDATE zh_detail_ccbill SET yxbz='N', xgrq = now()
+		UPDATE zh_detail_ccbill_mx SET yxbz='N', xgrq = now()
 		WHERE bill_ssqq = #{ssqq} AND bill_ssqz = #{ssqz}
 		AND zh_dm IN
 		<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
@@ -80,7 +94,7 @@
 	</update>
 	
 	<update id="setMailed" parameterType="java.util.List">
-		UPDATE zh_detail_ccbill SET  mailed = 'Y'
+		UPDATE zh_detail_ccbill_mx SET  mailed = 'Y'
 		WHERE billuuid IN 
 		<foreach collection="uuidList" index="index" item="uuid" open="(" separator="," close=")">
 			#{uuid}

@@ -40,7 +40,7 @@ public class CreditCardsBillJob implements Job{
 		CreditCardBillDao creditCardBillDao = (CreditCardBillDao) jetc.getJobDetail().getJobDataMap().get("creditCardBillDao");
 		//System.out.println(creditCardBillDao);
 		 */		
-		CreditCardsBillProcessor ccbp = (CreditCardsBillProcessor) jetc.getJobDetail().getJobDataMap().get("ccbProcessor");
+		BillProcessor ccbp = (BillProcessor) jetc.getJobDetail().getJobDataMap().get("ccbProcessor");
 		// test
 		/*StatNdYfMBDao dao = (StatNdYfMBDao) jetc.getJobDetail().getJobDataMap().get("mbdao");
 		System.out.println(dao.getIncomeStatOnSrlb("2018", 5));*/

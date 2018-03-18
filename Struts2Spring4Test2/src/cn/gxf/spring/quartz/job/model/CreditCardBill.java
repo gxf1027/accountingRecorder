@@ -7,21 +7,10 @@ import java.util.Date;
 import java.util.List;
 
 
-/*
- * ccb = new CreditCardBill();
-        		ccb.setUser_id(cctr.getUser_id().intValue());
-        		ccb.setZh_dm(cctr.getZh_dm());
-        		ccb.setZh_mc(cctr.getZh_mc());
-        		ccb.setSsqq(sdf.format(jyqq));
-        		ccb.setSsqz(sdf.format(jyqz));
-        		ccb.setYhkje(cctr.getJe());
-        		ccb.setCctrList(new ArrayList<CreditCardRecordSimplified>());
-        		ccb.getCctrList().add(new CreditCardRecordSimplified(cctr));
-        		ccbMap.put(keystr, ccb);
- */
 public class CreditCardBill implements Serializable{
 	
 	private static final long serialVersionUID = -3175017787487738311L;
+	private String pch;
 	private String username;
 	private int user_id;
 	private String email;
@@ -46,6 +35,7 @@ public class CreditCardBill implements Serializable{
 		this.ssqq = sdf.format(jyqq);
 		this.ssqz = sdf.format(jyqz);
 		this.yhkje = cctr.getJe();
+		this.pch = generatePzh();
 		this.cctrList = new ArrayList<CreditCardRecordSimplified>();
 		this.cctrList.add(new CreditCardRecordSimplified(cctr));
 	}
@@ -55,6 +45,13 @@ public class CreditCardBill implements Serializable{
 		this.yhkje += cctr.getJe();
 	}
 
+	public String getPch() {
+		return pch;
+	}
+	
+	public void setPch(String pch) {
+		this.pch = pch;
+	}
 
 	public String getUsername() {
 		return username;
@@ -135,15 +132,28 @@ public class CreditCardBill implements Serializable{
 	public void setCctrList(List<CreditCardRecordSimplified> cctrList) {
 		this.cctrList = cctrList;
 	}
-
+	
+	public List<String> getMxUuidList(){
+		
+		List<String> uuidList = new ArrayList<>();
+		for (CreditCardRecordSimplified item : this.cctrList){
+			uuidList.add(item.getBilluuid());
+		}
+		
+		return uuidList;
+	}
+	
+	// 获取zh_detail_ccbill的主键
+	private String generatePzh(){
+		
+		return this.zh_dm +"-"+this.ssqq.replaceAll("-", "")+this.ssqz.replaceAll("-", "")+"-"+String.valueOf(System.currentTimeMillis());
+	}
 
 	@Override
 	public String toString() {
-		return "CreditCardBill [username=" + username + ", user_id=" + user_id + ", email=" + email + ", zh_dm=" + zh_dm
-				+ ", zh_mc=" + zh_mc + ", ssqq=" + ssqq + ", ssqz=" + ssqz + ", yhkje=" + yhkje + ", cctrList="
-				+ cctrList + "]";
+		return "CreditCardBill [pch=" + pch + ", username=" + username + ", user_id=" + user_id + ", email=" + email
+				+ ", zh_dm=" + zh_dm + ", zh_mc=" + zh_mc + ", ssqq=" + ssqq + ", ssqz=" + ssqz + ", yhkje=" + yhkje
+				+ ", cctrList=" + cctrList + "]";
 	}
-
-
 
 }
