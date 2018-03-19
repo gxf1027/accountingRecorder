@@ -5,6 +5,14 @@
 
 <mapper namespace="cn.gxf.spring.quartz.job.dao.CreditCardBillDao">
 
+	<select id="getCreditCardInZDR" parameterType="int" resultType="string">
+		SELECT a.zh_dm  
+				FROM zh_detail_info a, zh_detail_creditcard b 
+				WHERE a.zh_dm = b.zh_dm 
+				AND a.yxbz='Y' 
+				AND b.zdr = #{zdr} 
+	</select>
+
 	<select id="getCreditCardTranscationRecordInZDQ"  parameterType="map" 
 			resultType="CreditCardTransRecord">
 		SELECT uuid() AS billuuid, zh_dm, zh_mc, user_id, jysj, CONCAT(dl_mc,'-',xl_mc) jylx, jyf, je, bz 

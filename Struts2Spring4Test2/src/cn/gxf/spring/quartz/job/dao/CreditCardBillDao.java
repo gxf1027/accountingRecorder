@@ -12,6 +12,8 @@ import cn.gxf.spring.struts2.integrate.model.IncomeDetail;
 
 @MapperScan
 public interface CreditCardBillDao {
+	public List<String> getCreditCardInZDR(@Param("zdr") int zdr);
+	 
 	public List<CreditCardTransRecord> getCreditCardTranscationRecordInZDQ(Map<String, Object> params);
 	// ±£´æÃ÷Ï¸±í
 	public int saveTranscationRecordInZDQ(List<CreditCardTransRecord> cctrList);

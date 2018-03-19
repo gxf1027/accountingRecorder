@@ -1,7 +1,6 @@
 package cn.gxf.spring.quartz.job;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,37 +9,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
 
-import org.apache.catalina.User;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.gxf.spring.quartz.job.dao.CreditCardBillDao;
 import cn.gxf.spring.quartz.job.model.CreditCardBill;
-import cn.gxf.spring.quartz.job.model.CreditCardRecordSimplified;
 import cn.gxf.spring.quartz.job.model.CreditCardTransRecord;
-import cn.gxf.spring.struts.integrate.security.UserLogin;
 import cn.gxf.spring.struts2.integrate.service.UserService;
 
 @Service
 public class BillProcessor {
-
-	
-	@Autowired
-	private NamedParameterJdbcTemplate namedJdbcTemplate;
 	
 	@Autowired
 	private CreditCardBillDao creditCardBillDao;
@@ -54,41 +36,47 @@ public class BillProcessor {
 	// 在一个事务内，如果数据库/JMS抛出异常，会回滚
 	@Transactional(value="JtaXAManager",propagation=Propagation.REQUIRED)
 	public int processCreditCardBill(){
-		// 1. 获取需要处理的账户代码
-		List<String> zzdmList = this.getCreditCardInZDR();
 		
-		if (zzdmList == null || zzdmList.size() == 0){
-			System.out.println("今天没有信用卡账单需要处理");
-			return 0;
-		}
-		
-		// 2. 获取这些账户本期的支出和收入情况
 		Date jyqz = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 交易日起为本日 
-		
-		System.out.println("当前时间是：" + sdf.format(jyqz));
 		 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(jyqz); // 设置为当前时间
         calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1); // 设置为上一个月
         Date jyqq = calendar.getTime(); // 交易日止为上月同一天
  
-        System.out.println("上一个月的时间： " + sdf.format(jyqq));
+        System.out.println("本期账单时间： " + sdf.format(jyqz) + "至" + sdf.format(jyqq));
         
-        // 查询中大于"交易日期起", 小于等于"交易日期止"
+		// 1. 获取需要处理的账户代码
+		List<String> zzdmList = creditCardBillDao.getCreditCardInZDR(Integer.valueOf(sdf.format(jyqz).split("-")[2]));
+		if (zzdmList == null || zzdmList.size() == 0){
+			System.out.println("今天没有信用卡账单需要处理");
+			return 0;
+		}
+		
+		// 2. 获取数据
+        // 获取账单明细
         List<CreditCardTransRecord> recList = getCreditCardTranscationRecordInZDQ(zzdmList, jyqq, jyqz);
-        System.out.println(recList);
- 
-        // 3. 将可能存在过时数据置为无效
+        System.out.println(recList);  
+        
+        // 准备要发送的bill数据
+        List<CreditCardBill> bills = prepareCreditCardBills(recList, jyqq, jyqz);
+        System.out.println("账单：" + bills);
+        
+        // 3. 数据持久化：
+        // 3.1. 将可能存在过时明细数据置为无效
         deleteInvalidRecord(zzdmList, jyqq, jyqz);
-        
-        
-        // 4. 将账单信息插入账单明细表
+        // 3.2. 将账单明细信息插入账单明细表
         saveTranscationRecordInZDQ(recList, jyqq, jyqz);
-        System.out.println("after save: " + recList);
+        System.out.println("明细数据: " + recList);
+        // 3.3. 批次号回写到明细中
+        writePchToTranscationRecord(bills);
+        // 3.4 保存bill数据
+        creditCardBillDao.saveCreditCardBill(bills);
         
-        // 5. 发送至JMS
-        sendToJMS(recList, jyqq, jyqz);
+        
+        // 4. 发送至JMS
+        sendToJMS(bills);
         
         
         //int i=1/0;
@@ -96,7 +84,7 @@ public class BillProcessor {
 		return 1;
 	}
 	
-	private List<String> getCreditCardInZDR(){
+	/*private List<String> getCreditCardInZDR(){
 		
 		// 当前日期
 		Date today = new Date();
@@ -125,17 +113,16 @@ public class BillProcessor {
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new RuntimeException();
 		}
 		
 		System.out.println("zhcc: " + zhcc);
 		
 		return zhcc;
-	}
+	}*/
 	
 	// 获取某个账单期内的信用卡账单明细记录
 	private List<CreditCardTransRecord> getCreditCardTranscationRecordInZDQ( List<String> zhdmList, Date jyqq, Date jyqz){
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 交易日起为本日
 		
 		Map<String, Object> params = new HashMap<>();
 		params.put("jyqq", jyqq);
@@ -188,7 +175,44 @@ public class BillProcessor {
 		
 	}
 	
+	// 准备要发送的bill数据
+	public List<CreditCardBill> prepareCreditCardBills(List<CreditCardTransRecord> recList, Date jyqq, Date jyqz){
+		Map<String, CreditCardBill> ccbMap = new HashMap<>();
+		Map<String, String> userMap = new HashMap<>();
+		
+        for(CreditCardTransRecord cctr : recList){
+        	userMap.put(cctr.getUser_id().toString(), "1");
+        	String keystr = cctr.getUser_id().toString() +"-"+ cctr.getZh_dm();
+        	CreditCardBill ccb = ccbMap.get(keystr);
+        	if  (null == ccb){
+        		ccb = new CreditCardBill();
+        		ccb.init(cctr, jyqq, jyqz); // 会生成批次号
+        		ccbMap.put(keystr, ccb);
+        	}else{
+        		ccb.add(cctr);
+        	}
+        }
+       
+        
+        // 获得email数据
+        Map<String, String> userEmails = userService.getUserEmail(new ArrayList<>(userMap.keySet()));
+        for(String key : ccbMap.keySet()){
+        	CreditCardBill bill = ccbMap.get(key);
+        	bill.setEmail(userEmails.get(key.split("-")[0]));
+        }
+        
+        return new ArrayList<CreditCardBill>(ccbMap.values());
+	}
+	
 	@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
+	void writePchToTranscationRecord(List<CreditCardBill> bills){
+		 for(CreditCardBill bill : bills){
+        	// 将pch回写到明细中
+        	creditCardBillDao.setTranscationRecordPch(bill.getMxUuidList(), bill.getPch());
+        }
+	}
+	
+	/*@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
 	public void sendToJMS(List<CreditCardTransRecord> recList, Date jyqq, Date jyqz){
 		
 		Map<String, CreditCardBill> ccbMap = new HashMap<>();
@@ -227,7 +251,13 @@ public class BillProcessor {
         	
         	mailSender.send(ccbMap.get(key));
         }
-	}
+	}*/
 	
+	@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
+	public void sendToJMS(List<CreditCardBill> bills){
+		for (CreditCardBill bill : bills){
+			this.mailSender.send(bill);
+		}
+	}
 	
 }
