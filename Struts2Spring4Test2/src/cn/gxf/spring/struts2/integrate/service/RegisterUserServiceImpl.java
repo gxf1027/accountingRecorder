@@ -16,7 +16,7 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 	@Autowired
 	private RegisterUserDao registerDao;
 	
-	@Transactional
+	@Transactional("dsTransactionManager")
 	@Override
 	public int registerUser(UserLogin user) {
 		

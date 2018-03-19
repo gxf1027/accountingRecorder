@@ -93,7 +93,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 	}
 	
 	public String saveTransferAndRec(){
-		saveTransfer();
+		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		this.transferDetail.setUser_id(user.getId());
+		detailAccountUnivServiceImpl.saveOne(this.transferDetail);
 		return "saveRecOk";
 	}
 	

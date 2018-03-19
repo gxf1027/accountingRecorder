@@ -61,7 +61,7 @@ public class RegisterUserDaoImpl implements RegisterUserDao {
 
 	@Override
 	public void saveUser(UserLogin userLogin) {
-		String sql = "INSERT INTO user_ss(id,username, password, emailaddr, enabled, description) VALUES(:id, :username, :password, :emailaddr, '1', null)";
+		String sql = "INSERT INTO user_ss(id,username, password, email, enabled, description) VALUES(:id, :username, :password, :emailaddr, '1', null)";
 		
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("id", userLogin.getId());

@@ -9,7 +9,7 @@
 	<!-- <http pattern="/*_detial.jsp*" security="none" /> -->
 	
 	<!-- 注册页面不用登陆 -->
-	<http pattern="/myRegisterWcai.jsp" security="none" />
+	<!-- <http pattern="/myRegisterWcai.jsp" security="none" /> -->
 	<!-- 注册页面的提交按钮要调用以下的action，也要排除在security外 -->
 	<http pattern="/demo/registerUser.*" security="none" />
 	<http pattern="/demo/checkRegisterName.*" security="none" />
@@ -23,6 +23,8 @@
 			所以访问myLogin.jsp的url是http://localhost:8080/Struts2Spring4Test2/myLogin.jsp，
 			在下面这个过滤器之外 -->
 		<intercept-url pattern="/demo/**" access="hasRole('ROLE_USER')" requires-channel="https" />
+		<intercept-url pattern="/myLoginWcai.jsp"  requires-channel="https" />
+		<intercept-url pattern="/myRegisterWcai.jsp"  requires-channel="https" />
 		<form-login login-page="/myLoginWcai.jsp" default-target-url="/demo/frontStatistics!inputFront" always-use-default-target="false" />
 		<logout logout-success-url="/myLoginWcai.jsp" invalidate-session="true" />
 		
