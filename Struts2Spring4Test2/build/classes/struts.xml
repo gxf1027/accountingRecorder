@@ -16,7 +16,7 @@
     		
     		<interceptor-stack name="myinterceptorStack">
     			<interceptor-ref name="token" >
-    				<param name="includeMethods">accountSave,saveExp</param>
+    				<param name="includeMethods">accountSave,saveExp,registerUser,savePayment,savePaymentAndRec,saveIncome,saveIncomeAndRec,saveTransfer,saveTransferAndRec</param>
     			</interceptor-ref>
     			<interceptor-ref name="paramsPrepareParamsStack" />
     			<interceptor-ref name="MySessionInterceptor" />
@@ -74,6 +74,7 @@
         	<result name="saveOk" type="redirectAction">listDetail!listByMonth</result>
         	<result name="saveRecOk" type="redirectAction">incomeDetail!inputIncome</result>
         	<result name="delOk" type="redirectAction">listDetail!listIncomeByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<result name="invalid.token">/WEB-INF/content/1.jsp</result>
         	<interceptor-ref name="myinterceptorStack" />
         </action>
         
@@ -83,6 +84,7 @@
         	<result name="saveRecOk" type="redirectAction">paymentDetail!inputPayment</result>
         	<result name="delOk" type="redirectAction">listDetail!listPaymentByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
         	<result name="PaymentError">/WEB-INF/payment_detail.jsp</result>
+        	<result name="invalid.token">/WEB-INF/content/1.jsp</result>
         	<interceptor-ref name="myinterceptorStack" />
         </action>
         
@@ -91,6 +93,7 @@
         	<result name="saveOk" type="redirectAction" >listDetail!listByMonth</result>
         	<result name="saveRecOk" type="redirectAction">transferDetail!inputTransfer</result>
         	<result name="delOk" type="redirectAction">listDetail!listTransferByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<result name="invalid.token">/WEB-INF/content/1.jsp</result>
         	<interceptor-ref name="myinterceptorStack" />
         </action>
         

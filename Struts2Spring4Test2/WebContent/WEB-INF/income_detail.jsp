@@ -447,7 +447,7 @@
 			</s:else>
 			
 		</div>
-		
+		<s:token></s:token>   <!--服务器通过token标签 来产生盾牌随机数-->
 	</s:form>
 	</div>
 	</div>

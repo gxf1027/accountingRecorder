@@ -506,7 +506,7 @@
     			<s:submit method="savePaymentAndRec" class="btn2 save" id="save2"  style="margin-left:12px;" value="保存后再记"  theme="simple" />
 			</s:else>
 		</div>
-
+		<s:token></s:token>   <!--服务器通过token标签 来产生盾牌随机数-->
 	</s:form>
 	</div>
 	</div>
