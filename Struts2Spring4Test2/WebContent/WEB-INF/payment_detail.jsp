@@ -493,7 +493,7 @@
 					
 					<td><s:textarea name="bz" cols="35" rows="5" id="bz" class="{maxlength:200,messages:{字数不能多于200;}}" theme="simple"/></td>
 				</tr>
-		
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			</tbody>
 		</table>
 		

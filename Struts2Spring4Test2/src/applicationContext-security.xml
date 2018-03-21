@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 						http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
-                     	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+                     	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
 	
 	<!-- <http pattern="/*_detial.jsp*" security="none" /> -->
@@ -29,6 +29,7 @@
 		<logout logout-success-url="/myLoginWcai.jsp" invalidate-session="true" />
 		
 		<remember-me data-source-ref="datasource" token-validity-seconds="3600"  />
+		<csrf/>
 	</http>
 
 	<!-- <authentication-manager alias="authenticationManager">
