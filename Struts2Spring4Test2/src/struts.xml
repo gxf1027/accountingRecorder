@@ -9,7 +9,7 @@
     <!-- 此版本一定要加這個常量，否則不無法開啟DMI -->
 	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
 <!-- 	<constant name="struts.i18n.encoding" value="UTF-8" /> -->
-    <package name="haha" namespace="/demo" extends="struts-default">
+    <package name="haha" namespace="/demo" extends="struts-default" strict-method-invocation="true">
     	
     	<interceptors>
     		<interceptor name="MySessionInterceptor" class="cn.gxf.spring.struts.integrate.test.SessionInterceptor" />
@@ -67,6 +67,7 @@
         	<result name="editPayment" type="redirectAction">paymentDetail!editShow?mxuuidList=${mxuuidToEdit}&amp;date_from=${date_from}&amp;date_to=${date_to}</result>
         	<result name="editTransfer" type="redirectAction">transferDetail!editShow?mxuuidList=${mxuuidToEdit}&amp;date_from=${date_from}&amp;date_to=${date_to}</result>
         	<interceptor-ref name="myinterceptorStack" />
+        	<allowed-methods>editShow,delPatch</allowed-methods>
         </action>
         
         <action name="incomeDetail" class="incomeDetailAction">
@@ -76,6 +77,7 @@
         	<result name="delOk" type="redirectAction">listDetail!listIncomeByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
         	<result name="invalid.token">/WEB-INF/content/1.jsp</result>
         	<interceptor-ref name="myinterceptorStack" />
+        	<allowed-methods>inputIncome,editShow,saveIncome,saveIncomeAndRec,updateIncome,delPatch</allowed-methods>
         </action>
         
         <action name="paymentDetail" class="paymentDetailAction">
@@ -86,6 +88,7 @@
         	<result name="PaymentError">/WEB-INF/payment_detail.jsp</result>
         	<result name="invalid.token">/WEB-INF/content/1.jsp</result>
         	<interceptor-ref name="myinterceptorStack" />
+        	<allowed-methods>inputPayment,editShow,savePayment,savePaymentAndRec,updatePayment,delPatch</allowed-methods>
         </action>
         
          <action name="transferDetail" class="transferDetailAction">
@@ -95,12 +98,14 @@
         	<result name="delOk" type="redirectAction">listDetail!listTransferByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
         	<result name="invalid.token">/WEB-INF/content/1.jsp</result>
         	<interceptor-ref name="myinterceptorStack" />
+        	<allowed-methods>inputTransfer,editShow,saveTransfer,saveTransferAndRec,updateTransfer,delPatch</allowed-methods>
         </action>
         
         <action name="listDetail" class="listDetailAction">
         	<result name="listOk">/WEB-INF/list_detail.jsp</result>
         	<result name="listTransferOk">/WEB-INF/list_transfer.jsp</result>
         	<interceptor-ref name="myinterceptorStack" />
+        	<allowed-methods>listByMonth,listIncomeByMonth,listPaymentByMonth,listTransferByMonth</allowed-methods>
         </action>
         
         <action name="customTailoredQuery" class="customTailoredQueryAction">
@@ -108,10 +113,12 @@
         	<!-- <result name="queryOk" type="redirectAction">customTailoredQuery!inputQuery</result> -->
         	<result name="queryOk">/WEB-INF/query-payment.jsp</result>
         	<interceptor-ref name="myinterceptorStack" />
+        	<allowed-methods>inputQuery,paymentQuery,incomeQuery,transferQuery</allowed-methods>
         </action>
         
         <action name="frontStatistics" class="frontStatisticsAction">
         	<result name="inputOk">/WEB-INF/front-stat.jsp</result>
+        	<allowed-methods>inputFront,reProcStat</allowed-methods>
         </action>
         
         <action name="accountBook" class="accountBookAction">
@@ -153,6 +160,7 @@
         		<param name="bz">${accountBook.bz}</param>
         		<param name="bookErrorMessage">${bookErrorMessage}</param>
         	</result>
+        	<allowed-methods>inputBook,inputBookFromIncome,inputBookFromPayment,validateSaveBook,saveBook</allowed-methods>
         </action>
         
         <action name="checkRegisterName" class="registerUserAction" method="checkUserName"></action>
