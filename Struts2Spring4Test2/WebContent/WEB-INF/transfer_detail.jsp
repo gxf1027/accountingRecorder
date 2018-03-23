@@ -234,6 +234,10 @@
 	    		toastr.error("<b>请输入正确的金额.</b>","提示");
 	    	}
 	    });
+	    
+	    $('#logout-url').click(function (){	
+			 $("#logout-form").submit();
+		});
 	})
 
 	function fix(num, length) {
@@ -285,7 +289,12 @@
 		<div class="g-layout-header">
 			<ul >
 				<li>
-					<a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home "  style=" text-decoration: none;">退出</a>
+					<form id="logout-form" action="${pageContext.request.contextPath}/j_spring_security_logout" method="post" hidden >
+						<input type="submit" value="退出" class="home " />
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+					</form>
+					<a id="logout-url" href="#" class="home " style=" text-decoration: none;">退出</a>
+					<%-- <a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home "  style=" text-decoration: none;">退出</a> --%>
 				</li>
 				
 				<li>

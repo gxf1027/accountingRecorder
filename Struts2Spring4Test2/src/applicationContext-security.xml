@@ -30,6 +30,7 @@
 		
 		<remember-me data-source-ref="datasource" token-validity-seconds="3600"  />
 		<csrf/>
+		<access-denied-handler error-page="/WEB-INF/content/1.jsp"/>
 	</http>
 
 	<!-- <authentication-manager alias="authenticationManager">

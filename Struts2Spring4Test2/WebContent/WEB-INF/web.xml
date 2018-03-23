@@ -38,6 +38,7 @@
 		<param-value>classpath:applicationContext*.xml</param-value>
 	</context-param>
 	
+	<!-- 增加Spring编码过滤器，否则在增加<csrf/>后post请求会中文乱码 -->
 	<filter>  
         <filter-name>SpringEncodingFilter</filter-name>  
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>  

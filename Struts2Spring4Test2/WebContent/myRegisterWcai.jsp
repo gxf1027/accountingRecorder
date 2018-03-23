@@ -5,10 +5,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/css/footer.css" />
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/css/login-header.css" /> 
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/js/checkbix/css/checkbix.min.css"> 
-
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/js/toastr/toastr.css" />
 <style type="text/css">
 .loginBox {
 	background-color: #ffe
@@ -116,7 +119,7 @@ em{
 <script type="text/javascript" src="${pageContext.request.contextPath }/js/jquery.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/js/jquery.md5.js"></script>
 <script src="./js/checkbix/js/checkbix.min.js"></script>
-
+<script type="text/javascript" src="${pageContext.request.contextPath }/js/toastr/toastr.js"></script>
 <script>
 	Checkbix.init();
 </script>
@@ -137,6 +140,22 @@ em{
 	}
 	
 	$(function(){
+		 /* toastr 提示栏 配置 */
+		   toastr.options = {
+			  "closeButton": true,
+			  "debug": false,
+			  "positionClass": "toast-bottom-full-width",
+			  "onclick": null,
+			  "showDuration": "300",
+			  "hideDuration": "1000",
+			  "timeOut": "5000",
+			  "extendedTimeOut": "1000",
+			  "showEasing": "swing",
+			  "hideEasing": "linear",
+			  "showMethod": "fadeIn",
+			  "hideMethod": "fadeOut"
+			};
+		 
 		$(":input[name='username']").blur(function(){
 			var uname = $(this).val();
 			console.log(uname);
@@ -144,15 +163,36 @@ em{
 			
 			if (uname != "" && uname.length >= 6){
 				
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				var headers = {};
+				headers['__RequestVerificationToken'] = token;
 				var url ="${pageContext.request.contextPath }/demo/checkRegisterName.action"
 				var args={"username":uname, "timestamp":new Date()};
 				console.log(url);
-				$.post(url, args, function(data){
+				/* $.post(url, args, function(data){
 					console.log("data.username: " + data.username);
 					console.log("data.msg: " + data.msg);
 					console.log("data:" + data);
 					$("#username_msg").html(data);
-				});
+				}); */
+				
+				 $.ajax({
+				        type: "POST",
+				        headers: headers,
+				        cache: false,
+				        url: url,
+				        data: args,
+				        dataType:"text",
+				        async: true,
+				        error: function(data, error) {},
+				        success: function(data)
+				        {
+				        	//$("#username_msg").html(data);
+				        	console.log("rv:"+data);
+				        	toastr.info(data);
+				        }
+				    });
 			}else
 				{
 					$("#username_msg").html('');

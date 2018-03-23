@@ -289,6 +289,10 @@
 					  "hideMethod": "fadeOut"
 					};
 			
+			$('#logout-url').click(function (){	
+				 $("#logout-form").submit();
+			});
+			
 		})
 		
 		/* $(document).ready(function() {
@@ -387,7 +391,12 @@
 		<div class="g-layout-header">
 			<ul >
 				<li>
-					<a href="${pageContext.request.contextPath}/j_spring_security_logout"  class="home " bi="8013">退出</a>
+					<form id="logout-form" action="${pageContext.request.contextPath}/j_spring_security_logout" method="post" hidden >
+						<input type="submit" value="退出" class="home " />
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+					</form>
+					<a id="logout-url" href="#" class="home " style=" text-decoration: none;">退出</a>
+					<%-- <a href="${pageContext.request.contextPath}/j_spring_security_logout"  class="home " bi="8013">退出</a> --%>
 				</li>
 				
 				<li>
@@ -497,7 +506,7 @@
 								<td>
 									 <s:textfield id="je_lt" name="je_lt" class="recordInput" theme="simple" onblur="javascript:CheckInputIntFloat(this);"/>
 								</td>
-								
+								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 							</tr>
 							
 								<s:textfield id="paymentCurPageNum" name="pageNumPayment" class="currentPageNum" theme="simple" style="display: none;"  />
@@ -580,7 +589,7 @@
 								<td>
 									 <s:textfield name="seller" class="recordInput" theme="simple"/>
 								</td>
-								
+								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 							</tr>
 							
 							<s:textfield id="incomeCurPageNum" name="pageNumIncome" class="currentPageNum" theme="simple" style="display: none;" />
@@ -685,7 +694,7 @@
 								<td>
 									 <s:textfield id="je_lt" name="je_lt" class="recordInput" theme="simple" onblur="javascript:CheckInputIntFloat(this);"/>
 								</td>
-								
+								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 								<th></th>
 								<td></td>
 								<th></th>

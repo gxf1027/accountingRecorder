@@ -70,6 +70,10 @@
 			});
 			
 			/* $("#queryResTable").fixMe(); */
+			
+			$('#logout-url').click(function (){	
+				 $("#logout-form").submit();
+			});
 		})
 		
 		
@@ -116,7 +120,12 @@
 		<div class="g-layout-header">
 			<ul >
 				<li>
-					<a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home " bi="8013">退出</a>
+					<%-- <a href="${pageContext.request.contextPath}/j_spring_security_logout" class="home " bi="8013">退出</a> --%>
+					<form id="logout-form" action="${pageContext.request.contextPath}/j_spring_security_logout" method="post" hidden >
+						<input type="submit" value="退出" class="home " />
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+					</form>
+					<a id="logout-url" href="#" class="home " style=" text-decoration: none;">退出</a>
 				</li>
 				
 				<li>
@@ -171,9 +180,11 @@
 				<input type="hidden" id="queryType" name="queryType" value="${requestScope.queryType }"  />
 				<div id="stat_table" class="contentPage_1" style=" min-width: 600px; margin-top: 16px; " >
 					<div>
-						<s:form action="frontStatistics">
+						<s:form action="frontStatistics" method="POST">
 							<s:select list="{'2015','2016','2017','2018','2019','2020'}" name="nd" id="nd" class="selectInput" theme="simple"></s:select>
 							&nbsp;
+						
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 							<s:submit method="reProcStat" key="重新统计" theme="simple" class="button button-primary button-rounded button-small"></s:submit>
 						</s:form>
 					</div>
