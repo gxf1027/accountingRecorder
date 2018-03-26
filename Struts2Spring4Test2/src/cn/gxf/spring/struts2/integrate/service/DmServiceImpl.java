@@ -59,7 +59,7 @@ public class DmServiceImpl implements DmService {
 		List<AccountBook> books = accountBookDao.getZhInfo(user_id);
 		
 		for(AccountBook book : books){
-			book.setZh_mc(book.getZh_mc() + " | " + book.getYe() + "Ԫ");
+			book.setZh_mc(book.getZh_mc() + " | " + String.format("%.2f",book.getYe()) + "Ԫ");
 		}
 		
 		AccountBook b = new AccountBook();

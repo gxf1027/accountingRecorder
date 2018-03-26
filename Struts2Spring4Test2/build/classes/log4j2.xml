@@ -69,7 +69,9 @@
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="RollingFileActionDebug" />
 		</Logger>
-		
+		<!-- <Logger name="org.springframework" level="INFO">
+			<AppenderRef ref="Console" />
+		</Logger> -->
 		<Logger name="cn.gxf.spring.struts.integrate.test" level="DEBUG">
 			<AppenderRef ref="Console" />
 		</Logger>
