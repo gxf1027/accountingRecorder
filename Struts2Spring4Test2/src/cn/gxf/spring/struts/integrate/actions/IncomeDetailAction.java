@@ -67,6 +67,7 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.myrequest.put("ZH_INFO", dmService.getZhInfo(user.getId()));
+		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
 		
 		
 //		IncomeDetail income = (IncomeDetail) this.myrequest.get("incomeDetialRedir");
@@ -98,7 +99,7 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.myrequest.put("ZH_INFO", dmService.getZhInfo(user.getId()));
-		
+		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
 	}
 	
 	public String editShow(){

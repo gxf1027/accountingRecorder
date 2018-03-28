@@ -1,6 +1,7 @@
 package cn.gxf.spring.struts2.integrate.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -55,7 +56,7 @@ public class DmServiceImpl implements DmService {
 	@Cacheable(value="dmCache", key="{#user_id, #root.method.name}")
 	@Override
 	public List<AccountBook> getZhInfo(int user_id) {
-		System.out.println("getZhInfo");
+		
 		List<AccountBook> books = accountBookDao.getZhInfo(user_id);
 		
 		for(AccountBook book : books){
@@ -69,6 +70,33 @@ public class DmServiceImpl implements DmService {
 		
 		return books;
 	}
+	
+	@Cacheable(value="dmCache")
+	@Override
+	public Map<String, List<AccountBook>> getZhInfoMap(int user_id) {
+		
+		List<AccountBook> books = accountBookDao.getZhInfo(user_id);
+		Map<String, List<AccountBook>> bookMaps = new HashMap<String, List<AccountBook>>();
+		Map<String, String> zhlxdm = this.getZhLx();
+		
+		for(AccountBook book : books){
+			book.setZh_mc(book.getZh_mc() + " | " + String.format("%.2f",book.getYe()) + "元");
+			String bookKey = zhlxdm.get(book.getZhlx_dm()); // 以账户类别的名称作为key
+			List<AccountBook> bookList = bookMaps.get(bookKey);
+			if (null == bookList){
+				bookList = new ArrayList<AccountBook>();
+				bookList.add(book);
+				bookMaps.put(bookKey, bookList);
+			}else{
+				bookMaps.get(bookKey).add(book);
+			}
+			
+		}
+
+		return bookMaps;
+	}
+
+	
 	
 	@Cacheable(value="dmCache", key="{#user_id, #root.method.name}")
 	@Override
@@ -102,9 +130,10 @@ public class DmServiceImpl implements DmService {
 		
 	}
 
+	@Cacheable(value="dmCache")
 	@Override
 	public Map<String, String> getZhLx() {
-		// TODO Auto-generated method stub
+		
 		return dmUtilDao.getZhHuLx();
 	}
 
@@ -133,7 +162,5 @@ public class DmServiceImpl implements DmService {
 		
 		return dmUtilDao.getTransferType(user_id);
 	}
-
-	
 	
 }

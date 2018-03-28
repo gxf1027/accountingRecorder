@@ -291,6 +291,11 @@
 	
 	function checkBeforeSave(){
 		     	
+		if ($("select[name='zh_dm']").val() == "-1"){
+			toastr.info("<b>请选择账户.</b>","提示");
+			return false;
+		}
+		
     	var je = $('#input_je').val();
     	if (isNaN(parseFloat(je)) || isNaN(je)){
     		return false;
@@ -467,7 +472,13 @@
 	  			<tr>
 					<th>账户</th>
 					<td>
-						<s:select list="#request.ZH_INFO" listKey="zh_dm" listValue="zh_mc" name="zh_dm" theme="simple" class="selectInput" onchange="selChange(this)" />
+						<%-- <s:select list="#request.ZH_INFO" listKey="zh_dm" listValue="zh_mc" name="zh_dm" theme="simple" class="selectInput" onchange="selChange(this)" /> --%>
+						
+						<s:select name="zh_dm" list="%{#{-1:'--选择账户--'}}" theme="simple" class="selectInput">
+							<s:iterator value="#request.ZH_INFO_MAP" >
+							  	<s:optgroup label="%{key}" list="value" listKey="zh_dm" listValue="zh_mc" />
+							</s:iterator>
+						</s:select> 
 					</td>
 				</tr>
 	  			

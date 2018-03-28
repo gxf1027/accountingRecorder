@@ -52,6 +52,7 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		Map<String, String> transfer_dm = dmService.getTransferType(user.getId());
 		
 		this.myrequest.put("ZH_INFO", books);
+		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
 		this.myrequest.put("dm_zzlx", transfer_dm);
 	}
 	
@@ -71,6 +72,7 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		List<AccountBook> books = dmService.getZhInfo(user.getId());
 		this.myrequest.put("ZH_INFO", books);
+		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
 		
 		Map<String, String> transfer_dm = dmService.getTransferType(user.getId());
 		this.myrequest.put("dm_zzlx", transfer_dm);

@@ -9,6 +9,7 @@ import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
 
 public interface DmService {
 	public List<AccountBook> getZhInfo(int user_id);
+	public Map<String, List<AccountBook>> getZhInfoMap(int user_id);
 	public List<AccountBook> getZhInfoSimple(int user_id);
 	public void saveAccBook(AccountBook accBook);
 	public Map<String, String> getPaymentDl();

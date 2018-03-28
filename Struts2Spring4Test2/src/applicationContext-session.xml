@@ -14,7 +14,10 @@
      http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
     
     <context:annotation-config/>  
-    <bean class="org.springframework.session.jdbc.config.annotation.web.http.JdbcHttpSessionConfiguration"/>
+    <!-- 配置了spring session后, web.xml中session time-out失效，通过以下配置session有效期 -->
+    <bean class="org.springframework.session.jdbc.config.annotation.web.http.JdbcHttpSessionConfiguration">
+    	<property name="maxInactiveIntervalInSeconds" value="600"></property>
+    </bean>
     
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
         <constructor-arg ref="dataSource"/>  

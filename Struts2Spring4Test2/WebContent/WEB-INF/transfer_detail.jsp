@@ -266,7 +266,17 @@
 	}
 	
 	function checkBeforeSave(){
-     	
+		
+		if ($("select[name='srcZh_dm']").val() == "-1"){
+			toastr.info("<b>请选择转出账户.</b>","提示");
+			return false;
+		}
+		
+		if ($("select[name='tgtZh_dm']").val() == "-1"){
+			toastr.info("<b>请选择转入账户.</b>","提示");
+			return false;
+		}
+		
     	var je = $('#input_je').val();
     	if (isNaN(parseFloat(je)) || isNaN(je)){
     		return false;
@@ -396,9 +406,21 @@
 				<tr>
 					<th>账户</th>
 					<td>
-						<s:select id="srcZh" list="#request.ZH_INFO" listKey="zh_dm" listValue="zh_mc" name="srcZh_dm" theme="simple" class="selectInput" onchange="selChange(this)" />
+						<%-- <s:select id="srcZh" list="#request.ZH_INFO" listKey="zh_dm" listValue="zh_mc" name="srcZh_dm" theme="simple" class="selectInput" onchange="selChange(this)" /> --%>
+						<s:select id="srcZh" name="srcZh_dm" list="%{#{-1:'--选择账户--'}}" theme="simple" class="selectInput">
+							<s:iterator value="#request.ZH_INFO_MAP" >
+							  	<s:optgroup label="%{key}" list="value" listKey="zh_dm" listValue="zh_mc" />
+							</s:iterator>
+						</s:select> 
 						<strong> > </strong>
-						<s:select id="tgtZh" list="#request.ZH_INFO" listKey="zh_dm" listValue="zh_mc" name="tgtZh_dm" theme="simple" class="selectInput" />
+						<%-- <s:select id="tgtZh" list="#request.ZH_INFO" listKey="zh_dm" listValue="zh_mc" name="tgtZh_dm" theme="simple" class="selectInput" /> --%>
+						<s:select id="tgtZh" name="tgtZh_dm" list="%{#{-1:'--选择账户--'}}" theme="simple" class="selectInput">
+							<s:iterator value="#request.ZH_INFO_MAP">
+								<s:iterator value="#request.ZH_INFO_MAP" >
+								  	<s:optgroup label="%{key}" list="value" listKey="zh_dm" listValue="zh_mc" />
+								</s:iterator>
+							</s:iterator>
+						</s:select> 
 					</td>	
 					
 				</tr>
