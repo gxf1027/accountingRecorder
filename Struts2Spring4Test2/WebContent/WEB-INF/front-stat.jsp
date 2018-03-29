@@ -6,11 +6,15 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <link rel="stylesheet" type="text/css" href="../css/header.css" />
 <link rel="stylesheet" type="text/css" href="../css/header-account.css" />
 <link rel="stylesheet" type="text/css" href="../css/footer.css" />
 <link rel="stylesheet" type="text/css" href="../css/left-nav.css" />
 <link rel="stylesheet" type="text/css" href="../css/buttons.css" />
+<link rel="stylesheet" type="text/css" href="../js/toastr/toastr.css" />
 
 
 	<style type="text/css"> 
@@ -58,10 +62,28 @@
 	<script type="text/javascript" src="../js/fixheader/jquery.fixme.js"></script>
 	<!-- <link rel="stylesheet" href="../js/fixheader/style.css"> -->
 	<script type="text/javascript" src="../js/select2/js/select2.min.js"></script>
+	<script type="text/javascript" src="../js/toastr/toastr.js"></script>
 	
 	<script type="text/javascript">
 		
 		$(document).ready(function(){
+			
+			/* toastr 提示栏 配置 */
+			   toastr.options = {
+				  "closeButton": true,
+				  "debug": false,
+				  "positionClass": "toast-bottom-full-width",
+				  "onclick": null,
+				  "showDuration": "300",
+				  "hideDuration": "1000",
+				  "timeOut": "5000",
+				  "extendedTimeOut": "1000",
+				  "showEasing": "swing",
+				  "hideEasing": "linear",
+				  "showMethod": "fadeIn",
+				  "hideMethod": "fadeOut"
+				};
+			
 			$(".record_biz tbody> tr:odd").addClass("odd");
 			$(".record_biz tbody> tr:even").addClass("even");
 			
@@ -73,6 +95,47 @@
 			
 			$('#logout-url').click(function (){	
 				 $("#logout-form").submit();
+			});
+			
+			$("a[name='billsend']").click(function(){
+				//window.location.href = "${pageContext.request.contextPath}/demo/billsend";
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				var headers = {};
+				headers['__RequestVerificationToken'] = token;
+				var url ="${pageContext.request.contextPath }/demo/billsend!ajaxrequest"
+				var args={};
+				
+				/* $.post(url, args, function(data){
+					console.log("data.username: " + data.username);
+					console.log("data.msg: " + data.msg);
+					console.log("data:" + data);
+					$("#username_msg").html(data);
+				}); */
+				
+				 $.ajax({
+				        type: "POST",
+				        //headers: headers,
+				        cache: false,
+				        url: url,
+				        data: args,
+				        dataType:"text",
+				        async: true,
+				        error: function(data, error) {},
+				        beforeSend : function(xhr) {
+			                xhr.setRequestHeader(header, token);
+			            }, 
+				        success: function(data)
+				        {
+				        	//$("#username_msg").html(data);
+				        	console.log("rv:"+data);
+				        	
+				        	if (data == "success"){
+				        		console.log("success");
+				        		toastr.info("<b>账单已发送.</b>","提示");
+				        	}
+				        }
+				    });
 			});
 		})
 		
@@ -130,6 +193,10 @@
 				
 				<li>
 					<a href="frontStatistics!inputFront"  class="home before" bi="8012">首页</a>
+				</li>
+				
+				<li>
+					<a href="#" name="billsend" class="home before" bi="8013">发送账单</a>
 				</li>
 				
 				<li>

@@ -13,6 +13,14 @@
 				AND b.zdr = #{zdr} 
 	</select>
 
+	<select id="getCreditCardbyUserId" parameterType="int" resultType="CreditCard">
+		SELECT a.zh_dm, a.zh_mc, b.zdr, a.user_id, a.ye
+			FROM zh_detail_info a, zh_detail_creditcard b
+			WHERE a.zh_dm = b.zh_dm
+			AND a.yxbz='Y' 
+			AND a.user_id = #{user_id}
+	</select>
+	
 	<select id="getCreditCardTranscationRecordInZDQ"  parameterType="map" 
 			resultType="CreditCardTransRecord">
 		SELECT uuid() AS billuuid, zh_dm, zh_mc, user_id, jysj, CONCAT(dl_mc,'-',xl_mc) jylx, jyf, je, bz 

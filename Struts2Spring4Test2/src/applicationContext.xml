@@ -132,6 +132,10 @@
 	<bean id="frontStatisticsAction" 
 		class="cn.gxf.spring.struts.integrate.actions.FrontStatisticsAction"
 		scope="prototype" />
+		
+	<bean id="billAction" 
+		class="cn.gxf.spring.struts.integrate.actions.BillSendAction"
+		scope="prototype" />
 
 	<!-- <bean id="loanServiceProxy"
 		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean" lazy-init="true" >

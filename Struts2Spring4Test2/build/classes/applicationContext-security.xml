@@ -13,6 +13,7 @@
 	<!-- 注册页面的提交按钮要调用以下的action，也要排除在security外 -->
 	<http pattern="/demo/registerUser.*" security="none" />
 	<http pattern="/demo/checkRegisterName.*" security="none" />
+	<!-- <http pattern="/demo/billsend*" security="none" /> -->
 	
 	<!--  
         注意use-expressions=true.表示开启表达式,否则表达式将不可用. see:http://www.family168.com/tutorial/springsecurity3/html/el-access.html  

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.gxf.spring.quartz.job.dao.CreditCardBillDao;
+import cn.gxf.spring.quartz.job.model.CreditCard;
 import cn.gxf.spring.quartz.job.model.CreditCardBill;
 import cn.gxf.spring.quartz.job.model.CreditCardTransRecord;
 import cn.gxf.spring.struts2.integrate.service.UserService;
@@ -83,6 +84,56 @@ public class BillProcessor {
         
 		return 1;
 	}
+	
+	// 查询近一周
+		@Transactional(value="JtaXAManager")
+		public int processCreditCardBillManually(int user_id){
+			Date jyqz = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 交易日止为本日 
+			 
+	        Calendar calendar = Calendar.getInstance();
+	        calendar.setTime(jyqz); // 设置为当前时间
+	        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1); // 设置为上一个月
+	        Date jyqq = calendar.getTime(); // 交易日止为上月同一天
+	 
+	        System.out.println("本期账单时间： " + sdf.format(jyqz) + "至" + sdf.format(jyqq));
+	        
+			// 1. 获取需要处理的账户代码
+			List<CreditCard> creditCards = creditCardBillDao.getCreditCardbyUserId(user_id);
+			if (creditCards == null || creditCards.size() == 0){
+				System.out.println("用户没有需要处理的账户");
+				return 0;
+			}
+			
+			// 2. 获取数据
+	        // 获取账单明细
+	        List<CreditCardTransRecord> recList = getCreditCardTranscationRecordInZDQ(CreditCard.getZhdmList(creditCards), jyqq, jyqz);
+	        System.out.println(recList);  
+	        
+	        // 准备要发送的bill数据
+	        List<CreditCardBill> bills = prepareCreditCardBills(recList, jyqq, jyqz);
+	        System.out.println("账单：" + bills);
+	        
+	        // 3. 数据持久化：
+	        // 3.1. 将可能存在过时明细数据置为无效
+	        deleteInvalidRecord(CreditCard.getZhdmList(creditCards), jyqq, jyqz);
+	        // 3.2. 将账单明细信息插入账单明细表
+	        saveTranscationRecordInZDQ(recList, jyqq, jyqz);
+	        System.out.println("明细数据: " + recList);
+	        // 3.3. 批次号回写到明细中
+	        writePchToTranscationRecord(bills);
+	        // 3.4 保存bill数据
+	        creditCardBillDao.saveCreditCardBill(bills);
+	        
+	        
+	        // 4. 发送至JMS
+	        sendToJMS(bills);
+	        
+	        
+	        //int i=1/0;
+	        
+			return 1;
+		}
 	
 	/*private List<String> getCreditCardInZDR(){
 		

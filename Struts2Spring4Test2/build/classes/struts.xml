@@ -121,6 +121,14 @@
         	<allowed-methods>inputFront,reProcStat</allowed-methods>
         </action>
         
+        <action name="billsend" class="billAction" method="ajaxrequest"></action>
+        
+        <!-- <action name="billsend" class="billAction">
+        	<result name="success" type="redirectAction">frontStatistics!inputFront</result>
+        	<interceptor-ref name="myinterceptorStack" />
+        	<allowed-methods>execute</allowed-methods>
+        </action> -->
+        
         <action name="accountBook" class="accountBookAction">
         	
         	<result name="inputBook">/WEB-INF/accbook.jsp</result>
