@@ -22,6 +22,7 @@
     	<typeAlias type="cn.gxf.spring.struts2.integrate.model.IncomeDetail" alias="IncomeDetail"/>
     	<typeAlias type="cn.gxf.spring.struts2.integrate.model.PaymentDetail" alias="PaymentDetail"/>
     	<typeAlias type="cn.gxf.spring.struts2.integrate.model.TransferDetail" alias="TransferDetail"/>
+    	<typeAlias type="cn.gxf.spring.struts2.integrate.model.FundDetail" alias="FundDetail" />
     	<typeAlias type="cn.gxf.spring.struts2.integrate.model.AccountingDetail" alias="AccountingDetail"/>
     	
     	<typeAlias type="cn.gxf.spring.quartz.job.model.CreditCardTransRecord"  alias="CreditCardTransRecord"/>

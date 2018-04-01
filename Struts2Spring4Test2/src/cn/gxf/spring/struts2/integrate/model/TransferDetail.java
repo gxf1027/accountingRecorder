@@ -19,6 +19,7 @@ public class TransferDetail extends AccountObject implements Serializable{
 	private String bz;
 	private String yxbz;
 	private Date xgrq;
+	private FundDetail fundDetail;
 
 	public String getMxuuid() {
 		return mxuuid;
@@ -159,11 +160,22 @@ public class TransferDetail extends AccountObject implements Serializable{
 	public int getType(){
 		return 3;
 	}
+	
+	public FundDetail getFundDetail() {
+		return fundDetail;
+	}
+	
+	public void setFundDetail(FundDetail fundDetail) {
+		this.fundDetail = fundDetail;
+	}
 
 	@Override
 	public String toString() {
-		return "TransferDetail [mxuuid=" + mxuuid + ", user_name=" + user_name + ", user_id=" + user_id + ", je=" + je
-				+ ", srcZh_dm=" + srcZh_dm + ", tgtZh_dm=" + tgtZh_dm + ", shijian=" + shijian + ", bz=" + bz
-				+ ", yxbz=" + yxbz + ", xgrq=" + xgrq + "]";
+		return "TransferDetail [mxuuid=" + mxuuid + ", accuuid=" + accuuid + ", user_name=" + user_name + ", user_id="
+				+ user_id + ", je=" + je + ", srcZh_dm=" + srcZh_dm + ", tgtZh_dm=" + tgtZh_dm + ", shijian=" + shijian
+				+ ", zzlx_dm=" + zzlx_dm + ", bz=" + bz + ", yxbz=" + yxbz + ", xgrq=" + xgrq + ", fundDetail="
+				+ fundDetail + "]";
 	}
+
+	
 }

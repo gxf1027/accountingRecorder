@@ -29,7 +29,7 @@ public class AccountBookDaoImplJdbc implements AccountBookDao{
 	@Override
 	public List<AccountBook> getZhInfo(int user_id) {
 		
-		String sql = "SELECT * from zh_detail_info WHERE user_id=? AND yxbz='Y'";
+		String sql = "SELECT * from zh_detail_info WHERE user_id=? AND yxbz='Y' AND xybz='Y'";
 		
 		PreparedStatementSetter pss = new PreparedStatementSetter() {
 			

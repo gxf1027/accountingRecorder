@@ -19,6 +19,7 @@ import com.opensymphony.xwork2.Preparable;
 import cn.gxf.spring.struts.integrate.security.UserLogin;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDaoImplJdbc;
 import cn.gxf.spring.struts2.integrate.model.AccountBook;
+import cn.gxf.spring.struts2.integrate.model.FundDetail;
 import cn.gxf.spring.struts2.integrate.model.TransferDetail;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountService;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountUnivServiceImpl;
@@ -57,13 +58,7 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 	}
 	
 	public String inputTransfer()
-	{
-		
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//		this.myrequest.put("NOW_DATE", sdf.format(new Date()));
-		
-		
-		
+	{	
 		return "TransferInputOk";
 	}
 	
@@ -90,6 +85,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		//System.out.println(this.transferDetail);
 		//detailAccountService.saveOneTransfer(this.transferDetail);
 		//detailAccountService.saveOneTransferMB(this.transferDetail);
+		if (this.transferDetail.getZzlx_dm().equals("0003")){
+			this.transferDetail.getFundDetail().setConfirmedSum(this.transferDetail.getJe()); // 设置金额，因为前台没有输入项目
+		}
 		detailAccountUnivServiceImpl.saveOne(this.transferDetail);
 		return "saveOk";
 	}
@@ -97,6 +95,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 	public String saveTransferAndRec(){
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.transferDetail.setUser_id(user.getId());
+		if (this.transferDetail.getZzlx_dm().equals("0003")){
+			this.transferDetail.getFundDetail().setConfirmedSum(this.transferDetail.getJe()); // 设置金额，因为前台没有输入项目
+		}
 		detailAccountUnivServiceImpl.saveOne(this.transferDetail);
 		return "saveRecOk";
 	}
@@ -111,6 +112,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 			return "have-no-authority";
 		}
 		this.transferDetail.setXgrq(new Date());
+		if (this.transferDetail.getFundDetail() != null){
+			this.transferDetail.getFundDetail().setXgrq(new Date());
+		}
 		detailAccountUnivServiceImpl.updateOne(this.transferDetail);
 		return "saveOk";
 	}
@@ -168,6 +172,7 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		// TODO Auto-generated method stub
 		if( this.transferDetail == null ){
 			this.transferDetail = new TransferDetail();
+			this.transferDetail.setFundDetail(new FundDetail());
 		}
 		return this.transferDetail;
 	}

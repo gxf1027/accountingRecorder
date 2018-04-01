@@ -34,16 +34,25 @@ public class BillSendAction extends ActionSupport {
 	}
 	
 	public String ajaxrequest() throws IOException{
-		System.out.println("ajaxrequest...");
+		
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		System.out.println("ajaxrequest..."+user);
-		// 在security中排除了这个url，所以没有security信息，TODO！！
-		billProcessor.processCreditCardBillManually(user.getId());
 		
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html);charset=utf-8");
 		PrintWriter write = response.getWriter();
+		
+		try {
+			billProcessor.processCreditCardBillManually(user.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.msg = e.getMessage();
+			write.print(msg);
+			write.flush();
+			write.close();
+			return null;
+		}
+	
 		
 		this.msg = "success";
 		write.print(msg);

@@ -203,6 +203,21 @@
 		
 	}
 	
+	function fundInfoShow() {
+		$('#fund-code').show(1000);
+		$('#fund-name').show(1000);
+		$('#unit-net').show(1000);
+		$('#extra-fee').show(1000);
+		$('#fund-divider').show(1000);
+	}
+	
+	function fundInfoHide(){
+		$('#fund-code').hide();
+		$('#fund-name').hide();
+		$('#unit-net').hide();
+		$('#extra-fee').hide();
+		$('#fund-divider').hide();
+	}
 	
 	$(function() {
 		/* 获取当前时间 */
@@ -238,6 +253,23 @@
 	    $('#logout-url').click(function (){	
 			 $("#logout-form").submit();
 		});
+	    
+	    if ($('#zzlxDm').find('option:selected').val() == '0003'){
+	    	fundInfoShow();
+	    }else{
+	    	fundInfoHide();
+	    }
+	    
+	    $('#zzlxDm').change(function(){
+	    	var selectVal = $(this).find('option:selected').val();
+	    	console.log('select_val: ' + selectVal);
+	    	
+	    	if ('0003' == selectVal){
+	    		fundInfoShow();
+	    	}else{
+	    		fundInfoHide();
+	    	}
+	    });
 	})
 
 	function fix(num, length) {
@@ -473,6 +505,41 @@
 				<tr style="height:10px;font-size:0px;">
 					<td></td>
 				</tr>
+				
+				
+				<tr id="fund-code">
+					<th>基金代码</th>
+					<td>
+						<s:textfield name="fundDetail.fundCode" id="fundCode"  maxlength="16" class="recordInput" theme="simple"/>
+					</td>
+				</tr>
+				<tr id="fund-name">
+					<th>基金名称</th>
+					<td>
+						<s:textfield name="fundDetail.fundName" id="fundName"  maxlength="16" class="recordInput" theme="simple"/>
+					</td>
+				</tr>
+				<tr id="unit-net">
+					<th>单位净值</th>
+					<td>
+						<s:textfield name="fundDetail.unitNet" id="unitNet"  maxlength="16" class="recordInput" theme="simple"/>
+					</td>
+				</tr>
+				<tr id="extra-fee">
+					<th>手续费</th>
+					<td>
+						<s:textfield name="fundDetail.extraFee" id="extraFee"  maxlength="16" class="recordInput" theme="simple"/>
+					</td>
+				</tr>
+				
+				
+				<tr id="fund-divider" style="height:10px;font-size:0px;">
+					<td colspan="3" style="border-bottom: 1px solid #DDE2E8;">&nbsp;</td>
+				</tr>
+				<tr style="height:10px;font-size:0px;">
+					<td></td>
+				</tr>
+				
 	  			<tr>
 					<th style="vertical-align:top">备注</th>
 					<!-- 使用name就能关联到值栈中的对象的属性了 -->
@@ -498,7 +565,7 @@
 	</div>
 	</div>
 	</div>
-	
+	<s:debug></s:debug>
 	<section class="footer-evaluate">
 		<ul class="g-layout">
 			<li>

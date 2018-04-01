@@ -1,6 +1,7 @@
 package cn.gxf.spring.quartz.job;
 
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -78,8 +79,7 @@ public class BillProcessor {
         
         // 4. 发送至JMS
         sendToJMS(bills);
-        
-        
+       
         //int i=1/0;
         
 		return 1;
@@ -128,7 +128,6 @@ public class BillProcessor {
 	        
 	        // 4. 发送至JMS
 	        sendToJMS(bills);
-	        
 	        
 	        //int i=1/0;
 	        
@@ -250,6 +249,10 @@ public class BillProcessor {
         for(String key : ccbMap.keySet()){
         	CreditCardBill bill = ccbMap.get(key);
         	bill.setEmail(userEmails.get(key.split("-")[0]));
+        	// 对应还款数保留两位小数，四舍五入
+        	float yhkje = bill.getYhkje();
+        	BigDecimal b = new BigDecimal(yhkje);  
+        	bill.setYhkje(b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue());
         }
         
         return new ArrayList<CreditCardBill>(ccbMap.values());

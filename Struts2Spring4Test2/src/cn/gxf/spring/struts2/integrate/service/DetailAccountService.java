@@ -1,8 +1,6 @@
 package cn.gxf.spring.struts2.integrate.service;
 
-import java.util.List;
 
-import cn.gxf.spring.struts2.integrate.model.AccDateStat;
 import cn.gxf.spring.struts2.integrate.model.IncomeDetail;
 import cn.gxf.spring.struts2.integrate.model.PaymentDetail;
 import cn.gxf.spring.struts2.integrate.model.TransferDetail;

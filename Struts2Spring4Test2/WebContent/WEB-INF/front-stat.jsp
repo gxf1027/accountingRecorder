@@ -133,6 +133,8 @@
 				        	if (data == "success"){
 				        		console.log("success");
 				        		toastr.info("<b>账单已发送.</b>","提示");
+				        	}else{
+				        		toastr.error("<b>账单发送失败.</b>","提示");
 				        	}
 				        }
 				    });
@@ -198,6 +200,19 @@
 				<li>
 					<a href="#" name="billsend" class="home before" bi="8013">发送账单</a>
 				</li>
+				
+				<!-- DROPDOWN MENU -->
+				<%-- <div class="button-group">
+				    <span class="button-dropdown button-dropdown-primary" data-buttons="dropdown">
+				      <a href="#" class="button button-primary"> Select Me <i class="fa fa-caret-down"></i></a>
+				 
+				      <ul class="button-dropdown-list is-below">
+				        <li><a href="http://www.bootcss.com/">Option Link 1</a></li>
+				        <li><a href="http://www.bootcss.com/">Option Link 2</a></li>
+				        <li class="button-dropdown-divider"><a href="#">Option Link 3</a></li>
+				      </ul>
+				    </span>
+			    </div> --%>
 				
 				<li>
 					<div class="subNavTitle rel">

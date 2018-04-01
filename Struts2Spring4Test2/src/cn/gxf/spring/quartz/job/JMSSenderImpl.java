@@ -1,9 +1,7 @@
 package cn.gxf.spring.quartz.job;
 
-import java.util.Date;
 
 import javax.jms.JMSException;
-import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;

@@ -110,10 +110,18 @@
 	</update>
 	
 	<update id="setMailed" parameterType="java.util.List">
-		UPDATE zh_detail_ccbill_mx SET  mailed = 'Y'
+		UPDATE zh_detail_ccbill_mx SET mailed = 'Y'
 		WHERE billuuid IN 
 		<foreach collection="uuidList" index="index" item="uuid" open="(" separator="," close=")">
 			#{uuid}
+		</foreach>
+	</update>
+	
+	<update id="setMailedTimestamp">
+		UPDATE zh_detail_ccbill SET mailedRq = #{mailedTmstp}
+		WHERE pch IN 
+		<foreach collection="pchList" index="index" item="pch" open="(" separator="," close=")">
+			#{pch}
 		</foreach>
 	</update>
 </mapper>

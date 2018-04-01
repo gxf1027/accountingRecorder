@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.gxf.spring.struts.mybatis.dao.FundDetailMBDao">
+  	
+  	<select id="getFundDetailByUuid" parameterType="String" 
+		resultType="FundDetail">
+		SELECT transferuuid, 
+				fund_code AS fundCode,
+				fund_name AS fundName,
+				unit_net AS unitNet,
+				extra_fee AS extraFee,
+				confirmed_sum AS confirmedSum,
+				lrrq, 
+				xgrq
+			  from transfer_fund_detail WHERE transferuuid = #{uuid} AND yxbz='Y'
+	</select>
+	
+  	<insert id="addOne" parameterType="FundDetail">
+  		
+  		<!-- <selectKey keyColumn="mxuuid" keyProperty="mxuuid" resultType="string" order="BEFORE">
+			SELECT REPLACE(uuid(),'-','')
+		</selectKey> -->
+		
+  		INSERT INTO transfer_fund_detail(transferuuid, fund_code, fund_name, unit_net, extra_fee, confirmed_sum, lrrq, xgrq, yxbz)
+			VALUES(#{transferUuid}, #{fundCode}, #{fundName}, #{unitNet}, #{extraFee}, #{confirmedSum}, #{lrrq}, null, 'Y')
+  	</insert>
+  	
+  	<update id="updateOne" parameterType="FundDetail">
+		UPDATE transfer_fund_detail SET fund_code= #{fundCode}, fund_name = #{fundName}, unit_net = #{unitNet}, 
+										extra_fee = #{extraFee}, confirmed_sum= #{confirmedSum}, xgrq= #{xgrq}
+				WHERE transferuuid = #{transferUuid} AND yxbz='Y'
+  	</update>
+  	
+  	<update id="deleteOne" parameterType="String">
+  		UPDATE transfer_fund_detail SET yxbz='N', xgrq = NOW() WHERE transferuuid = #{transferuuid} AND yxbz='Y'
+  	</update>
+  	
+  	
+  	<update id="deletePatch" parameterType="List">
+  		UPDATE transfer_fund_detail SET yxbz='N', xgrq=NOW() 
+  			WHERE yxbz='Y' 
+  			AND transferuuid IN 
+  			<foreach collection="list" index="index" item="uuid" open="(" separator="," close=")">  
+        		#{uuid}  
+    		</foreach>  
+  	</update>
+    
+</mapper>

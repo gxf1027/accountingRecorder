@@ -28,6 +28,30 @@
 				<SizeBasedTriggeringPolicy size="5 MB" />
 			</Policies>
 		</RollingFile>
+		
+		<RollingFile name="RollingFileStruts" fileName="${web:rootDir}/WEB-INF/log/struts2.log"
+			filePattern="${web:rootDir}/WEB-INF/log/$${date:yyyy-MM}/struts2-%d{yyyy-MM-dd}-%i.log">
+			<!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+			<ThresholdFilter level="INFO" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="5 MB" />
+			</Policies>
+		</RollingFile>
+		
+		<RollingFile name="RollingFileSpring" fileName="${web:rootDir}/WEB-INF/log/spring4.log"
+			filePattern="${web:rootDir}/WEB-INF/log/$${date:yyyy-MM}/spring4-%d{yyyy-MM-dd}-%i.log">
+			<!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+			<ThresholdFilter level="INFO" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="5 MB" />
+			</Policies>
+		</RollingFile>
 
 
 		<RollingFile name="RollingFileWarn" fileName="${web:rootDir}/WEB-INF/log/warn.log"
@@ -65,16 +89,23 @@
 			<AppenderRef ref="RollingFileWarn" />
 		</Logger>
 		
-		<Logger name="cn.gxf.spring.struts.integrate.actions" level="DEBUG">
+		<!-- <Logger name="cn.gxf.spring.struts.integrate.actions" level="DEBUG">
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="RollingFileActionDebug" />
-		</Logger>
-		<!-- <Logger name="org.springframework" level="INFO">
-			<AppenderRef ref="Console" />
 		</Logger> -->
+		
+		<Logger name="org.apache.struts2" level="INFO">
+			<AppenderRef ref="RollingFileStruts" />
+		</Logger>
+		
+		<Logger name="org.springframework" level="INFO">
+			<AppenderRef ref="RollingFileSpring" />
+		</Logger>
+		
 		<Logger name="cn.gxf.spring.struts.integrate.test" level="DEBUG">
 			<AppenderRef ref="Console" />
 		</Logger>
+		
 		<!-- https://www.atomikos.com/Documentation/ConfiguringTheLogs -->
 		<Logger name="com.atomikos" level="DEBUG">
 	        <AppenderRef ref="Console" />

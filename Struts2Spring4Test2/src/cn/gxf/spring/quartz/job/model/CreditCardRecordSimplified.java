@@ -1,6 +1,7 @@
 package cn.gxf.spring.quartz.job.model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CreditCardRecordSimplified implements Serializable {
@@ -42,6 +43,11 @@ public class CreditCardRecordSimplified implements Serializable {
 
 	public void setJysj(Date jysj) {
 		this.jysj = jysj;
+	}
+	
+	public String getJysjStr(){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return this.jysj == null ? null : sdf.format(this.jysj);
 	}
 
 	public String getJylx() {

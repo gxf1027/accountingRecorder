@@ -31,8 +31,8 @@
 	<bean id="simpleTrigger"  class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">  
 	    <property name="jobDetail" ref="creditCardJobDetial" />  
 	    <property name="startDelay" value="100000" />  
-	    <property name="repeatInterval" value="20000" />  
-	    <property name="repeatCount" value="0" />
+	    <property name="repeatInterval" value="86400000" />  <!-- (ms) one day -->
+	    <property name="repeatCount" value="-1" />
 	</bean>   
 	
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
