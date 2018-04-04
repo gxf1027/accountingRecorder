@@ -20,8 +20,7 @@
 		<RollingFile name="RollingFileDebug" fileName="${web:rootDir}/WEB-INF/log/debug.log"
 			filePattern="${web:rootDir}/WEB-INF/log/$${date:yyyy-MM}/debug-%d{yyyy-MM-dd}-%i.log">
 			<!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
-			<ThresholdFilter level="Debug" onMatch="ACCEPT"
-				onMismatch="DENY" />
+			<ThresholdFilter level="Debug" onMatch="ACCEPT"	onMismatch="DENY" />
 			<PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n" />
 			<Policies>
 				<TimeBasedTriggeringPolicy />
@@ -106,9 +105,15 @@
 			<AppenderRef ref="Console" />
 		</Logger>
 		
+		<Logger name="cn.gxf.spring.cxf" level="DEBUG">
+	        <AppenderRef ref="Console" />
+	        <AppenderRef ref="RollingFileDebug" />
+	    </Logger>
+	    
 		<!-- https://www.atomikos.com/Documentation/ConfiguringTheLogs -->
 		<Logger name="com.atomikos" level="DEBUG">
 	        <AppenderRef ref="Console" />
+	        <AppenderRef ref="RollingFileDebug" />
 	    </Logger>
 	</Loggers>
 </Configuration>  

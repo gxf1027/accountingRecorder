@@ -6,6 +6,7 @@ import java.util.Date;
 public class FundDetail implements Serializable{
 
 	private static final long serialVersionUID = 4429213054083358932L;
+	private String uuid;
 	private String transferUuid;
 	private String fundCode;
 	private String fundName;
@@ -15,7 +16,12 @@ public class FundDetail implements Serializable{
 	private Date lrrq;
 	private Date xgrq;
 	
-	
+	public String getUuid() {
+		return uuid;
+	}
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 	public String getTransferUuid() {
 		return transferUuid;
 	}

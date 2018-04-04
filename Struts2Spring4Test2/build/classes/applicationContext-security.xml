@@ -14,7 +14,7 @@
 	<http pattern="/demo/registerUser.*" security="none" />
 	<http pattern="/demo/checkRegisterName.*" security="none" />
 	<!-- <http pattern="/demo/billsend*" security="none" /> -->
-	
+	<http pattern="/services/**" security="none"></http> <!-- 否则, web service 客户端调用服务时出现异常 -->
 	<!--  
         注意use-expressions=true.表示开启表达式,否则表达式将不可用. see:http://www.family168.com/tutorial/springsecurity3/html/el-access.html  
     -->

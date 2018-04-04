@@ -27,6 +27,7 @@ import cn.gxf.spring.struts2.integrate.model.TransferDetail;
 @Service
 public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 
+	private static final String ZZLX_FUND_DM = "0003";
 	
 	@Autowired
 	private AccountDetailMBDao accountDetailMBDao;
@@ -144,7 +145,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			accountBookDao.updateYe(transferDetail.getSrcZh_dm(), -1.0f*transferDetail.getJe());
 			accountBookDao.updateYe(transferDetail.getTgtZh_dm(), transferDetail.getJe());
 			
-			if (transferDetail.getZzlx_dm().equals("0003") && transferDetail.getFundDetail() != null){
+			if (transferDetail.getZzlx_dm().equals(ZZLX_FUND_DM) && transferDetail.getFundDetail() != null){
 				String transferUuid = transferDetail.getMxuuid(); // 通过上面主键回写获得
 				transferDetail.getFundDetail().setTransferUuid(transferUuid);
 				transferDetail.getFundDetail().setLrrq(new Date());
@@ -205,19 +206,19 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			transferDetailMBDao.updateOne(transferDetail_new);
 			
 			
-			if (transferDetail_new.getZzlx_dm().equals("0003") && !transferDetail_old.getZzlx_dm().equals("0003")){
+			if (transferDetail_new.getZzlx_dm().equals(ZZLX_FUND_DM) && !transferDetail_old.getZzlx_dm().equals(ZZLX_FUND_DM)){
 				// 转账类型从非基金购买修改为基金购买
 				FundDetail fundDetail = transferDetail_new.getFundDetail();
 				fundDetail.setTransferUuid(transferDetail_new.getMxuuid());
 				fundDetail.setLrrq(new Date());
 				this.fundDetailMBdao.addOne(fundDetail);
-			}else if (transferDetail_new.getZzlx_dm().equals("0003") && transferDetail_old.getZzlx_dm().equals("0003")){
+			}else if (transferDetail_new.getZzlx_dm().equals(ZZLX_FUND_DM) && transferDetail_old.getZzlx_dm().equals(ZZLX_FUND_DM)){
 				// 修改前后的转账类型都是购买基金
 				FundDetail fundDetail = transferDetail_new.getFundDetail();
 				fundDetail.setTransferUuid(transferDetail_new.getMxuuid());
 				fundDetail.setXgrq(new Date());
 				this.fundDetailMBdao.updateOne(fundDetail);
-			}else if (!transferDetail_new.getZzlx_dm().equals("0003") && transferDetail_old.getZzlx_dm().equals("0003")){
+			}else if (!transferDetail_new.getZzlx_dm().equals(ZZLX_FUND_DM) && transferDetail_old.getZzlx_dm().equals(ZZLX_FUND_DM)){
 				// 修改前是购买基金，修改后不是购买基金
 				this.fundDetailMBdao.deleteOne(transferDetail_new.getMxuuid());
 			}
@@ -250,7 +251,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			accountBookDao.updateYe(transferDetail.getSrcZh_dm(), transferDetail.getJe());
 			accountBookDao.updateYe(transferDetail.getTgtZh_dm(), -1.0f*transferDetail.getJe());
 			
-			if (transferDetail.getZzlx_dm().equals("0003") && transferDetail.getFundDetail() != null){
+			if (transferDetail.getZzlx_dm().equals(ZZLX_FUND_DM) && transferDetail.getFundDetail() != null){
 				fundDetailMBdao.deleteOne(transferDetail.getFundDetail().getTransferUuid());
 			}
 		}

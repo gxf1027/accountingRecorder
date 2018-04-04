@@ -19,12 +19,12 @@
 	
   	<insert id="addOne" parameterType="FundDetail">
   		
-  		<!-- <selectKey keyColumn="mxuuid" keyProperty="mxuuid" resultType="string" order="BEFORE">
-			SELECT REPLACE(uuid(),'-','')
-		</selectKey> -->
+  		<selectKey keyColumn="uuid" keyProperty="uuid" resultType="string" order="BEFORE">
+			SELECT CONCAT('F',UUID_SHORT())
+		</selectKey>
 		
-  		INSERT INTO transfer_fund_detail(transferuuid, fund_code, fund_name, unit_net, extra_fee, confirmed_sum, lrrq, xgrq, yxbz)
-			VALUES(#{transferUuid}, #{fundCode}, #{fundName}, #{unitNet}, #{extraFee}, #{confirmedSum}, #{lrrq}, null, 'Y')
+  		INSERT INTO transfer_fund_detail(uuid, transferuuid, fund_code, fund_name, unit_net, extra_fee, confirmed_sum, lrrq, xgrq, yxbz)
+			VALUES(#{uuid}, #{transferUuid}, #{fundCode}, #{fundName}, #{unitNet}, #{extraFee}, #{confirmedSum}, #{lrrq}, null, 'Y')
   	</insert>
   	
   	<update id="updateOne" parameterType="FundDetail">

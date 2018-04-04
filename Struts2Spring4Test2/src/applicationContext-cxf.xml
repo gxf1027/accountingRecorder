@@ -18,6 +18,14 @@
     
     <!--  Cxf WebService 服务端示例 -->
     <jaxws:endpoint id="billService" implementor="cn.gxf.spring.quartz.job.endpoint.BillServiceEndPointImpl" 
-    		address="/billService"/>
+    		address="/billService">
+    	<jaxws:inInterceptors>
+   			<ref bean="authInterceptor"/>
+   			<ref bean="logInInterceptor"/>
+    	</jaxws:inInterceptors>	
+    </jaxws:endpoint>
+    
+    <bean id="authInterceptor" class="cn.gxf.spring.cxf.AuthorizingInterceptor" />
+    <bean id="logInInterceptor" class="cn.gxf.spring.cxf.SoapMsgLogInInteceptor" />
     
 </beans>

@@ -18,7 +18,7 @@ public class BillServiceEndPointImpl implements BillServiceEndpoint {
 	
 	@Override
 	public void SetBillMailed(List<String> uuidList) {
-		
+		System.out.println("SetBillMailed param: " + uuidList);
 		billService.SetBillMailed(uuidList);
 	}
 

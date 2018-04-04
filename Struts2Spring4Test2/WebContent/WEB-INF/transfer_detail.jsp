@@ -446,11 +446,9 @@
 						</s:select> 
 						<strong> > </strong>
 						<%-- <s:select id="tgtZh" list="#request.ZH_INFO" listKey="zh_dm" listValue="zh_mc" name="tgtZh_dm" theme="simple" class="selectInput" /> --%>
-						<s:select id="tgtZh" name="tgtZh_dm" list="%{#{-1:'--选择账户--'}}" theme="simple" class="selectInput">
-							<s:iterator value="#request.ZH_INFO_MAP">
-								<s:iterator value="#request.ZH_INFO_MAP" >
-								  	<s:optgroup label="%{key}" list="value" listKey="zh_dm" listValue="zh_mc" />
-								</s:iterator>
+						<s:select id="tgtZh" name="tgtZh_dm" list="%{#{-1:'--选择账户--'}}" theme="simple" class="selectInput">							
+							<s:iterator value="#request.ZH_INFO_MAP" >
+							  	<s:optgroup label="%{key}" list="value" listKey="zh_dm" listValue="zh_mc" />
 							</s:iterator>
 						</s:select> 
 					</td>	

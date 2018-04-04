@@ -36,7 +36,13 @@
 			 (select z.zh_mc from zh_detail_info z where z.zh_dm = t.srcZh_dm) srcZhmc, 
 			 (select z.zh_mc from zh_detail_info z where z.zh_dm = t.tgtZh_dm) tgtZhmc, 
 			 (select lx.zzlx_mc from dm_zzlx lx where lx.zzlx_dm = t.zzlx_dm and yxbz='Y') zzlxmc,
-			 t.bz,	3 AS type 
+			 (CASE
+				WHEN t.zzlx_dm = '0003' THEN
+					(SELECT CONCAT_WS('-',f.fund_code,f.fund_name,f.unit_net) FROM transfer_fund_detail f WHERE f.transferuuid = t.mxuuid and f.yxbz='Y')
+				ELSE
+					t.bz
+				END
+			 ) bz,	3 AS type 
 			 FROM account_transfer_detail t 
 			 WHERE 1 = 1
 			 <if test="date_from != null and date_to != null">
