@@ -94,16 +94,21 @@ public class SoapMsgLogInInteceptor extends AbstractPhaseInterceptor<Message> {
                 bos.writeCacheTo(buffer.getPayload(), this.limit);  
                 bos.close();
                 
-                String payloadstr = this.xmlFormat(buffer.getPayload().toString());
+                String payload = buffer.getPayload().toString();
+                String payloadXml = null;
+                try {
+                	payloadXml = this.xmlFormat(payload);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+               
                 buffer.getPayload().delete( 0, buffer.getPayload().length() );
-                buffer.getPayload().append(payloadstr);
+                buffer.getPayload().append(payloadXml);
                 
-            } catch (IOException e) {  
+            } catch (IOException e) { 
+            	e.printStackTrace();
                 throw new Fault(e);  
-            } catch (DocumentException e) {
-				
-            	throw new Fault(e);  
-			} 
+            } 
         }  
         // 打印日志，保存日志保存这里就可以，可写库或log4j记录日志
         //System.out.println(buffer.toString());  

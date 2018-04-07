@@ -22,10 +22,36 @@
     	<jaxws:inInterceptors>
    			<ref bean="authInterceptor"/>
    			<ref bean="logInInterceptor"/>
+   			<ref bean="wss4jInInterceptor"/>
     	</jaxws:inInterceptors>	
     </jaxws:endpoint>
     
     <bean id="authInterceptor" class="cn.gxf.spring.cxf.AuthorizingInterceptor" />
     <bean id="logInInterceptor" class="cn.gxf.spring.cxf.SoapMsgLogInInteceptor" />
+    
+    
+    <bean id="wss4jInInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+	    <constructor-arg>
+	        <map>
+	            <entry key="action" value="Signature Encrypt"/>
+	            <!-- 提供公钥的密码 -->
+	            <entry key="passwordCallbackRef" value-ref="serverPasswordCallback"/>
+	            <entry key="signatureVerificationPropFile" value="server.properties"/>
+	            <entry key="decryptionPropFile" value="server.properties"/>
+	        </map>
+	    </constructor-arg>
+	</bean>
+   
+   	<bean id="serverPasswordCallback" class="cn.gxf.spring.cxf.ServerPasswordCallback">
+   		<property name="user" ref="signatureUser" />
+   	</bean>
+   
+    <bean id="signatureUser" class="cn.gxf.spring.cxf.SignatureUser">
+        <property name="userMap">
+            <map>
+                <entry key="ciecc" value="cieccPassword"/>
+            </map>
+        </property>
+    </bean>
     
 </beans>
