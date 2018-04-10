@@ -91,6 +91,27 @@ public class DmUtilDaoImplJdbc implements DmUtilDao{
 			
 		});
 	}
+	
+	@Override
+	public Map<String, String> getFundType() {
+		
+		String sql = "SELECT * FROM dm_fund_type WHERE xybz='Y' AND yxbz='Y'";
+		return jdbcTemplate.query(sql, new ResultSetExtractor<Map<String, String>>(){
+
+			@Override
+			public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				// TODO Auto-generated method stub
+				Map<String, String> map = new TreeMap<String, String>();
+				while(rs.next()){
+					map.put(rs.getString("fund_type_dm"), rs.getString("fund_type_mc"));
+				}
+				return map;
+			}
+
+			
+		});
+	}
+
 
 
 	@Override

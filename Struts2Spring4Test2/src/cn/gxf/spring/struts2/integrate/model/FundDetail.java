@@ -10,6 +10,7 @@ public class FundDetail implements Serializable{
 	private String transferUuid;
 	private String fundCode;
 	private String fundName;
+	private String fundType; 
 	private float unitNet; // 单位净值
 	private float extraFee; // 手续费
 	private float confirmedSum; // 确认金额 
@@ -39,6 +40,12 @@ public class FundDetail implements Serializable{
 	}
 	public void setFundName(String fundName) {
 		this.fundName = fundName;
+	}
+	public String getFundType() {
+		return fundType;
+	}
+	public void setFundType(String fundType) {
+		this.fundType = fundType;
 	}
 	public float getUnitNet() {
 		return unitNet;
@@ -72,10 +79,9 @@ public class FundDetail implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "FundDetail [transferUuid=" + transferUuid + ", fundCode=" + fundCode + ", fundName=" + fundName
-				+ ", unitNet=" + unitNet + ", extraFee=" + extraFee + ", confirmedSum=" + confirmedSum + ", lrrq="
-				+ lrrq + ", xgrq=" + xgrq + "]";
+		return "FundDetail [uuid=" + uuid + ", transferUuid=" + transferUuid + ", fundCode=" + fundCode + ", fundName="
+				+ fundName + ", fundType=" + fundType + ", unitNet=" + unitNet + ", extraFee=" + extraFee
+				+ ", confirmedSum=" + confirmedSum + ", lrrq=" + lrrq + ", xgrq=" + xgrq + "]";
 	}
-	
 	
 }

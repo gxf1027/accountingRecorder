@@ -9,6 +9,7 @@
 		SELECT transferuuid, 
 				fund_code AS fundCode,
 				fund_name AS fundName,
+				fund_type AS fundType,
 				unit_net AS unitNet,
 				extra_fee AS extraFee,
 				confirmed_sum AS confirmedSum,
@@ -23,12 +24,12 @@
 			SELECT CONCAT('F',UUID_SHORT())
 		</selectKey>
 		
-  		INSERT INTO transfer_fund_detail(uuid, transferuuid, fund_code, fund_name, unit_net, extra_fee, confirmed_sum, lrrq, xgrq, yxbz)
-			VALUES(#{uuid}, #{transferUuid}, #{fundCode}, #{fundName}, #{unitNet}, #{extraFee}, #{confirmedSum}, #{lrrq}, null, 'Y')
+  		INSERT INTO transfer_fund_detail(uuid, transferuuid, fund_code, fund_name, fund_type, unit_net, extra_fee, confirmed_sum, lrrq, xgrq, yxbz)
+			VALUES(#{uuid}, #{transferUuid}, #{fundCode}, #{fundName}, #{fundType}, #{unitNet}, #{extraFee}, #{confirmedSum}, #{lrrq}, null, 'Y')
   	</insert>
   	
   	<update id="updateOne" parameterType="FundDetail">
-		UPDATE transfer_fund_detail SET fund_code= #{fundCode}, fund_name = #{fundName}, unit_net = #{unitNet}, 
+		UPDATE transfer_fund_detail SET fund_code= #{fundCode}, fund_name = #{fundName}, fund_type=#{fundType}, unit_net = #{unitNet}, 
 										extra_fee = #{extraFee}, confirmed_sum= #{confirmedSum}, xgrq= #{xgrq}
 				WHERE transferuuid = #{transferUuid} AND yxbz='Y'
   	</update>

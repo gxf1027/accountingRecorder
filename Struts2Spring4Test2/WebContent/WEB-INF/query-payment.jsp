@@ -84,22 +84,6 @@
 			
 		$(document).ready(function(){
 			
-			var queryType = $("#queryType").val();
-			switch (queryType) {
-			case "income":
-				$("#incomebox").css("display", "initial").siblings().css("display", "none");
-				$("#tab_income").addClass("tabcurrent").siblings().removeClass("tabcurrent");
-				break;
-			case "transfer":
-				$("#transferbox").css("display", "initial").siblings().css("display", "none");
-				$("#tab_transfer").addClass("tabcurrent").siblings().removeClass("tabcurrent");
-				break;
-			default:
-				$("#paymentbox").css("display", "initial").siblings().css("display", "none");
-				$("#tab_payment").addClass("tabcurrent").siblings().removeClass("tabcurrent");
-				break;
-			}
-			
 			$(".record_biz tbody> tr:odd").addClass("odd");
 			$(".record_biz tbody> tr:even").addClass("even");
 			
@@ -318,18 +302,15 @@
 				break;
 				
 			case "query-outgo":
-				$("#paymentbox").css("display", "initial").siblings().css("display", "none");
-				$("#tab_payment").addClass("tabcurrent").siblings().removeClass("tabcurrent");
+				window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputPaymentQuery";
 				break;
 			
 			case "query-income":
-				$("#incomebox").css("display", "initial").siblings().css("display", "none");
-				$("#tab_income").addClass("tabcurrent").siblings().removeClass("tabcurrent");
+				window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputIncomeQuery";
 				break;
 				
 			case "query-transfer":
-				$("#transferbox").css("display", "initial").siblings().css("display", "none");
-				$("#tab_transfer").addClass("tabcurrent").siblings().removeClass("tabcurrent");
+				window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputTransferQuery";
 			default:
 				break;
 			}
@@ -458,7 +439,7 @@
 			</div>
 			
 			<div class="tab_box">	
-				<input type="hidden" id="queryType" name="queryType" value="${requestScope.queryType }"  />
+				
 				<div id="paymentbox" class="contentPage_1" style=" min-width: 600px; " >
 					<s:form action="customTailoredQuery" onsubmit="return checkInput('payment')">
 						<table class="query_condition">
@@ -560,190 +541,6 @@
 					</div>
 				</div>
 				
-				<div id="incomebox" class="contentPage_1" style=" min-width: 600px">
-					<s:form action="customTailoredQuery" onsubmit="return checkInput('income')">
-						<table class="query_condition">
-							<tr>
-								<th>收入类别</th>
-								<td>
-									 <%-- <s:textfield name="srlb_dm" class="recordInput" theme="simple"/> --%>
-									 <%-- <select class="js-example-basic-multiple" name="states" multiple="multiple" style="width: 100%">
-									  	<option value="CN">中国</option>
-										<option value="AL">美国</option>	
-									  	<option value="GL">格陵兰</option>
-									 </select> --%>
-									 <s:select id="sel_lb" name="srlb_dm" list="#request.srlb_dm" listKey="key" listValue="value"  headerKey="" headerValue="全部" theme="simple" class="selectInput" />
-								</td>
-								
-								<th>发生时间起</th>
-								<td>
-									 <input type="date" id="date_from" name="date_from" value="${requestScope.date_from }" class="recordInput"  />
-								</td>
-								
-								<th>发生时间止</th>
-								<td>
-									 <input type="date" id="date_to" name="date_to"  value="${requestScope.date_to }" class="recordInput"  />
-								</td>
-								
-								<th>付款方</th>
-								<td>
-									 <s:textfield name="seller" class="recordInput" theme="simple"/>
-								</td>
-								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-							</tr>
-							
-							<s:textfield id="incomeCurPageNum" name="pageNumIncome" class="currentPageNum" theme="simple" style="display: none;" />
-							<s:textfield id="incomeTotalPages" name="totalPagesIncome" class="totalPages" theme="simple" style="display: none;" />
-							<tr>
-								
-								<th>账户</th>
-								<td>
-									 <%-- <s:textfield id="zh_dm" name="zh_dm" class="recordInput" theme="simple"/> --%>
-									 <s:select name="zh_dm" list="#request.zh_info" listKey="zh_dm" listValue="zh_mc" headerKey="" headerValue="全部" theme="simple" class="selectInput" />
-								</td>
-								
-								<th>金额大于</th>
-								<td>
-									 <s:textfield id="je_gt" name="je_gt" class="recordInput" theme="simple" onblur="javascript:CheckInputIntFloat(this);"/>
-								</td>
-								
-								<th>金额小于</th>
-								<td>
-									 <s:textfield id="je_lt" name="je_lt" class="recordInput" theme="simple" onblur="javascript:CheckInputIntFloat(this);"/>
-								</td>
-								<th></th>
-								<td>
-									<s:submit key="查询"  class="queryBtn"  method="incomeQuery" theme="simple" />
-								</td>
-							</tr>
-							
-						</table>
-					</s:form>
-					
-					<div style="min-height: 420px; margin-left: 170px; ">
-						<table id="queryResTable" class="record_biz" >
-							<thead>
-								<tr >
-									<th style="text-align: center;">序号</th>
-									<th style="text-align: center;">时间</th>
-									<th style="text-align: center;">类别</th>
-									<th style="text-align: center;">金额</th>
-									<th style="text-align: center;">付款方</th>
-								</tr>
-							</thead>
-							
-							<tbody>
-								<s:iterator value="#request.incomeResult" var="stat" status="st">
-									<tr>
-										<td> <s:property value="#st.count+pageSize*pageNumIncome-pageSize"/> </td>
-										<td>${fsrqToShowFull }</td>
-										<td>${lbmc }</td>
-										<td>${je }</td>
-										<td>${seller }</td> <!-- 实际是付款方 -->
-									</tr>
-								</s:iterator>
-							</tbody>
-						</table>
-					</div>
-					
-					<div class="pageInfo">
-						<a class="firstPage" href="#" target="_self"><span>首页</span></a> 
-						<a id="prePageIncome" class="prePage" href="#"><span>&lt;&lt;上一页</span></a> 
-						第<s:property value="pageNumIncome==null?1:pageNumIncome"/>页（共<s:property value="totalPagesIncome==null?' ':totalPagesIncome"/>页） 
-						<a id="nextPageIncome" class="nextPage" href="#"><span>下一页&gt;&gt;</span></a>
-						<a class="lastPage" href="#" target="_self"><span>尾页</span></a>
-					</div>
-					
-				</div>
-				
-				<div id="transferbox" class="contentPage_1" style=" min-width: 600px">
-					<s:form action="customTailoredQuery" onsubmit="return checkInput('transfer')">
-						<table class="query_condition">
-							<tr>
-								<th>转出账户</th>
-								<td>
-									 <s:select name="zh_dm" list="#request.zh_info" listKey="zh_dm" listValue="zh_mc" theme="simple" class="selectInput" />
-								</td>
-								
-								<th>转入账户</th>
-								<td>
-									 <s:select name="zh_dm" list="#request.zh_info" listKey="zh_dm" listValue="zh_mc" theme="simple" class="selectInput" />
-								</td>
-								
-								<th>发生时间起</th>
-								<td>
-									 <input type="date" id="date_from" class="recordInput" value="${requestScope.date_from }" name="date_from" />
-								</td>
-								
-								<th>发生时间止</th>
-								<td>
-									 <input type="date" id="date_to" class="recordInput" value="${requestScope.date_to }"  name="date_to" />
-								</td>
-							</tr>
-							
-							
-							<s:textfield id="transferCurPageNum" name="pageNumTransfer" class="currentPageNum" theme="simple" style="display: none;"  />
-							<s:textfield id="transferTotalPages" name="totalPagesTransfer" class="totalPages" theme="simple" style="display: none;" />
-							<tr>
-								<th>金额大于</th>
-								<td>
-									 <s:textfield id="je_gt" name="je_gt" class="recordInput" theme="simple" onblur="javascript:CheckInputIntFloat(this);"/>
-								</td>
-								
-								<th>金额小于</th>
-								<td>
-									 <s:textfield id="je_lt" name="je_lt" class="recordInput" theme="simple" onblur="javascript:CheckInputIntFloat(this);"/>
-								</td>
-								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-								<th></th>
-								<td></td>
-								<th></th>
-								<td>
-									<s:submit key="查询"  class="queryBtn"  method="transferQuery" theme="simple" />
-								</td>
-							</tr>
-	
-						</table>
-					</s:form>
-					
-					
-					<div style="min-height: 420px; margin-left: 170px; ">
-						<table id="queryResTable" class="record_biz" >
-							<thead>
-								<tr >
-									<th style="text-align: center;">序号</th>
-									<th style="text-align: center;">时间</th>
-									<th style="text-align: center;">转出账号</th>
-									<th style="text-align: center;">转入账号</th>
-									<th style="text-align: center;">金额</th>
-									<th style="text-align: center;">备注</th>
-								</tr>
-							</thead>
-							
-							<tbody>
-								<s:iterator value="#request.transferResult" var="stat" status="st">
-									<tr>
-										<td> <s:property value="#st.count+pageSize*pageNumTransfer-pageSize"/> </td>
-										<td>${fsrqToShowFull }</td>
-										<td>${srcZhmc }</td>
-										<td>${tgtZhmc }</td>
-										<td>${je }</td>
-										<td>${bz }</td> 
-									</tr>
-								</s:iterator>
-							</tbody>
-						</table>
-					</div>
-					
-					<div class="pageInfo">
-						<a class="firstPage" href="#" target="_self"><span>首页</span></a> 
-						<a id="prePageTransfer" class="prePage" href="#"><span>&lt;&lt;上一页</span></a> 
-						第<s:property value="pageNumTransfer==null?1:pageNumTransfer"/>页（共<s:property value="totalPagesTransfer==null?' ':totalPagesTransfer"/>页）
-						<a id="nextPageTransfer" class="nextPage" href="#"><span>下一页&gt;&gt;</span></a>
-						<a class="lastPage" href="#" target="_self"><span>尾页</span></a>
-					</div>
-					
-				</div>
 				
 			</div>
 		

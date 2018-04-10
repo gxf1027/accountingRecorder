@@ -160,4 +160,11 @@ public class DmServiceImpl implements DmService {
 		return dmUtilDao.getTransferType(user_id);
 	}
 	
+	@Cacheable(value="dmCache")
+	@Override
+	public Map<String, String> getFundType() {
+		
+		return dmUtilDao.getFundType();
+	}
+	
 }

@@ -51,10 +51,11 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		
 		List<AccountBook> books = dmService.getZhInfo(user.getId());
 		Map<String, String> transfer_dm = dmService.getTransferType(user.getId());
-		
+		Map<String, String> fund_type = dmService.getFundType();
 		this.myrequest.put("ZH_INFO", books);
 		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
 		this.myrequest.put("dm_zzlx", transfer_dm);
+		this.myrequest.put("fund_type", fund_type);
 	}
 	
 	public String inputTransfer()
@@ -71,6 +72,8 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		
 		Map<String, String> transfer_dm = dmService.getTransferType(user.getId());
 		this.myrequest.put("dm_zzlx", transfer_dm);
+		Map<String, String> fund_type = dmService.getFundType();
+		this.myrequest.put("fund_type", fund_type);
 	}
 	
 	public String editShow(){

@@ -109,11 +109,14 @@
         </action>
         
         <action name="customTailoredQuery" class="customTailoredQueryAction">
-        	<result name="inputOk">/WEB-INF/query-payment.jsp</result>
+        	<!-- <result name="inputOk">/WEB-INF/query-payment.jsp</result> -->
+        	<result name="inputPaymentOk">/WEB-INF/query-payment.jsp</result>
+        	<result name="inputIncomeOk">/WEB-INF/query-income.jsp</result>
+        	<result name="inputTransferOk">/WEB-INF/query-transfer.jsp</result>
         	<!-- <result name="queryOk" type="redirectAction">customTailoredQuery!inputQuery</result> -->
-        	<result name="queryOk">/WEB-INF/query-payment.jsp</result>
+        	<!-- <result name="queryOk">/WEB-INF/query-payment.jsp</result> -->
         	<interceptor-ref name="myinterceptorStack" />
-        	<allowed-methods>inputQuery,paymentQuery,incomeQuery,transferQuery</allowed-methods>
+        	<allowed-methods>inputQuery,inputPaymentQuery,inputIncomeQuery,inputTransferQuery,paymentQuery,incomeQuery,transferQuery</allowed-methods>
         </action>
         
         <action name="frontStatistics" class="frontStatisticsAction">

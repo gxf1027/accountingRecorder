@@ -13,6 +13,7 @@
 	<link rel="stylesheet" type="text/css" href="../css/footer.css" />
 	<link rel="stylesheet" type="text/css" href="../css/left-nav.css" />
 	<link rel="stylesheet" type="text/css" href="../js/toastr/toastr.css" />
+	<link rel="stylesheet" type="text/css" href="../js/icheck/skins/flat/green.css" />
 	
 	<style type="text/css"> 
 		.record_biz{font-size:12px;font-weight:normal;width:99%;margin:0 auto;margin-top:15px;}
@@ -133,6 +134,8 @@
 		    width: 99px;
 		    line-height: 35px;
 		}
+		.fund-list {margin-left: -35px; padding-bottom: 20px}
+		.fund-list li{float:left; margin-right:10px}
 	</style>
 
 	
@@ -140,6 +143,7 @@
 	<script type="text/javascript" src="../js/jquery.js"></script>
 	<script type="text/javascript" src="../js/calculator.js"></script>
 	<script type="text/javascript" src="../js/toastr/toastr.js"></script>
+	<script type="text/javascript" src="../js/icheck/icheck.js"></script>
 	
 	<script type="text/javascript">	
 	function choiceTab(B)
@@ -170,7 +174,8 @@
 			window.location.href = "${pageContext.request.contextPath}/demo/transferDetail!inputTransfer";
 			break;
 		case "query-payment":
-			window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputQuery";
+			//window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputQuery";
+			window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputPaymentQuery";
 			break;
 			
 			
@@ -204,19 +209,11 @@
 	}
 	
 	function fundInfoShow() {
-		$('#fund-code').show(1000);
-		$('#fund-name').show(1000);
-		$('#unit-net').show(1000);
-		$('#extra-fee').show(1000);
-		$('#fund-divider').show(1000);
+		$('#fund-extra-info').show();
 	}
 	
 	function fundInfoHide(){
-		$('#fund-code').hide();
-		$('#fund-name').hide();
-		$('#unit-net').hide();
-		$('#extra-fee').hide();
-		$('#fund-divider').hide();
+		$('#fund-extra-info').hide();
 	}
 	
 	$(function() {
@@ -241,6 +238,11 @@
 		  "hideMethod": "fadeOut"
 		};
 	    
+	   $("input[name='fundDetail.fundType']").iCheck({
+		    checkboxClass: 'icheckbox_flat-green',
+		    radioClass: 'iradio_flat-green'
+		  });
+	   
 	    $('#input_je').blur(function(){
 	    	
 	    	var je = $(this).val();
@@ -505,38 +507,52 @@
 				</tr>
 				
 				
-				<tr id="fund-code">
-					<th>基金代码</th>
-					<td>
-						<s:textfield name="fundDetail.fundCode" id="fundCode"  maxlength="16" class="recordInput" theme="simple"/>
-					</td>
-				</tr>
-				<tr id="fund-name">
-					<th>基金名称</th>
-					<td>
-						<s:textfield name="fundDetail.fundName" id="fundName"  maxlength="16" class="recordInput" theme="simple"/>
-					</td>
-				</tr>
-				<tr id="unit-net">
-					<th>单位净值</th>
-					<td>
-						<s:textfield name="fundDetail.unitNet" id="unitNet"  maxlength="16" class="recordInput" theme="simple"/>
-					</td>
-				</tr>
-				<tr id="extra-fee">
-					<th>手续费</th>
-					<td>
-						<s:textfield name="fundDetail.extraFee" id="extraFee"  maxlength="16" class="recordInput" theme="simple"/>
-					</td>
-				</tr>
+				<tbody id="fund-extra-info">
+					<tr id="fund-code">
+						<th>基金代码</th>
+						<td>
+							<s:textfield name="fundDetail.fundCode" id="fundCode"  maxlength="16" class="recordInput" theme="simple"/>
+						</td>
+					</tr>
+					<tr id="fund-name">
+						<th>基金名称</th>
+						<td>
+							<s:textfield name="fundDetail.fundName" id="fundName"  maxlength="16" class="recordInput" theme="simple"/>
+						</td>
+					</tr>
+					<tr id="unit-net">
+						<th>单位净值</th>
+						<td>
+							<s:textfield name="fundDetail.unitNet" id="unitNet"  maxlength="16" class="recordInput" theme="simple"/>
+						</td>
+					</tr>
+					<tr id="extra-fee">
+						<th>手续费</th>
+						<td>
+							<s:textfield name="fundDetail.extraFee" id="extraFee"  maxlength="16" class="recordInput" theme="simple"/>
+						</td>
+					</tr>
+					<tr>
+						<th>基金类型</th>
+						<td>
+						 	<ul class="fund-list">
+						 		<s:iterator value="#request.fund_type">
+						 			<li>
+						 				<input type="radio" name="fundDetail.fundType" value="${key }" <s:if test="fundDetail.fundType == key ">checked="checked"</s:if> />
+					                  	<label for="flat-radio-1">${value }</label>
+				                  	</li>
+						 		</s:iterator>
+			              	</ul>
+		              	</td>
+		             </tr>
+	             	<tr id="fund-divider" style="height:10px;font-size:0px;">
+						<td colspan="3" style="border-bottom: 1px solid #DDE2E8;">&nbsp;</td>
+					</tr>
+					<tr style="height:10px;font-size:0px;">
+						<td></td>
+					</tr>
+				</tbody>
 				
-				
-				<tr id="fund-divider" style="height:10px;font-size:0px;">
-					<td colspan="3" style="border-bottom: 1px solid #DDE2E8;">&nbsp;</td>
-				</tr>
-				<tr style="height:10px;font-size:0px;">
-					<td></td>
-				</tr>
 				
 	  			<tr>
 					<th style="vertical-align:top">备注</th>

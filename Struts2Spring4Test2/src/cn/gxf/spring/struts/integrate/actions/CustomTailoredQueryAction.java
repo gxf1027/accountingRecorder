@@ -54,20 +54,20 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 	private Integer pageSize = new Integer(10);
 	
 	
-	private UserLogin user;
+	/*private UserLogin user;*/
 	Map<String, Object> myrequest;
 	
 	@Autowired
 	private DmService dmService;
 	
-	@Autowired
-	private CustomTailorQueryDao customTailorQueryDao;
+	/*@Autowired
+	private CustomTailorQueryDao customTailorQueryDao;*/
 	
 	@Autowired
 	private CustomTailorQueryService customTailorQueryService;
 	
-	@Autowired
-	private StatNdYfMBDao statNdYfMBDao;
+	/*@Autowired
+	private StatNdYfMBDao statNdYfMBDao;*/
 	
 	@Override
 	public void prepare() throws Exception{
@@ -100,10 +100,31 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
         }
 	}
 	
-	
+	private void prepareDefaultInputDate(){
+		// 默认时间范围为月初和月末
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String firstday, lastday;
+		Calendar cale = null;
+		// 获取前月的第一天
+        cale = Calendar.getInstance();
+        cale.add(Calendar.MONTH, 0);
+        cale.set(Calendar.DAY_OF_MONTH, 1);
+        firstday = df.format(cale.getTime());
+        
+        // 获取前月的最后一天
+        cale.add(Calendar.MONTH, 1);
+        cale.set(Calendar.DAY_OF_MONTH, 0);
+        lastday = df.format(cale.getTime());
+        System.out.println("input: " + this.myrequest.get("date_from")); 
+        if (!this.myrequest.containsKey("date_from") && !this.myrequest.containsKey("date_to") ){
+        	// request中存在date_from或者date_to都不存在，才使用默认值
+        	this.myrequest.put("date_from", firstday);
+        	this.myrequest.put("date_to", lastday);
+        }
+	}
 	
 	public String inputQuery(){
-	
+		
 		// 支出大类-小类
 		Map<DmPaymentDl, List<DmPaymentXl>> map_payment = dmService.getPaymentDlXlDzb();
 		System.out.println("payment: " +map_payment.hashCode());
@@ -111,6 +132,45 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		
 		
 		return "inputOk";
+	}
+	
+	public String inputPaymentQuery(){
+		prepareDefaultInputDate();
+		// 支出大类小类
+		Map<String, String> dlmap = dmService.getPaymentDl();
+		this.myrequest.put("dl_dm", dlmap);
+				
+		Map<String, String> xlmap = dmService.getPaymentXl();
+		this.myrequest.put("xl_dm", xlmap);
+				
+		// 账户
+		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		this.myrequest.put("zh_info", dmService.getZhInfoSimple(user.getId()));
+		
+		return "inputPaymentOk";
+	}
+	
+	public String inputIncomeQuery(){
+		prepareDefaultInputDate();
+		// 收入类别
+		Map<String, String> srlbmap = dmService.getIncomeLb();
+		System.out.println("income: " + srlbmap.hashCode());
+		this.myrequest.put("srlb_dm", srlbmap);
+				
+		// 账户
+		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		this.myrequest.put("zh_info", dmService.getZhInfoSimple(user.getId()));
+		
+		return "inputIncomeOk";
+	}
+	
+	public String inputTransferQuery(){	
+		prepareDefaultInputDate();
+		// 账户
+		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		this.myrequest.put("zh_info", dmService.getZhInfoSimple(user.getId()));
+				
+		return "inputTransferOk";
 	}
 	
 	private int checkDmList(List<String> dmlist){
@@ -189,7 +249,7 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		List<StatByMonth> list = statNdYfMBDao.getNdYfStat("2017");
 		System.out.println(list);*/
 		
-		return "queryOk";
+		return "inputPaymentOk";
 	}
 	
 	public String incomeQuery(){
@@ -249,7 +309,7 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		// 当result type是默认（dispatcher），直接调整到jsp页面，页面上select元素需要初始化内容
 		pageElement2Request();
 		
-		return "queryOk";
+		return "inputIncomeOk";
 	}
 	
 	
@@ -299,7 +359,7 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		// 当result type是默认（dispatcher），直接调整到jsp页面，页面上select元素需要初始化内容
 		pageElement2Request();
 		
-		return "queryOk";
+		return "inputTransferOk";
 	}
 	
 	// 当result type是默认（dispatcher），直接调整到jsp页面，页面上select元素需要初始化内容

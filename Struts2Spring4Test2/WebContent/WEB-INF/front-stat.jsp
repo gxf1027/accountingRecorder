@@ -150,26 +150,14 @@
 				break;
 			
 			case "queryPayment":
-				window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputQuery";
+				//window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputQuery";
+				window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputPaymentQuery";
 				break;
 				
 			case "detail-all":
 				window.location.href = "${pageContext.request.contextPath}/demo/listDetail!listByMonth";
 				break;
-				
-			case "query-outgo":
-				$("#paymentbox").css("display", "initial").siblings().css("display", "none");
-				$("#tab_payment").addClass("tabcurrent").siblings().removeClass("tabcurrent");
-				break;
 			
-			case "query-income":
-				$("#incomebox").css("display", "initial").siblings().css("display", "none");
-				$("#tab_income").addClass("tabcurrent").siblings().removeClass("tabcurrent");
-				break;
-				
-			case "query-transfer":
-				$("#transferbox").css("display", "initial").siblings().css("display", "none");
-				$("#tab_transfer").addClass("tabcurrent").siblings().removeClass("tabcurrent");
 			default:
 				break;
 			}
