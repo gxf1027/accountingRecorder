@@ -6,7 +6,8 @@
   	
   	<select id="getFundDetailByUuid" parameterType="String" 
 		resultType="FundDetail">
-		SELECT transferuuid, 
+		SELECT uuid,
+				transferUuid, 
 				fund_code AS fundCode,
 				fund_name AS fundName,
 				fund_type AS fundType,

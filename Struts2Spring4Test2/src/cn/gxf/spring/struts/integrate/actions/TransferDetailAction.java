@@ -19,6 +19,7 @@ import com.opensymphony.xwork2.Preparable;
 import cn.gxf.spring.struts.integrate.security.UserLogin;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDaoImplJdbc;
 import cn.gxf.spring.struts2.integrate.model.AccountBook;
+import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
 import cn.gxf.spring.struts2.integrate.model.FundDetail;
 import cn.gxf.spring.struts2.integrate.model.TransferDetail;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountService;
@@ -52,10 +53,12 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		List<AccountBook> books = dmService.getZhInfo(user.getId());
 		Map<String, String> transfer_dm = dmService.getTransferType(user.getId());
 		Map<String, String> fund_type = dmService.getFundType();
+		Map<String, String> yh_dm = dmService.getYhInfo();
 		this.myrequest.put("ZH_INFO", books);
 		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
 		this.myrequest.put("dm_zzlx", transfer_dm);
 		this.myrequest.put("fund_type", fund_type);
+		this.myrequest.put("yh_dm", yh_dm);
 	}
 	
 	public String inputTransfer()
@@ -74,6 +77,8 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		this.myrequest.put("dm_zzlx", transfer_dm);
 		Map<String, String> fund_type = dmService.getFundType();
 		this.myrequest.put("fund_type", fund_type);
+		Map<String, String> yh_dm = dmService.getYhInfo();
+		this.myrequest.put("yh_dm", yh_dm);
 	}
 	
 	public String editShow(){
@@ -91,6 +96,10 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		if (this.transferDetail.getZzlx_dm().equals("0003")){
 			this.transferDetail.getFundDetail().setConfirmedSum(this.transferDetail.getJe()); // 设置金额，因为前台没有输入项目
 		}
+		else if (this.transferDetail.getZzlx_dm().equals("0002")){
+			this.transferDetail.getFinancialProductDetail().setJe(this.transferDetail.getJe());
+		}
+		System.out.println(this.transferDetail.getFinancialProductDetail().getStartDate());
 		detailAccountUnivServiceImpl.saveOne(this.transferDetail);
 		return "saveOk";
 	}
@@ -100,6 +109,8 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		this.transferDetail.setUser_id(user.getId());
 		if (this.transferDetail.getZzlx_dm().equals("0003")){
 			this.transferDetail.getFundDetail().setConfirmedSum(this.transferDetail.getJe()); // 设置金额，因为前台没有输入项目
+		}else if (this.transferDetail.getZzlx_dm().equals("0002")){
+			this.transferDetail.getFinancialProductDetail().setJe(this.transferDetail.getJe());
 		}
 		detailAccountUnivServiceImpl.saveOne(this.transferDetail);
 		return "saveRecOk";
@@ -115,9 +126,25 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 			return "have-no-authority";
 		}
 		this.transferDetail.setXgrq(new Date());
-		if (this.transferDetail.getFundDetail() != null){
-			this.transferDetail.getFundDetail().setXgrq(new Date());
+		
+		// 特殊转账方式
+		switch (this.transferDetail.getZzlx_dm()) {
+		case "0002":
+			if (this.transferDetail.getFinancialProductDetail() != null){
+				this.transferDetail.getFinancialProductDetail().setXgrq(new Date());
+				this.transferDetail.getFinancialProductDetail().setJe(this.transferDetail.getJe());
+			}
+			break;
+		case "0003":
+			if ( this.transferDetail.getFundDetail() != null){
+				this.transferDetail.getFundDetail().setXgrq(new Date());
+				this.transferDetail.getFundDetail().setConfirmedSum(this.transferDetail.getJe());
+			}
+			break;
+		default:
+			break;
 		}
+		
 		detailAccountUnivServiceImpl.updateOne(this.transferDetail);
 		return "saveOk";
 	}
@@ -176,6 +203,7 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		if( this.transferDetail == null ){
 			this.transferDetail = new TransferDetail();
 			this.transferDetail.setFundDetail(new FundDetail());
+			this.transferDetail.setFinancialProductDetail(new FinancialProductDetail());
 		}
 		return this.transferDetail;
 	}

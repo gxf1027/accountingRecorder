@@ -208,14 +208,6 @@
 		
 	}
 	
-	function fundInfoShow() {
-		$('#fund-extra-info').show();
-	}
-	
-	function fundInfoHide(){
-		$('#fund-extra-info').hide();
-	}
-	
 	$(function() {
 		/* 获取当前时间 */
 	    var now = new Date();
@@ -256,10 +248,16 @@
 			 $("#logout-form").submit();
 		});
 	    
+	    // editShow打开时判断是否是理财或者基金
 	    if ($('#zzlxDm').find('option:selected').val() == '0003'){
-	    	fundInfoShow();
+	    	$('#fund-extra-info').show();
 	    }else{
-	    	fundInfoHide();
+	    	$('#fund-extra-info').hide();
+	    }
+	    if ($('#zzlxDm').find('option:selected').val() == '0002'){
+	    	$('#financial-extra-info').show();
+	    }else{
+	    	$('#financial-extra-info').hide();
 	    }
 	    
 	    $('#zzlxDm').change(function(){
@@ -267,9 +265,15 @@
 	    	console.log('select_val: ' + selectVal);
 	    	
 	    	if ('0003' == selectVal){
-	    		fundInfoShow();
+	    		$('#fund-extra-info').show();
 	    	}else{
-	    		fundInfoHide();
+	    		$('#fund-extra-info').hide();
+	    	}
+	    	
+	    	if ('0002' == selectVal){
+	    		$('#financial-extra-info').show();
+	    	}else{
+	    		$('#financial-extra-info').hide();
 	    	}
 	    });
 	})
@@ -550,6 +554,52 @@
 					</tr>
 					<tr style="height:10px;font-size:0px;">
 						<td></td>
+					</tr>
+				</tbody>
+				
+				<tbody id="financial-extra-info">
+					<tr>
+						<th>理财产品名称</th>
+						<td>
+							<s:textfield name="financialProductDetail.productName" id="productName"  maxlength="16" class="recordInput" theme="simple"/>
+						</td>
+					</tr>
+					<tr>
+						<th>银行</th>
+						<td>
+							<s:select id="yh_dm" list="#request.yh_dm" listKey="key" listValue="value"  name="financialProductDetail.yh_dm" theme="simple" class="selectInput" />
+						</td>
+					</tr>
+					<tr>
+						<th>投资天数</th>
+						<td>
+							<s:textfield name="financialProductDetail.dateCount" id="dateCount"  maxlength="16" class="recordInput" theme="simple"/>
+						</td>
+					</tr>
+					<tr>
+						<th>投资期限</th>
+						<td>
+							<s:if test="#request.DETAIL_MODE=='EDIT'">
+								<input type="date"  id="dateStart" name="financialProductDetail.startDate" value="<s:property value='financialProductDetail.startDateToShow'/>" style="height:24px;line-height:24px;border:1px solid #CCC;background-position: 115px 12px;" > 至
+								<input type="date"  id="dateStart" name="financialProductDetail.endDate" value="<s:property value='financialProductDetail.endDateToShow'/>" style="height:24px;line-height:24px;border:1px solid #CCC;background-position: 115px 12px;" >
+							</s:if>
+							<s:else>
+								<input type="date"  id="dateStart" name="financialProductDetail.startDate"  style="height:24px;line-height:24px;border:1px solid #CCC;background-position: 115px 12px;" > 至
+								<input type="date"  id="dateStart" name="financialProductDetail.endDate"  style="height:24px;line-height:24px;border:1px solid #CCC;background-position: 115px 12px;" >
+							</s:else>
+						</td>
+					</tr>
+					<tr>
+						<th>期望收益率</th>
+						<td>
+							<s:textfield name="financialProductDetail.expectedReturnRate" id="expectedReturnRate"  maxlength="16" class="recordInput" theme="simple"/>
+						</td>
+					</tr>
+					<tr>
+						<th>实际收益金额</th>
+						<td>
+							<s:textfield name="financialProductDetail.realReturn" id="realReturn"  maxlength="16" class="recordInput" theme="simple"/>
+						</td>
 					</tr>
 				</tbody>
 				

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.gxf.spring.struts.mybatis.dao.AccountDetailMBDao;
+import cn.gxf.spring.struts.mybatis.dao.FinancialProductDetailMBDao;
 import cn.gxf.spring.struts.mybatis.dao.FundDetailMBDao;
 import cn.gxf.spring.struts.mybatis.dao.IncomeDetailMBDao;
 import cn.gxf.spring.struts.mybatis.dao.PaymentDetailMBDao;
@@ -19,6 +20,7 @@ import cn.gxf.spring.struts.mybatis.dao.TransferDetailMBDao;
 import cn.gxf.spring.struts2.integrate.dao.AccountBookDao;
 import cn.gxf.spring.struts2.integrate.model.AccountObject;
 import cn.gxf.spring.struts2.integrate.model.AccountingDetail;
+import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
 import cn.gxf.spring.struts2.integrate.model.FundDetail;
 import cn.gxf.spring.struts2.integrate.model.IncomeDetail;
 import cn.gxf.spring.struts2.integrate.model.PaymentDetail;
@@ -28,6 +30,7 @@ import cn.gxf.spring.struts2.integrate.model.TransferDetail;
 public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 
 	private static final String ZZLX_FUND_DM = "0003";
+	private static final String ZZLX_FINANCIAL_PRO_DM = "0002";
 	
 	@Autowired
 	private AccountDetailMBDao accountDetailMBDao;
@@ -47,6 +50,9 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	
 	@Autowired
 	private FundDetailMBDao fundDetailMBdao;
+	
+	@Autowired
+	private FinancialProductDetailMBDao financialProductDetailMBDao;
 	
 	@Autowired
 	private AccountBookDao accountBookDao;
@@ -87,6 +93,8 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		TransferDetail transferDetail = this.transferDetailMBDao.getTransferDetailByUuid(mxuuid);
 		FundDetail fundDetail = this.fundDetailMBdao.getFundDetailByUuid(mxuuid);// 如果转账类型不是“购买基金”,返回为null
 		transferDetail.setFundDetail(fundDetail);
+		FinancialProductDetail financialProductDetail = this.financialProductDetailMBDao.getFinancialProductDetailByUuid(mxuuid);
+		transferDetail.setFinancialProductDetail(financialProductDetail);
 		return transferDetail;
 	}
 	
@@ -145,11 +153,17 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			accountBookDao.updateYe(transferDetail.getSrcZh_dm(), -1.0f*transferDetail.getJe());
 			accountBookDao.updateYe(transferDetail.getTgtZh_dm(), transferDetail.getJe());
 			
+			String transferUuid = transferDetail.getMxuuid(); // 通过上面主键回写获得
 			if (transferDetail.getZzlx_dm().equals(ZZLX_FUND_DM) && transferDetail.getFundDetail() != null){
-				String transferUuid = transferDetail.getMxuuid(); // 通过上面主键回写获得
 				transferDetail.getFundDetail().setTransferUuid(transferUuid);
 				transferDetail.getFundDetail().setLrrq(new Date());
 				fundDetailMBdao.addOne(transferDetail.getFundDetail());
+			}
+			
+			if (transferDetail.getZzlx_dm().equals(ZZLX_FINANCIAL_PRO_DM) && transferDetail.getFinancialProductDetail() != null){
+				transferDetail.getFinancialProductDetail().setTransferUuid(transferUuid);
+				transferDetail.getFinancialProductDetail().setLrrq(new Date());
+				financialProductDetailMBDao.addOne(transferDetail.getFinancialProductDetail());
 			}
 		}
 	}
@@ -222,6 +236,23 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 				// 修改前是购买基金，修改后不是购买基金
 				this.fundDetailMBdao.deleteOne(transferDetail_new.getMxuuid());
 			}
+			
+			if (transferDetail_new.getZzlx_dm().equals(ZZLX_FINANCIAL_PRO_DM) && !transferDetail_old.getZzlx_dm().equals(ZZLX_FINANCIAL_PRO_DM)){
+				// 转账类型从非理财产品修改为基金购买
+				FinancialProductDetail financialProductDetail = transferDetail_new.getFinancialProductDetail();
+				financialProductDetail.setTransferUuid(transferDetail_new.getMxuuid());
+				financialProductDetail.setLrrq(new Date());
+				this.financialProductDetailMBDao.addOne(financialProductDetail);
+			}else if (transferDetail_new.getZzlx_dm().equals(ZZLX_FINANCIAL_PRO_DM) && transferDetail_old.getZzlx_dm().equals(ZZLX_FINANCIAL_PRO_DM)){
+				// 修改前后的转账类型都是购买理财产品
+				FinancialProductDetail financialProductDetail = transferDetail_new.getFinancialProductDetail();
+				financialProductDetail.setTransferUuid(transferDetail_new.getMxuuid());
+				financialProductDetail.setXgrq(new Date());
+				this.financialProductDetailMBDao.updateOne(financialProductDetail);
+			}else if (!transferDetail_new.getZzlx_dm().equals(ZZLX_FINANCIAL_PRO_DM) && transferDetail_old.getZzlx_dm().equals(ZZLX_FINANCIAL_PRO_DM)){
+				// 修改后不是理财产品
+				this.financialProductDetailMBDao.deleteOne(transferDetail_new.getMxuuid());
+			}
 		}
 	}
 	
@@ -253,6 +284,10 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			
 			if (transferDetail.getZzlx_dm().equals(ZZLX_FUND_DM) && transferDetail.getFundDetail() != null){
 				fundDetailMBdao.deleteOne(transferDetail.getFundDetail().getTransferUuid());
+			}
+			
+			if (transferDetail.getZzlx_dm().equals(ZZLX_FINANCIAL_PRO_DM) && transferDetail.getFinancialProductDetail() != null){
+				financialProductDetailMBDao.deleteOne(transferDetail.getFinancialProductDetail().getTransferUuid());
 			}
 		}
 		
@@ -292,6 +327,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		}else if (detailObjs.get(0) instanceof TransferDetail){
 			transferDetailMBDao.deletePatch(mxuuidList);
 			fundDetailMBdao.deletePatch(mxuuidList);// 如果有则删除，fund的uuid和transfer的uuid相同
+			financialProductDetailMBDao.deletePatch(mxuuidList);// 如果有则删除，financial product的uuid和transfer的uuid相同
 			for (T item : detailObjs){
 				TransferDetail transferItem = (TransferDetail) item;
 				accountBookDao.updateYe(transferItem.getSrcZh_dm(), transferItem.getJe());
@@ -371,6 +407,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			
 			transferDetailMBDao.deletePatch(mxuuidList);
 			fundDetailMBdao.deletePatch(mxuuidList); // 如果有则删除
+			financialProductDetailMBDao.deletePatch(mxuuidList); // 如果有则删除
 			
 			for (TransferDetail transfer : transferDetailList){
 				accountBookDao.updateYe(transfer.getSrcZh_dm(), transfer.getJe());

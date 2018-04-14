@@ -111,7 +111,26 @@ public class DmUtilDaoImplJdbc implements DmUtilDao{
 			
 		});
 	}
+	
+	@Override
+	public Map<String, String> getYh() {
+		
+		String sql = "SELECT * FROM dm_yh WHERE xybz='Y' AND yxbz='Y'";
+		return jdbcTemplate.query(sql, new ResultSetExtractor<Map<String, String>>(){
 
+			@Override
+			public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				// TODO Auto-generated method stub
+				Map<String, String> map = new TreeMap<String, String>();
+				while(rs.next()){
+					map.put(rs.getString("yh_dm"), rs.getString("yh_mc"));
+				}
+				return map;
+			}
+
+			
+		});
+	}
 
 
 	@Override
@@ -265,5 +284,7 @@ public class DmUtilDaoImplJdbc implements DmUtilDao{
 			}
 		});
 	}
+
+
 	
 }

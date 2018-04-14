@@ -167,4 +167,11 @@ public class DmServiceImpl implements DmService {
 		return dmUtilDao.getFundType();
 	}
 	
+	@Cacheable(value="dmCache")
+	@Override
+	public Map<String, String> getYhInfo() {
+		
+		return dmUtilDao.getYh();
+	}
+		
 }

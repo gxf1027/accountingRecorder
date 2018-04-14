@@ -20,6 +20,7 @@ public class TransferDetail extends AccountObject implements Serializable{
 	private String yxbz;
 	private Date xgrq;
 	private FundDetail fundDetail;
+	private FinancialProductDetail financialProductDetail;
 
 	public String getMxuuid() {
 		return mxuuid;
@@ -168,14 +169,21 @@ public class TransferDetail extends AccountObject implements Serializable{
 	public void setFundDetail(FundDetail fundDetail) {
 		this.fundDetail = fundDetail;
 	}
+	
+	public FinancialProductDetail getFinancialProductDetail() {
+		return financialProductDetail;
+	}
+	
+	public void setFinancialProductDetail(FinancialProductDetail financialProductDetail) {
+		this.financialProductDetail = financialProductDetail;
+	}
 
 	@Override
 	public String toString() {
 		return "TransferDetail [mxuuid=" + mxuuid + ", accuuid=" + accuuid + ", user_name=" + user_name + ", user_id="
 				+ user_id + ", je=" + je + ", srcZh_dm=" + srcZh_dm + ", tgtZh_dm=" + tgtZh_dm + ", shijian=" + shijian
 				+ ", zzlx_dm=" + zzlx_dm + ", bz=" + bz + ", yxbz=" + yxbz + ", xgrq=" + xgrq + ", fundDetail="
-				+ fundDetail + "]";
+				+ fundDetail + ", financialProductDetail=" + financialProductDetail + "]";
 	}
-
 	
 }
