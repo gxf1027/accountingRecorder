@@ -1,6 +1,7 @@
 package cn.gxf.spring.struts2.integrate.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -10,13 +11,16 @@ public class FinancialProductDetail implements Serializable{
 	private String uuid;
 	private String transferUuid;
 	private String productName;
+	private String productType;
 	private String yh_dm;
+	private String yh_mc;
 	private int dateCount;
 	private Date startDate;
 	private Date endDate;
 	private float expectedReturnRate;
 	private float je;
 	private float realReturn;
+	private String is_redeem;
 	private Date lrrq;
 	private Date xgrq;
 	private String yxbz;
@@ -38,11 +42,23 @@ public class FinancialProductDetail implements Serializable{
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
+	public String getProductType() {
+		return productType;
+	}
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
 	public String getYh_dm() {
 		return yh_dm;
 	}
 	public void setYh_dm(String yh_dm) {
 		this.yh_dm = yh_dm;
+	}
+	public String getYh_mc() {
+		return yh_mc;
+	}
+	public void setYh_mc(String yh_mc) {
+		this.yh_mc = yh_mc;
 	}
 	public int getDateCount() {
 		return dateCount;
@@ -82,11 +98,25 @@ public class FinancialProductDetail implements Serializable{
 	public void setJe(float je) {
 		this.je = je;
 	}
+	public float getExpectedReturn(){
+		float expectedReturn = 1.0f*dateCount/365*expectedReturnRate*je;
+		int scale = 2;//设置位数  
+		int roundingMode = 4;//表示四舍五入，可以选择其他舍值方式，例如去尾，等等.  
+		BigDecimal bd = new BigDecimal((double)expectedReturn);  
+		bd = bd.setScale(scale,roundingMode);  
+		return bd.floatValue();
+	}
 	public float getRealReturn() {
 		return realReturn;
 	}
 	public void setRealReturn(float realReturn) {
 		this.realReturn = realReturn;
+	}
+	public String getIs_redeem() {
+		return is_redeem;
+	}
+	public void setIs_redeem(String is_redeem) {
+		this.is_redeem = is_redeem;
 	}
 	public Date getLrrq() {
 		return lrrq;

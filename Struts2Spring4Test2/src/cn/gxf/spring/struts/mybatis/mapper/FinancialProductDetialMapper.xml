@@ -9,6 +9,7 @@
 		SELECT  uuid,
 				transferuuid AS transferUuid, 
 				product_name AS productName,
+				product_type AS productType,
 				yh_dm AS yh_dm,
 				date_count AS dateCount,
 				start_date AS startDate,
@@ -16,9 +17,31 @@
 				expected_returnrate AS expectedReturnRate,
 				je,
 				real_return AS realReturn,
+				is_redeem AS is_redeem,
 				lrrq, 
 				xgrq
 			  FROM financial_product_detail WHERE transferuuid = #{uuid} AND yxbz='Y'
+	</select>
+	
+	<select id="getFinancialProductDetailByUserId" parameterType="Integer"
+		resultType="FinancialProductDetail">	
+		SELECT a.uuid,
+				a.transferuuid AS transferUuid, 
+				a.product_name AS productName,
+				yh_dm AS yh_dm,
+				(SELECT y.yh_mc FROM dm_yh y WHERE y.yh_dm = a.yh_dm) AS yh_mc, 
+				date_count AS dateCount,
+				start_date AS startDate,
+				end_date AS endDate,
+				expected_returnrate AS expectedReturnRate,
+				a.je,
+				a.real_return AS realReturn,
+				a.is_redeem AS is_redeem,
+				a.lrrq, 
+				a.xgrq 
+		FROM financial_product_detail a, account_transfer_detail b
+		WHERE a.transferuuid = b.mxuuid
+		AND b.user_id = #{userId};
 	</select>
 	
   	<insert id="addOne" parameterType="FinancialProductDetail">
@@ -27,12 +50,12 @@
 			SELECT CONCAT('FP',UUID_SHORT())
 		</selectKey>
 		
-  		INSERT INTO financial_product_detail(uuid, transferuuid, product_name, yh_dm, date_count, start_date, end_date, expected_returnrate, je, real_return,  lrrq, xgrq, yxbz)
-			VALUES(#{uuid}, #{transferUuid}, #{productName}, #{yh_dm}, #{dateCount}, #{startDate}, #{endDate}, #{expectedReturnRate}, #{je}, #{realReturn}, #{lrrq}, null, 'Y')
+  		INSERT INTO financial_product_detail(uuid, transferuuid, product_name, product_type, yh_dm, date_count, start_date, end_date, expected_returnrate, je, real_return, is_redeem, lrrq, xgrq, yxbz)
+			VALUES(#{uuid}, #{transferUuid}, #{productName}, #{productType}, #{yh_dm}, #{dateCount}, #{startDate}, #{endDate}, #{expectedReturnRate}, #{je}, #{realReturn}, #{is_redeem}, #{lrrq}, null, 'Y')
   	</insert>
   	
   	<update id="updateOne" parameterType="FinancialProductDetail">
-		UPDATE financial_product_detail SET product_name= #{productName}, yh_dm = #{yh_dm}, date_count=#{dateCount}, start_date = #{startDate}, end_date = #{endDate}, 
+		UPDATE financial_product_detail SET product_name= #{productName}, product_type= #{productType}, yh_dm = #{yh_dm}, date_count=#{dateCount}, start_date = #{startDate}, end_date = #{endDate}, 
 										expected_returnrate= #{expectedReturnRate}, je=#{je},real_return=#{realReturn}, xgrq= #{xgrq}
 				WHERE transferuuid = #{transferUuid} AND yxbz='Y'
   	</update>

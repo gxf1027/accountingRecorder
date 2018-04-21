@@ -17,6 +17,7 @@ public interface DmService {
 	public Map<DmPaymentDl, List<DmPaymentXl>> getPaymentDlXlDzb();
 	public Map<String, String> getIncomeLb();
 	public Map<String, String> getFundType();
+	public Map<String, String> getFinancialProdType();
 	public Map<String, String> getYhInfo();
 	public Map<String, String> getZhLx();
 	public Map<String, String> getOutgoCategory(Integer user_id);

@@ -136,6 +136,8 @@
 		}
 		.fund-list {margin-left: -35px; padding-bottom: 20px}
 		.fund-list li{float:left; margin-right:10px}
+		.fin-prod-list {margin-left: -35px; padding-bottom: 20px}
+		.fin-prod-list li{float:left; margin-right:10px}
 	</style>
 
 	
@@ -235,14 +237,26 @@
 		    radioClass: 'iradio_flat-green'
 		  });
 	   
+	   $("input[name='financialProductDetail.productType']").iCheck({
+		    checkboxClass: 'icheckbox_flat-green',
+		    radioClass: 'iradio_flat-green'
+		  });
+	   
+	   
 	    $('#input_je').blur(function(){
 	    	
 	    	var je = $(this).val();
-	    	//console.log(parseFloat(je));
 	    	if (isNaN(parseFloat(je)) || isNaN(je)){
 	    		toastr.error("<b>请输入正确的金额.</b>","提示");
 	    	}
 	    });
+	    
+	    $("#dateCount").blur(function() {
+	    	var dateCount = $(this).val();
+	    	if (isNaN(parseInt(dateCount)) || isNaN(dateCount)){
+	    		toastr.error("<b>请输入正确的天数.</b>","提示");
+	    	}
+		});
 	    
 	    $('#logout-url').click(function (){	
 			 $("#logout-form").submit();
@@ -258,6 +272,11 @@
 	    	$('#financial-extra-info').show();
 	    }else{
 	    	$('#financial-extra-info').hide();
+	    }
+	    if ($('#zzlxDm').find('option:selected').val() == '0009'){
+	    	$('#fund-redeem').show();
+	    }else{
+	    	$('#fund-redeem').hide();
 	    }
 	    
 	    $('#zzlxDm').change(function(){
@@ -275,8 +294,52 @@
 	    	}else{
 	    		$('#financial-extra-info').hide();
 	    	}
+	    	
+	    	if ('0009' == selectVal){
+	    		$('#fund-redeem').show();
+	    	}else{
+	    		$('#fund-redeem').hide();
+	    	}
 	    });
+	    
+	    // 理财预期收益随动变化
+	    $("input[name='je']").change(function() {
+	    	var je = $(this).val();
+	    	var dateCount = $("#dateCount").val();
+	    	var returnRate = $("#expectedReturnRate").val();
+	    	if (isNaN(je) || isNaN(dateCount) || isNaN(returnRate)){
+	    		return ;
+	    	}
+	    	var expectedReturn = je*1.0*dateCount/365*returnRate;
+			$("#expectedReturn").val( parseFloat(expectedReturn.toFixed(2)) );
+		});
+	    
+	    $("#dateCount").change(function() {
+	    	var je = $("input[name='je']").val();
+	    	var dateCount = $(this).val();
+	    	var returnRate = $("#expectedReturnRate").val();
+	    	if (isNaN(je) || isNaN(dateCount) || isNaN(returnRate)){
+	    		return ;
+	    	}
+	    	var expectedReturn = je*1.0*dateCount/365*returnRate;
+			$("#expectedReturn").val( parseFloat(expectedReturn.toFixed(2)) );
+		});
+	    
+	    $("#expectedReturnRate").change(function() {
+	    	var je = $("input[name='je']").val();
+	    	var dateCount = $("#dateCount").val();
+	    	var returnRate = $(this).val();
+	    	if (isNaN(je) || isNaN(dateCount) || isNaN(returnRate)){
+	    		return ;
+	    	}
+	    	var expectedReturn = je*1.0*dateCount/365*returnRate;
+			$("#expectedReturn").val( parseFloat(expectedReturn.toFixed(2)) );
+		});
 	})
+	
+	
+		
+	
 
 	function fix(num, length) {
 	  return ('' + num).length < length ? ((new Array(length + 1)).join('0') + num).slice(-length) : '' + num;
@@ -565,6 +628,19 @@
 						</td>
 					</tr>
 					<tr>
+						<th>产品类型</th>
+						<td>
+						 	<ul class="fin-prod-list">
+						 		<s:iterator value="#request.fin_prod_type">
+						 			<li>
+						 				<input type="radio" name="financialProductDetail.productType" value="${key }" <s:if test="financialProductDetail.productType == key ">checked="checked"</s:if> />
+					                  	<label for="flat-radio-1">${value }</label>
+				                  	</li>
+						 		</s:iterator>
+			              	</ul>
+		              	</td>
+		             </tr>
+					<tr>
 						<th>银行</th>
 						<td>
 							<s:select id="yh_dm" list="#request.yh_dm" listKey="key" listValue="value"  name="financialProductDetail.yh_dm" theme="simple" class="selectInput" />
@@ -596,13 +672,39 @@
 						</td>
 					</tr>
 					<tr>
+						<th>期望收益</th>
+						<td>
+							<s:textfield name="financialProductDetail.expectedReturn" id="expectedReturn"  maxlength="16" class="recordInput" theme="simple" disabled="true" />
+						</td>
+					</tr>
+					<%-- <tr>
 						<th>实际收益金额</th>
+						<td>
+							<s:textfield name="financialProductDetail.realReturn" id="realReturn"  maxlength="16" class="recordInput" theme="simple"/>
+						</td>
+					</tr> --%>
+					<tr id="fund-divider" style="height:10px;font-size:0px;">
+						<td colspan="3" style="border-bottom: 1px solid #DDE2E8;">&nbsp;</td>
+					</tr>
+					<tr style="height:10px;font-size:0px;">
+						<td></td>
+					</tr>
+				</tbody>
+				
+				<tbody id="fund-redeem">
+					<tr>
+						<th>理财产品</th>
+						<td>
+							<s:select id="product-unredeemed" list="#request.holding_product" listKey="key" listValue="value"  name="productUnredeemed" theme="simple" class="selectInput" style="width:280px" />
+						</td>
+					</tr>
+					<tr>
+						<th>实际收益</th>
 						<td>
 							<s:textfield name="financialProductDetail.realReturn" id="realReturn"  maxlength="16" class="recordInput" theme="simple"/>
 						</td>
 					</tr>
 				</tbody>
-				
 				
 	  			<tr>
 					<th style="vertical-align:top">备注</th>

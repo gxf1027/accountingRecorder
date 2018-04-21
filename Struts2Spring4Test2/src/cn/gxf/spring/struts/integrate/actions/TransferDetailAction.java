@@ -25,6 +25,7 @@ import cn.gxf.spring.struts2.integrate.model.TransferDetail;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountService;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountUnivServiceImpl;
 import cn.gxf.spring.struts2.integrate.service.DmService;
+import cn.gxf.spring.struts2.integrate.service.FinanicalProductService;
 
 public class TransferDetailAction  extends ActionSupport implements Preparable, RequestAware, SessionAware, ModelDriven<TransferDetail>{
 
@@ -47,6 +48,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 	@Autowired
 	private DetailAccountUnivServiceImpl<TransferDetail> detailAccountUnivServiceImpl;
 	
+	@Autowired
+	private FinanicalProductService financialProductService;
+	
 	public void prepareInputTransfer(){
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
@@ -59,6 +63,8 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		this.myrequest.put("dm_zzlx", transfer_dm);
 		this.myrequest.put("fund_type", fund_type);
 		this.myrequest.put("yh_dm", yh_dm);
+		this.myrequest.put("fin_prod_type", dmService.getFinancialProdType());
+		this.myrequest.put("holding_product", financialProductService.getFinancialProductUnredeemedMap(user.getId()));
 	}
 	
 	public String inputTransfer()
@@ -79,6 +85,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		this.myrequest.put("fund_type", fund_type);
 		Map<String, String> yh_dm = dmService.getYhInfo();
 		this.myrequest.put("yh_dm", yh_dm);
+		Map<String, String> fin_prod_type = dmService.getFinancialProdType();
+		this.myrequest.put("fin_prod_type", fin_prod_type);
+		this.myrequest.put("holding_product", financialProductService.getFinancialProductUnredeemedMap(user.getId()));
 	}
 	
 	public String editShow(){

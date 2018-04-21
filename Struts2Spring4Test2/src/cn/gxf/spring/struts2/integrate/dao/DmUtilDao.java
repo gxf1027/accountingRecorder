@@ -16,6 +16,7 @@ public interface DmUtilDao {
 	public Map<String, String> getZhHuLx();
 	public Map<String, String> getOutgoCategory(Integer user_id);
 	public Map<String, String> getTransferType(Integer user_id);
+	public Map<String, String> getFinancialProdType();
 	
 	public List<DmPaymentDl> getPaymentDlList();
 	public List<DmPaymentXl> getPaymentXlList();

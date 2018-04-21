@@ -169,6 +169,13 @@ public class DmServiceImpl implements DmService {
 	
 	@Cacheable(value="dmCache")
 	@Override
+	public Map<String, String> getFinancialProdType(){
+		
+		return dmUtilDao.getFinancialProdType();
+	}
+	
+	@Cacheable(value="dmCache")
+	@Override
 	public Map<String, String> getYhInfo() {
 		
 		return dmUtilDao.getYh();
