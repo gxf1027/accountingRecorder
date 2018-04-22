@@ -37,8 +37,9 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 	private Date date_from;
 	private Date date_to;
 	private List<String> zh_dm;
-	private String srcZh_dm;
-	private String tgtZh_dm;
+	private List<String> srcZh_dm;
+	private List<String> tgtZh_dm;
+	private List<String> zzlx_dm;
 	private String seller;
 	private String fkfmc;
 	
@@ -146,6 +147,7 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		// 账户
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.myrequest.put("zh_info", dmService.getZhInfoSimple(user.getId()));
+		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
 		
 		return "inputPaymentOk";
 	}
@@ -160,6 +162,7 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		// 账户
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.myrequest.put("zh_info", dmService.getZhInfoSimple(user.getId()));
+		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
 		
 		return "inputIncomeOk";
 	}
@@ -168,7 +171,10 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		prepareDefaultInputDate();
 		// 账户
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		this.myrequest.put("zh_info", dmService.getZhInfoSimple(user.getId()));
+		int user_id = user.getId();
+		this.myrequest.put("zh_info", dmService.getZhInfoSimple(user_id));
+		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user_id));
+		this.myrequest.put("dm_zzlx", dmService.getTransferType(user_id));
 				
 		return "inputTransferOk";
 	}
@@ -316,8 +322,16 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 	public String transferQuery(){
 		
 		Map<String, Object> params = new HashMap<>();
-		params.put("srcZh_dm", this.srcZh_dm);
-		params.put("tgtZh_dm", this.tgtZh_dm);
+		if (1==this.checkDmList(this.srcZh_dm)){
+			params.put("srcZh_dm", this.srcZh_dm);
+		}
+		if (1==this.checkDmList(this.tgtZh_dm)){
+			params.put("tgtZh_dm", this.tgtZh_dm);
+		}
+		if (1==this.checkDmList(this.zzlx_dm)){
+			params.put("zzlx_dm", this.zzlx_dm);
+		}
+		
 		params.put("date_from", this.date_from);
 		params.put("date_to", this.date_to);
 		
@@ -355,8 +369,10 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		if (this.date_to != null){
 			this.myrequest.put("date_to", df.format(this.date_to));
 		}
-		myrequest.put("queryType", "transfer");
+		this.myrequest.put("queryType", "transfer");
+		
 		// 当result type是默认（dispatcher），直接调整到jsp页面，页面上select元素需要初始化内容
+		this.myrequest.put("dm_zzlx", dmService.getTransferType(user.getId())); // transfer页面特有元素
 		pageElement2Request();
 		
 		return "inputTransferOk";
@@ -379,6 +395,7 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		// 账户
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.myrequest.put("zh_info", dmService.getZhInfoSimple(user.getId()));
+		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
 	}
 
 	public List<String> getPaydl_dm() {
@@ -445,20 +462,28 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		this.zh_dm = zh_dm;
 	}
 
-	public String getSrcZh_dm() {
+	public List<String> getSrcZh_dm() {
 		return srcZh_dm;
 	}
 
-	public void setSrcZh_dm(String srcZh_dm) {
+	public void setSrcZh_dm(List<String> srcZh_dm) {
 		this.srcZh_dm = srcZh_dm;
 	}
 
-	public String getTgtZh_dm() {
+	public List<String> getTgtZh_dm() {
 		return tgtZh_dm;
 	}
 
-	public void setTgtZh_dm(String tgtZh_dm) {
+	public void setTgtZh_dm(List<String> tgtZh_dm) {
 		this.tgtZh_dm = tgtZh_dm;
+	}
+	
+	public List<String> getZzlx_dm() {
+		return zzlx_dm;
+	}
+	
+	public void setZzlx_dm(List<String> zzlx_dm) {
+		this.zzlx_dm = zzlx_dm;
 	}
 
 	public String getSeller() {

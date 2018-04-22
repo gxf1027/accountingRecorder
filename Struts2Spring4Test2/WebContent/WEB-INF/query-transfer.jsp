@@ -446,12 +446,22 @@
 							<tr>
 								<th>转出账户</th>
 								<td>
-									 <s:select name="zh_dm" list="#request.zh_info" listKey="zh_dm" listValue="zh_mc" theme="simple" class="selectInput" />
+									 <%-- <s:select name="zh_dm" list="#request.zh_info" listKey="zh_dm" listValue="zh_mc" theme="simple" class="selectInput" /> --%>
+									 <s:select name="srcZh_dm" list="%{#{-1:'--选择账户--'}}" theme="simple" class="selectInput">
+										<s:iterator value="#request.ZH_INFO_MAP" >
+										  	<s:optgroup label="%{key}" list="value" listKey="zh_dm" listValue="zh_mc" />
+										</s:iterator>
+									 </s:select> 
 								</td>
 								
 								<th>转入账户</th>
 								<td>
-									 <s:select name="zh_dm" list="#request.zh_info" listKey="zh_dm" listValue="zh_mc" theme="simple" class="selectInput" />
+									 <%-- <s:select name="zh_dm" list="#request.zh_info" listKey="zh_dm" listValue="zh_mc" theme="simple" class="selectInput" /> --%>
+									 <s:select name="tgtZh_dm" list="%{#{-1:'--选择账户--'}}" theme="simple" class="selectInput">
+										<s:iterator value="#request.ZH_INFO_MAP" >
+										  	<s:optgroup label="%{key}" list="value" listKey="zh_dm" listValue="zh_mc" />
+										</s:iterator>
+									 </s:select> 
 								</td>
 								
 								<th>发生时间起</th>
@@ -479,8 +489,12 @@
 									 <s:textfield id="je_lt" name="je_lt" class="recordInput" theme="simple" onblur="javascript:CheckInputIntFloat(this);"/>
 								</td>
 								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-								<th></th>
-								<td></td>
+								
+								<th>转账类型</th>
+								<td>
+									<s:select id="zzlxDm" list="#request.dm_zzlx" listKey="key" listValue="value" name="zzlx_dm" headerKey="" headerValue="全部" theme="simple" class="selectInput" />	
+      							</td>
+      							
 								<th></th>
 								<td>
 									<s:submit key="查询"  class="queryBtn"  method="transferQuery" theme="simple" />

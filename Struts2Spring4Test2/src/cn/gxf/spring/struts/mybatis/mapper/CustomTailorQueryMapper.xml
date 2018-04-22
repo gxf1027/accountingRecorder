@@ -127,6 +127,12 @@
 					#{dm}
 				</foreach>
 			</if> 
+			<if test="zzlx_dm != null">
+				AND p.zzlx_dm IN
+				<foreach collection="zzlx_dm" index="index" item="dm" open="(" separator="," close=")">
+					#{dm}
+				</foreach>
+			</if>
 			<if test="date_from != null">  
 			 	AND p.shijian &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d')
 			</if> 

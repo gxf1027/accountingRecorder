@@ -480,7 +480,12 @@
 								<th>账户</th>
 								<td>
 									 <%-- <s:textfield id="zh_dm" name="zh_dm" class="recordInput" theme="simple"/> --%>
-									 <s:select name="zh_dm" list="#request.zh_info" listKey="zh_dm" listValue="zh_mc" headerKey="" headerValue="全部" theme="simple" class="selectInput" />
+									 <%-- <s:select name="zh_dm" list="#request.zh_info" listKey="zh_dm" listValue="zh_mc" headerKey="" headerValue="全部" theme="simple" class="selectInput" /> --%>
+									 <s:select name="zh_dm" list="%{#{-1:'--选择账户--'}}" theme="simple" class="selectInput">
+										<s:iterator value="#request.ZH_INFO_MAP" >
+										  	<s:optgroup label="%{key}" list="value" listKey="zh_dm" listValue="zh_mc" />
+										</s:iterator>
+									 </s:select> 
 								</td>
 								
 								<th>金额大于</th>
