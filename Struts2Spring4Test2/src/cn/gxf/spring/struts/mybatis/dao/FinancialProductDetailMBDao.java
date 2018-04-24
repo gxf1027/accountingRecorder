@@ -13,6 +13,7 @@ public interface FinancialProductDetailMBDao {
 	public List<FinancialProductDetail> getFinancialProductDetailByUserId(Integer userId);
 	public void addOne(FinancialProductDetail financialProductDetail);
 	public void updateOne(FinancialProductDetail financialProductDetail);
+	public void setRedeem(FinancialProductDetail financialProductDetail);
 	public void deleteOne(String transferuuid);
 	public void deletePatch(List<String> uuidList);
 }

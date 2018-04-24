@@ -52,11 +52,22 @@
 	</authentication-manager> -->
 	
 	<!-- 数据库方式验证 -->
-	<authentication-manager alias="authenticationManager" erase-credentials="false">
+	<!-- 方法一：使用spring security的DaoAuthenticationProvider -->
+	<!-- <authentication-manager alias="authenticationManager" erase-credentials="false">
 		<authentication-provider user-service-ref="myUserDetailService">
 			<password-encoder ref="passwordEncoder" />
 		</authentication-provider>
+	</authentication-manager> -->
+	
+	<!-- 方法二：使用自定义的DaoAuthenticationProvider -->
+	<authentication-manager alias="authenticationManager" erase-credentials="false">
+		<authentication-provider ref="wcDaoAuthenticationProvider" />
 	</authentication-manager>
+	
+	<beans:bean id="wcDaoAuthenticationProvider" class="cn.gxf.spring.struts.integrate.security.WcDaoAuthenticationProvider">
+		<beans:property name="userDetailsService" ref="myUserDetailService" />
+		<beans:property name="passwordEncoder" ref="passwordEncoder" />
+	</beans:bean>
 
 	<!-- 对密码进行MD5编码 -->
 	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />

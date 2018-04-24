@@ -74,6 +74,18 @@
 				<SizeBasedTriggeringPolicy size="5 MB" />
 			</Policies>
 		</RollingFile>
+		
+		
+		<RollingFile name="loginInLogFile" fileName="${web:rootDir}/WEB-INF/log/login-in.log"
+			filePattern="${web:rootDir}/WEB-INF/log/$${date:yyyy-MM}/login-in-%d{yyyy-MM-dd}-%i.log">
+			<ThresholdFilter level="Debug" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="5 MB" />
+			</Policies>
+		</RollingFile>
 
 	</Appenders>
 
@@ -114,6 +126,10 @@
 		<Logger name="com.atomikos" level="DEBUG">
 	        <AppenderRef ref="Console" />
 	        <AppenderRef ref="RollingFileDebug" />
+	    </Logger>
+	    
+	    <Logger name="cn.gxf.spring.struts.integrate.security.WcDaoAuthenticationProvider" level="DEBUG">
+	        <AppenderRef ref="loginInLogFile" />
 	    </Logger>
 	</Loggers>
 </Configuration>  

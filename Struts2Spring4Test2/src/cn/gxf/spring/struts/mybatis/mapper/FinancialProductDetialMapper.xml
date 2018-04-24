@@ -60,6 +60,11 @@
 				WHERE transferuuid = #{transferUuid} AND yxbz='Y'
   	</update>
   	
+  	<update id="setRedeem" parameterType="FinancialProductDetail">
+		UPDATE financial_product_detail SET real_return=#{realReturn}, is_redeem=#{is_redeem}, xgrq= #{xgrq}
+				WHERE transferuuid = #{transferUuid} AND yxbz='Y'
+  	</update>
+  	
   	<update id="deleteOne" parameterType="String">
   		UPDATE financial_product_detail SET yxbz='N', xgrq = NOW() WHERE transferuuid = #{transferUuid} AND yxbz='Y'
   	</update>
