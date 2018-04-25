@@ -695,7 +695,12 @@
 					<tr>
 						<th>理财产品</th>
 						<td>
-							<s:select id="product-unredeemed" list="#request.holding_product" listKey="key" listValue="value"  name="productUnredeemed" theme="simple" class="selectInput" style="width:280px" />
+							<s:if test="#request.holding_product.size()>0">
+								<s:select id="product-unredeemed" list="#request.holding_product" listKey="key" listValue="value"  name="productUnredeemed" theme="simple" class="selectInput" style="width:280px" />
+							</s:if>
+							<s:else>
+								<s:select id="product-unredeemed" list="#{'-1':'无理财产品' }"  name="productUnredeemed" theme="simple" class="selectInput" disabled="true" />
+							</s:else>
 						</td>
 					</tr>
 					<tr>

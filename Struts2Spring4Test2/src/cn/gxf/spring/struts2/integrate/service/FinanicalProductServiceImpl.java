@@ -33,7 +33,7 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 		List<FinancialProductDetail> details = financialProductDetailMBDao.getFinancialProductDetailByUserId(userId);
 		List<FinancialProductDetail> unredeemed = new ArrayList<>();
 		for (FinancialProductDetail d:details){
-			if (d.getIs_redeem().equals("N")){
+			if (d.getIs_redeem() == null || d.getIs_redeem().equals("N")){
 				unredeemed.add(d);
 			}
 		}
@@ -52,7 +52,7 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 		}
 		Map<String, String> deltailMap = new HashMap<String, String>();
 		for (FinancialProductDetail d:details){
-			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getDateCount()+"-"+d.getJe());
+			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getDateCount()+"Ìì-"+d.getJe());
 		}
 		return deltailMap;
 	}

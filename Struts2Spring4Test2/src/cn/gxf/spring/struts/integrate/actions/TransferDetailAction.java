@@ -33,6 +33,7 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 	private Map<String, Object> mysession = null;
 	private Map<String, Object> myrequest = null;
 	private TransferDetail transferDetail;
+	private String productUnredeemed;
 	private List<String> mxuuidList;
 	private Date date_from;
 	private Date date_to;

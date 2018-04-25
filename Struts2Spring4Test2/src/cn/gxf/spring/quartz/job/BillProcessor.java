@@ -59,7 +59,11 @@ public class BillProcessor {
 		// 2. 获取数据
         // 获取账单明细
         List<CreditCardTransRecord> recList = getCreditCardTranscationRecordInZDQ(zzdmList, jyqq, jyqz);
-        System.out.println(recList);  
+        System.out.println("账单明细： "+recList);
+        if (recList == null || recList.size() == 0){
+        	System.out.println("本期无账单");
+        	return 0;
+        }
         
         // 准备要发送的bill数据
         List<CreditCardBill> bills = prepareCreditCardBills(recList, jyqq, jyqz);
