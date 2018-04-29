@@ -10,6 +10,8 @@ public class FinancialProductDetail implements Serializable{
 	private static final long serialVersionUID = -3685279529329841186L;
 	private String uuid;
 	private String transferUuid;
+	private String redeemUuid;
+	private String returnUuid;
 	private String productName;
 	private String productType;
 	private String yh_dm;
@@ -24,6 +26,11 @@ public class FinancialProductDetail implements Serializable{
 	private Date lrrq;
 	private Date xgrq;
 	private String yxbz;
+	
+	public FinancialProductDetail() {
+		this.is_redeem="N"; // 默认（初始化）时赎回标志位N
+	}
+	
 	public String getUuid() {
 		return uuid;
 	}
@@ -36,6 +43,23 @@ public class FinancialProductDetail implements Serializable{
 	public void setTransferUuid(String transferUuid) {
 		this.transferUuid = transferUuid;
 	}
+	
+	public String getRedeemUuid() {
+		return redeemUuid;
+	}
+
+	public void setRedeemUuid(String redeemUuid) {
+		this.redeemUuid = redeemUuid;
+	}
+
+	public String getReturnUuid() {
+		return returnUuid;
+	}
+
+	public void setReturnUuid(String returnUuid) {
+		this.returnUuid = returnUuid;
+	}
+
 	public String getProductName() {
 		return productName;
 	}

@@ -8,6 +8,10 @@ import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
 
 public interface DmService {
+	public final static String zzlx_purchase_fin_prod_dm = "0002";
+	public final static String zzlx_purchase_fund_dm = "0003";
+	public final static String zzlx_redeem_fin_prod_dm = "0009";
+	
 	public List<AccountBook> getZhInfo(int user_id);
 	public Map<String, List<AccountBook>> getZhInfoMap(int user_id);
 	public List<AccountBook> getZhInfoSimple(int user_id);

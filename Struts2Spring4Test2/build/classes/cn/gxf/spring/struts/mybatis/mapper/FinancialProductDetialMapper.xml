@@ -7,7 +7,9 @@
   	<select id="getFinancialProductDetailByUuid" parameterType="String" 
 		resultType="FinancialProductDetail">
 		SELECT  uuid,
-				transferuuid AS transferUuid, 
+				transferuuid AS transferUuid,
+				redeemuuid AS redeemUuid,
+				returnuuid AS returnUuid, 
 				product_name AS productName,
 				product_type AS productType,
 				yh_dm AS yh_dm,
@@ -21,6 +23,27 @@
 				lrrq, 
 				xgrq
 			  FROM financial_product_detail WHERE transferuuid = #{uuid} AND yxbz='Y'
+	</select>
+	
+	<select id="getFinancialProductDetailByRedeemUuid" parameterType="String" 
+		resultType="FinancialProductDetail">
+		SELECT  uuid,
+				transferuuid AS transferUuid, 
+				redeemuuid AS redeemUuid,
+				returnuuid AS returnUuid, 
+				product_name AS productName,
+				product_type AS productType,
+				yh_dm AS yh_dm,
+				date_count AS dateCount,
+				start_date AS startDate,
+				end_date AS endDate,
+				expected_returnrate AS expectedReturnRate,
+				je,
+				real_return AS realReturn,
+				is_redeem AS is_redeem,
+				lrrq, 
+				xgrq
+			  FROM financial_product_detail WHERE redeemuuid = #{uuid} AND yxbz='Y'
 	</select>
 	
 	<select id="getFinancialProductDetailByUserId" parameterType="Integer"
@@ -60,9 +83,9 @@
 				WHERE transferuuid = #{transferUuid} AND yxbz='Y'
   	</update>
   	
-  	<update id="setRedeem" parameterType="FinancialProductDetail">
-		UPDATE financial_product_detail SET real_return=#{realReturn}, is_redeem=#{is_redeem}, xgrq= #{xgrq}
-				WHERE transferuuid = #{transferUuid} AND yxbz='Y'
+  	<update id="setRedeem">
+		UPDATE financial_product_detail SET redeemuuid= #{redeemUuid}, is_redeem='Y', xgrq= NOW()
+				WHERE uuid = #{uuid} AND yxbz='Y'
   	</update>
   	
   	<update id="deleteOne" parameterType="String">

@@ -56,6 +56,16 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 		}
 		return deltailMap;
 	}
+
+
+	@Override
+	public FinancialProductDetail getFinancialProductByUuid(String uuid) {
+		if (uuid == null){
+			return null;
+		}
+		
+		return financialProductDetailMBDao.getFinancialProductDetailByUuid(uuid);
+	}
 	
 	
 

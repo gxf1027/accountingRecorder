@@ -263,17 +263,17 @@
 		});
 	    
 	    // editShow打开时判断是否是理财或者基金
-	    if ($('#zzlxDm').find('option:selected').val() == '0003'){
+	    if ($('#zzlxDm').find('option:selected').val() == '0003' || $('#zzlxDm').val() == '0003'){
 	    	$('#fund-extra-info').show();
 	    }else{
 	    	$('#fund-extra-info').hide();
 	    }
-	    if ($('#zzlxDm').find('option:selected').val() == '0002'){
+	    if ($('#zzlxDm').find('option:selected').val() == '0002' || $('#zzlxDm').val() == '0002' ){
 	    	$('#financial-extra-info').show();
 	    }else{
 	    	$('#financial-extra-info').hide();
 	    }
-	    if ($('#zzlxDm').find('option:selected').val() == '0009'){
+	    if ($('#zzlxDm').find('option:selected').val() == '0009' || $('#zzlxDm').val() == '0009'){
 	    	$('#fund-redeem').show();
 	    }else{
 	    	$('#fund-redeem').hide();
@@ -537,7 +537,16 @@
 				<tr>
 					<th>类型</th>
 					<td>
-						<s:select id="zzlxDm" list="#request.dm_zzlx" listKey="key" listValue="value" name="zzlx_dm" theme="simple" class="selectInput" />
+						<s:if test="#request.DETAIL_MODE == 'EDIT'"> 
+							<!-- 编辑模式下zzlx的input为只读模式，由于select设置为只读比较麻烦，所以使用textfield代替 -->
+							<!-- 只用于显示 -->
+							<s:textfield id="zzlxDm_show" name="zzlx_dm_show" value="%{#request.dm_zzlx[zzlx_dm]}" disabled="true"  class="recordInput" theme="simple"/>
+							<!-- 接受editshow的数据，并用于提交时传递数据，不可见 -->
+							<s:textfield id="zzlxDm" name="zzlx_dm" readonly="true" style="display: none;" theme="simple" />
+						</s:if>
+						<s:else>
+							<s:select id="zzlxDm" list="#request.dm_zzlx" listKey="key" listValue="value" name="zzlx_dm" theme="simple" class="selectInput" />
+						</s:else>
 					</td>
 				</tr>
 				
@@ -692,23 +701,33 @@
 				</tbody>
 				
 				<tbody id="fund-redeem">
-					<tr>
-						<th>理财产品</th>
-						<td>
-							<s:if test="#request.holding_product.size()>0">
-								<s:select id="product-unredeemed" list="#request.holding_product" listKey="key" listValue="value"  name="productUnredeemed" theme="simple" class="selectInput" style="width:280px" />
-							</s:if>
-							<s:else>
-								<s:select id="product-unredeemed" list="#{'-1':'无理财产品' }"  name="productUnredeemed" theme="simple" class="selectInput" disabled="true" />
-							</s:else>
-						</td>
-					</tr>
-					<tr>
-						<th>实际收益</th>
-						<td>
-							<s:textfield name="financialProductDetail.realReturn" id="realReturn"  maxlength="16" class="recordInput" theme="simple"/>
-						</td>
-					</tr>
+					<s:if test="#request.DETAIL_MODE != 'EDIT'">
+							<tr>
+								<th>理财产品</th>
+								<td>
+									<s:if test="#request.holding_product.size()>0">
+										<s:select id="product-unredeemed" list="#request.holding_product" listKey="key" listValue="value" headerKey="-1" headerValue="请选择" name="productUnredeemed" theme="simple" class="selectInput" style="width:280px" />
+									</s:if>
+									<s:else>
+										<s:select id="product-unredeemed" list="#{'-1':'无理财产品' }"  name="productUnredeemed" theme="simple" class="selectInput" disabled="true" />
+									</s:else>
+								</td>
+							</tr>
+							<%-- <tr>
+								<th>实际收益</th>
+								<td>
+									<s:textfield name="financialProductDetail.realReturn" id="realReturn"  maxlength="16" class="recordInput" theme="simple"/>
+								</td>
+							</tr> --%>
+					</s:if>
+					<s:else>
+						<tr>
+							<th>理财产品</th>
+							<td>
+								<s:textfield name="product-redeemed-show" value="%{financialProductDetail.productName} %{financialProductDetail.dateCount}天" theme="simple" class="recordInput" readonly="true"/> 
+							</td>
+						</tr>
+					</s:else>
 				</tbody>
 				
 	  			<tr>

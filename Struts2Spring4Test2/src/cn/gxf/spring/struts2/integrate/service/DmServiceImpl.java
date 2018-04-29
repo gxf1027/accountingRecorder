@@ -18,7 +18,7 @@ import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
 
 @Service
-public class DmServiceImpl implements DmService {
+public class DmServiceImpl implements DmService {	
 	@Autowired
 	private DmUtilDao dmUtilDao;
 	
@@ -180,5 +180,6 @@ public class DmServiceImpl implements DmService {
 		
 		return dmUtilDao.getYh();
 	}
-		
+	
+	
 }

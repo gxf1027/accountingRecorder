@@ -103,11 +103,17 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		//System.out.println(this.transferDetail);
 		//detailAccountService.saveOneTransfer(this.transferDetail);
 		//detailAccountService.saveOneTransferMB(this.transferDetail);
-		if (this.transferDetail.getZzlx_dm().equals("0003")){
+		if (this.transferDetail.getZzlx_dm().equals(DmService.zzlx_purchase_fund_dm)){
 			this.transferDetail.getFundDetail().setConfirmedSum(this.transferDetail.getJe()); // 设置金额，因为前台没有输入项目
 		}
-		else if (this.transferDetail.getZzlx_dm().equals("0002")){
+		else if (this.transferDetail.getZzlx_dm().equals(DmService.zzlx_purchase_fin_prod_dm)){
 			this.transferDetail.getFinancialProductDetail().setJe(this.transferDetail.getJe());
+		}else if (this.transferDetail.getZzlx_dm().equals(DmService.zzlx_redeem_fin_prod_dm)){ // 理财赎回，赎回时只需要更新实际收益
+			// this.transferDetail.financialProductDetail已经有realReturn数据，另外需设置uuid
+			if(this.productUnredeemed == null ){
+				this.productUnredeemed = "-1"; // 因为不可能有理财产品的uuid是-1,所以实际不会起作用
+			}
+			this.transferDetail.getFinancialProductDetail().setUuid(this.productUnredeemed); // 设置关联的理财产品uuid
 		}
 		System.out.println(this.transferDetail.getFinancialProductDetail().getStartDate());
 		detailAccountUnivServiceImpl.saveOne(this.transferDetail);
@@ -117,10 +123,17 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 	public String saveTransferAndRec(){
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.transferDetail.setUser_id(user.getId());
-		if (this.transferDetail.getZzlx_dm().equals("0003")){
+		if (this.transferDetail.getZzlx_dm().equals(DmService.zzlx_purchase_fund_dm)){
 			this.transferDetail.getFundDetail().setConfirmedSum(this.transferDetail.getJe()); // 设置金额，因为前台没有输入项目
-		}else if (this.transferDetail.getZzlx_dm().equals("0002")){
+		}else if (this.transferDetail.getZzlx_dm().equals(DmService.zzlx_purchase_fin_prod_dm)){
 			this.transferDetail.getFinancialProductDetail().setJe(this.transferDetail.getJe());
+		}else if (this.transferDetail.getZzlx_dm().equals(DmService.zzlx_redeem_fin_prod_dm)){ // 理财赎回，赎回时只需要更新实际收益
+			// this.transferDetail.financialProductDetail已经有realReturn数据，另外需设置uuid
+			if(this.productUnredeemed == null ){
+				this.productUnredeemed = "-1";
+			}
+			// 此时transferDetail还没有mxuuid,所以不能设置理财产品的赎回转账uuid
+			this.transferDetail.getFinancialProductDetail().setUuid(this.productUnredeemed);
 		}
 		detailAccountUnivServiceImpl.saveOne(this.transferDetail);
 		return "saveRecOk";
@@ -139,17 +152,23 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		
 		// 特殊转账方式
 		switch (this.transferDetail.getZzlx_dm()) {
-		case "0002":
+		case DmService.zzlx_purchase_fin_prod_dm:
 			if (this.transferDetail.getFinancialProductDetail() != null){
 				this.transferDetail.getFinancialProductDetail().setXgrq(new Date());
 				this.transferDetail.getFinancialProductDetail().setJe(this.transferDetail.getJe());
 			}
 			break;
-		case "0003":
+		case DmService.zzlx_purchase_fund_dm:
 			if ( this.transferDetail.getFundDetail() != null){
 				this.transferDetail.getFundDetail().setXgrq(new Date());
 				this.transferDetail.getFundDetail().setConfirmedSum(this.transferDetail.getJe());
 			}
+			break;
+		case DmService.zzlx_redeem_fin_prod_dm:
+			if(this.productUnredeemed == null ){
+				this.productUnredeemed = "-1";
+			}
+			this.transferDetail.getFinancialProductDetail().setUuid(this.productUnredeemed);
 			break;
 		default:
 			break;
@@ -205,6 +224,14 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 
 	public void setDate_to(Date date_to) {
 		this.date_to = date_to;
+	}
+	
+	public String getProductUnredeemed() {
+		return productUnredeemed;
+	}
+	
+	public void setProductUnredeemed(String productUnredeemed) {
+		this.productUnredeemed = productUnredeemed;
 	}
 
 	@Override

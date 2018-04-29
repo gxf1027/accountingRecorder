@@ -31,6 +31,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 
 	private static final String ZZLX_FUND_DM = "0003";
 	private static final String ZZLX_FINANCIAL_PRO_DM = "0002";
+	private static final String ZZLX_FIN_REDEEM_DM = "0009";
 	
 	@Autowired
 	private AccountDetailMBDao accountDetailMBDao;
@@ -93,7 +94,15 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		TransferDetail transferDetail = this.transferDetailMBDao.getTransferDetailByUuid(mxuuid);
 		FundDetail fundDetail = this.fundDetailMBdao.getFundDetailByUuid(mxuuid);// 如果转账类型不是“购买基金”,返回为null
 		transferDetail.setFundDetail(fundDetail);
-		FinancialProductDetail financialProductDetail = this.financialProductDetailMBDao.getFinancialProductDetailByUuid(mxuuid);
+		
+		FinancialProductDetail financialProductDetail = null;
+		if(transferDetail.getZzlx_dm().equals(DmService.zzlx_purchase_fin_prod_dm)){
+			// 当前转账类型为购买理财产品，那么找到对应的理财产品信息
+			financialProductDetail = this.financialProductDetailMBDao.getFinancialProductDetailByUuid(mxuuid); // 根据购买理财产品的转账uuid查找
+		}else if(transferDetail.getZzlx_dm().equals(DmService.zzlx_redeem_fin_prod_dm)){
+			// 当前转账类型为赎回理财产品，根据赎回转账交易的uuid字段对应到理财产品
+			financialProductDetail = this.financialProductDetailMBDao.getFinancialProductDetailByRedeemUuid(mxuuid); // 根据购买理财产品的转账uuid查找;
+		}
 		transferDetail.setFinancialProductDetail(financialProductDetail);
 		return transferDetail;
 	}
@@ -164,6 +173,14 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 				transferDetail.getFinancialProductDetail().setTransferUuid(transferUuid);
 				transferDetail.getFinancialProductDetail().setLrrq(new Date());
 				financialProductDetailMBDao.addOne(transferDetail.getFinancialProductDetail());
+			}
+			
+			if (transferDetail.getZzlx_dm().equals(ZZLX_FIN_REDEEM_DM) && transferDetail.getFinancialProductDetail() != null){
+				// 转账类型为“理财赎回”
+				FinancialProductDetail financialProductDetail = transferDetail.getFinancialProductDetail();
+				financialProductDetail.setRedeemUuid(transferUuid); // 设置理财产品关联的赎回转账交易uuid
+				// 设置对应理财产品赎回标志为Y, 并设置关联的赎回转账交易
+				financialProductDetailMBDao.setRedeem(financialProductDetail.getUuid(), financialProductDetail.getRedeemUuid());
 			}
 		}
 	}
@@ -252,6 +269,12 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			}else if (!transferDetail_new.getZzlx_dm().equals(ZZLX_FINANCIAL_PRO_DM) && transferDetail_old.getZzlx_dm().equals(ZZLX_FINANCIAL_PRO_DM)){
 				// 修改后不是理财产品
 				this.financialProductDetailMBDao.deleteOne(transferDetail_new.getMxuuid());
+			}
+			
+			if (transferDetail_new.getZzlx_dm().equals(DmService.zzlx_redeem_fin_prod_dm) && transferDetail_old.getZzlx_dm().equals(DmService.zzlx_redeem_fin_prod_dm)){
+				// 设置理财产品收益 (20180429在更新时不能修改赎回的理财产品)
+				//FinancialProductDetail financialProductDetail = transferDetail_new.getFinancialProductDetail();
+				//this.financialProductDetailMBDao.setRedeem(financialProductDetail.getUuid(), transferDetail_old.getMxuuid());
 			}
 		}
 	}
