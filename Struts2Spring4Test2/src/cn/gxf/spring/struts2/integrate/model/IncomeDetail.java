@@ -14,6 +14,7 @@ public class IncomeDetail extends AccountObject implements Serializable {
 
 	private String mxuuid;
 	private String accuuid;
+	private String finprodUuid; // 与“收入”关联的“理财产品”，当收入类型是“理财收益”时有效
 	private String user_name;
 	private int user_id;
 	private float je;
@@ -39,6 +40,14 @@ public class IncomeDetail extends AccountObject implements Serializable {
 
 	public void setAccuuid(String accuuid) {
 		this.accuuid = accuuid;
+	}
+	
+	public String getFinprodUuid() {
+		return finprodUuid;
+	}
+	
+	public void setFinprodUuid(String finprodUuid) {
+		this.finprodUuid = finprodUuid;
 	}
 
 	public int getUser_id() {
@@ -165,12 +174,13 @@ public class IncomeDetail extends AccountObject implements Serializable {
 	public int getType(){
 		return 1;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "IncomeDetail [mxuuid=" + mxuuid + ", user_name=" + user_name + ", user_id=" + user_id + ", je=" + je
-				+ ", lb_dm=" + lb_dm + ", fkfmc=" + fkfmc + ", zh_dm=" + zh_dm + ", shijian=" + shijian + ", bz=" + bz
-				+ ", yxbz=" + yxbz + ", xgrq=" + xgrq + "]";
+		return "IncomeDetail [mxuuid=" + mxuuid + ", accuuid=" + accuuid + ", finprodUuid=" + finprodUuid
+				+ ", user_name=" + user_name + ", user_id=" + user_id + ", je=" + je + ", lb_dm=" + lb_dm + ", fkfmc="
+				+ fkfmc + ", zh_dm=" + zh_dm + ", shijian=" + shijian + ", bz=" + bz + ", yxbz=" + yxbz + ", xgrq="
+				+ xgrq + "]";
 	}
 
 }

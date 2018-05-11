@@ -24,11 +24,13 @@ import cn.gxf.spring.struts2.integrate.dao.AccDetailVoDao;
 import cn.gxf.spring.struts2.integrate.dao.AccUtil;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDaoImplJdbc;
 import cn.gxf.spring.struts2.integrate.model.AccDateStat;
+import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
 import cn.gxf.spring.struts2.integrate.model.IncomeDetail;
 import cn.gxf.spring.struts2.integrate.model.PaymentDetail;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountService;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountUnivServiceImpl;
 import cn.gxf.spring.struts2.integrate.service.DmService;
+import cn.gxf.spring.struts2.integrate.service.FinanicalProductService;
 
 public class IncomeDetailAction extends ActionSupport implements Preparable, RequestAware, SessionAware, ModelDriven<IncomeDetail>{
 
@@ -41,6 +43,8 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 	private List<String> mxuuidList;
 	private Date date_from;
 	private Date date_to;
+	private String productToReturn; // 理财产品的uuid
+	private String realReturn;
 
 	
 	@Autowired
@@ -56,6 +60,8 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 	@Autowired
 	private DetailAccountUnivServiceImpl<IncomeDetail> detailAccountUnivServiceImpl;
 	
+	@Autowired
+	private FinanicalProductService financialProductService;
 	
 	public String inputIncome(){
 		Map<String, String> map = dmService.getIncomeLb();
@@ -68,7 +74,7 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.myrequest.put("ZH_INFO", dmService.getZhInfo(user.getId()));
 		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
-		
+		this.myrequest.put("holding_product", financialProductService.getFinancialProductUnreturnedMap(user.getId()));
 		
 //		IncomeDetail income = (IncomeDetail) this.myrequest.get("incomeDetialRedir");
 //		System.out.println(this.myrequest.get("incomeDetialRedir"));
@@ -100,6 +106,18 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.myrequest.put("ZH_INFO", dmService.getZhInfo(user.getId()));
 		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
+		//this.myrequest.put("holding_product", financialProductService.getFinancialProductUnreturnedMap(user.getId()));
+		//this.myrequest.put("111", financialProduct);
+		
+		if (this.incomeDetail.getFinprodUuid() != null){
+			// 如果这笔"收入"关联了一笔理财产品
+			FinancialProductDetail finprod = financialProductService.getFinancialProductByUuid(this.incomeDetail.getFinprodUuid());
+			String finprod_info = finprod.getProductName();
+			if (finprod.getDateCount() > 0){
+				finprod_info += " "+finprod.getDateCount()+"天";
+			}
+			this.myrequest.put("finprod_info", finprod_info);
+		}
 	}
 	
 	public String editShow(){
@@ -183,6 +201,22 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 
 	public void setDate_to(Date date_to) {
 		this.date_to = date_to;
+	}
+	
+	public String getProductToReturn() {
+		return productToReturn;
+	}
+	
+	public void setProductToReturn(String productToReturn) {
+		this.productToReturn = productToReturn;
+	}
+	
+	public String getRealReturn() {
+		return realReturn;
+	}
+	
+	public void setRealReturn(String realReturn) {
+		this.realReturn = realReturn;
 	}
 
 	@Override

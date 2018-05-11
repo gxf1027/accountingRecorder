@@ -8,9 +8,10 @@ import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
 
 public interface DmService {
-	public final static String zzlx_purchase_fin_prod_dm = "0002";
-	public final static String zzlx_purchase_fund_dm = "0003";
-	public final static String zzlx_redeem_fin_prod_dm = "0009";
+	public final static String zzlx_purchase_fin_prod_dm = "0002"; // 转账类型-购买理财产品
+	public final static String zzlx_purchase_fund_dm = "0003"; // 转账类型-购买基金
+	public final static String zzlx_redeem_fin_prod_dm = "0009"; // 转账类型-赎回理财产品
+	public final static String srlb_fin_prod_dm = "2001"; // 收入类型-理财利息
 	
 	public List<AccountBook> getZhInfo(int user_id);
 	public Map<String, List<AccountBook>> getZhInfoMap(int user_id);

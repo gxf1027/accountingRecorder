@@ -229,6 +229,27 @@
 		   	 $("#logout-form").submit();
 		});
 	   
+	    /*收入类型为：理财利息 的判断*/
+	    if ($('#sel_lb').find('option:selected').val() == '2001' || $('#sel_lb').val() == '2001'){
+	    	$('#fund-return').show();
+	    	$('#product-return').attr("disabled",false);
+	    }else{
+	    	$('#fund-return').hide();
+	    	$('#product-return').attr("disabled",true);
+	    }
+	    
+	    $('#sel_lb').change(function(){
+	    	var selectVal = $(this).find('option:selected').val();
+	    	//console.log('select_val: ' + selectVal);
+	    	
+	    	if ('2001' == selectVal){
+	    		$('#fund-return').show();
+	    		$('#product-return').attr("disabled",false);
+	    	}else{
+	    		$('#fund-return').hide();
+	    		$('#product-return').attr("disabled",true);
+	    	}
+	    });
 	})
 
 	function fix(num, length) {
@@ -260,6 +281,11 @@
 	
 	function checkBeforeSave(){
      	
+		if($("#sel_lb").val() == "-1"){
+			toastr.info("<b>请选择收入类别.</b>","提示");
+			return false;
+		}
+		
 		if ($("select[name='zh_dm']").val() == "-1"){
 			toastr.info("<b>请选择账户.</b>","提示");
 			return false;
@@ -401,7 +427,7 @@
 				<tr>
 					<th>类别</th>
 					<td> 
-						<s:select id="sel_lb" list="#request.SRLB" listKey="key" listValue="value"  name="lb_dm" theme="simple" class="selectInput"></s:select>
+						<s:select id="sel_lb" list="#request.SRLB" listKey="key" listValue="value"  name="lb_dm" headerKey="-1" headerValue="请选择" theme="simple" class="selectInput"></s:select>
 					</td>
 				</tr>
 				
@@ -442,6 +468,37 @@
 						</s:else>
 					</td>
 				</tr>
+				
+				<tbody id="fund-return">
+					<tr style="height:10px;font-size:0px;">
+						<td colspan="3" style="border-bottom: 1px solid #DDE2E8;">&nbsp;</td>
+					</tr>
+					
+					<tr style="height:10px;font-size:0px;">
+						<td></td>
+					</tr>
+					<s:if test="#request.DETAIL_MODE != 'EDIT'">
+							<tr>
+								<th>理财产品</th>
+								<td>
+									<s:if test="#request.holding_product.size()>0">
+										<s:select id="product-return" list="#request.holding_product" listKey="key" listValue="value" headerKey="-1" headerValue="请选择" name="finprodUuid" theme="simple" class="selectInput" style="width:280px" />
+									</s:if>
+									<s:else>
+										<s:select id="product-return" list="#{'-1':'无理财产品' }"  name="finprodUuid" theme="simple" class="selectInput" disabled="true" />
+									</s:else>
+								</td>
+							</tr>
+					</s:if>
+					<s:else>
+						<tr>
+							<th>理财产品</th>
+							<td>
+								<input name="product-return-show" value="${finprod_info }"  class="recordInput" readonly="true" disabled="false"/> 
+							</td>
+						</tr>
+					</s:else>
+				</tbody>
 	  			
 	  			<tr style="height:10px;font-size:0px;">
 					<td colspan="3" style="border-bottom: 1px solid #DDE2E8;">&nbsp;</td>

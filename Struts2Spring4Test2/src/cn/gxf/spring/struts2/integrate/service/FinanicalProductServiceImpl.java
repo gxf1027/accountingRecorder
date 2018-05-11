@@ -16,6 +16,7 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 
 	@Autowired
 	private FinancialProductDetailMBDao financialProductDetailMBDao;
+
 	
 	@Override
 	public List<FinancialProductDetail> getFinancialProductByUserId(Integer userId) {
@@ -25,6 +26,30 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 		return financialProductDetailMBDao.getFinancialProductDetailByUserId(userId);
 	}
 
+	@Override
+	public FinancialProductDetail getFinancialProductByUuid(String uuid) {
+		if (uuid == null){
+			return null;
+		}
+		return financialProductDetailMBDao.getFinancialProductDetailByUuid(uuid);
+	}
+	
+	@Override
+	public FinancialProductDetail getFinancialProductByTransferUuid(String uuid) {
+		if (uuid == null){
+			return null;
+		}
+		
+		return financialProductDetailMBDao.getFinancialProductDetailByTransferUuid(uuid);
+	}
+	
+	@Override
+	public FinancialProductDetail getFinancialProductByReturnUuid(String returnUuid) {
+		if (returnUuid == null){
+			return null;
+		}
+		return financialProductDetailMBDao.getFinancialProductDetailByReturnUuid(returnUuid);
+	}
 	
 	public List<FinancialProductDetail> getFinancialProductUnredeemed(Integer userId) {
 		if (userId == null){
@@ -39,7 +64,7 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 		}
 		return unredeemed.size() == 0 ? null : unredeemed;
 	}
-
+	
 
 	@Override
 	public Map<String, String> getFinancialProductUnredeemedMap(Integer userId) {
@@ -56,17 +81,23 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 		}
 		return deltailMap;
 	}
-
-
+	
 	@Override
-	public FinancialProductDetail getFinancialProductByUuid(String uuid) {
-		if (uuid == null){
+	public Map<String, String> getFinancialProductUnreturnedMap(Integer userId) {
+		if (userId == null){
 			return null;
 		}
-		
-		return financialProductDetailMBDao.getFinancialProductDetailByUuid(uuid);
+	    // 获取还未被“收入”关联的理财产品
+		List<FinancialProductDetail> details = this.financialProductDetailMBDao.getFinancialProductDetailUnreturned(userId);
+		if (details == null){
+			return null;
+		}
+		Map<String, String> deltailMap = new HashMap<String, String>();
+		for (FinancialProductDetail d:details){
+			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getDateCount()+"天-"+d.getJe());
+		}
+		return deltailMap;
 	}
-	
-	
 
+	
 }
