@@ -68,5 +68,7 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/wsdl4j-1.6.2.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/wss4j-policy-2.2.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jedis-2.9.0.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-data-redis-1.5.2.RELEASE.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

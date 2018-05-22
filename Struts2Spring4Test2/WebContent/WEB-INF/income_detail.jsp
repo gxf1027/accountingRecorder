@@ -481,7 +481,7 @@
 							<tr>
 								<th>理财产品</th>
 								<td>
-									<s:if test="#request.holding_product.size()>0">
+									<s:if test="#request.holding_product != null && #request.holding_product.size()>0">
 										<s:select id="product-return" list="#request.holding_product" listKey="key" listValue="value" headerKey="-1" headerValue="请选择" name="finprodUuid" theme="simple" class="selectInput" style="width:280px" />
 									</s:if>
 									<s:else>
@@ -494,7 +494,7 @@
 						<tr>
 							<th>理财产品</th>
 							<td>
-								<input name="product-return-show" value="${finprod_info }"  class="recordInput" readonly="true" disabled="false"/> 
+								<input name="product-return-show" value="${finprod_info }"  class="recordInput" readonly="true" disabled="true"/> 
 							</td>
 						</tr>
 					</s:else>
