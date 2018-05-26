@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.interceptor.RequestAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -258,6 +259,14 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		return "inputPaymentOk";
 	}
 	
+	private float calIncomeSum(List<IncomeDetailVO> incomeDetails){
+		float sum = 0.f;
+		for (IncomeDetailVO income : incomeDetails){
+			sum += income.getJe();
+		}
+		return sum;
+	}
+	
 	public String incomeQuery(){
 		
 		Map<String, Object> params = new HashMap<>();
@@ -298,9 +307,9 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 																			this.pageSize.intValue());
 		
 		this.totalPagesIncome = ((Page<IncomeDetailVO>)incomelist).getPages();		
-		System.out.println("list: "+ incomelist);
+		//System.out.println("list: "+ incomelist);
 		this.myrequest.put("incomeResult", incomelist);
-		
+		this.myrequest.put("incomeSum", this.calIncomeSum(incomelist));
 		// 用于回显（查询后，页面跳转到本页面，保持查询条件不变）
 		// struts2的result type是默认（dispatcher）才能将request中内容带到下个页面
 		// 如果result type是redirectAction则request内容会丢失
@@ -312,6 +321,9 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 			this.myrequest.put("date_to", df.format(this.date_to));
 		}
 		myrequest.put("queryType", "income");
+		/*if (this.srlb_dm != null && this.srlb_dm.size()>0){
+			myrequest.put("selected_srlb", StringUtils.join(this.srlb_dm.toArray(), ","));
+		}*/
 		// 当result type是默认（dispatcher），直接调整到jsp页面，页面上select元素需要初始化内容
 		pageElement2Request();
 		

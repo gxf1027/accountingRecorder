@@ -25,8 +25,8 @@ public class DmServiceImpl implements DmService {
 	@Autowired
 	private AccountBookDao accountBookDao;
 
-	@Cacheable(value="dmCache" , key="#root.method.name")
-	/*@Cacheable(value="dmCache")*/
+	/*@Cacheable(value="dmCache" , key="#root.method.name")*/
+	@Cacheable(value="dmCache")
 	@Override
 	public Map<DmPaymentDl, List<DmPaymentXl>> getPaymentDlXlDzb() {
 		List<DmPaymentDl> listDl = dmUtilDao.getPaymentDlList();

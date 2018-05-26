@@ -11,6 +11,7 @@
 <link rel="stylesheet" type="text/css" href="../css/left-nav.css" />
 <link rel="stylesheet" type="text/css" href="../js/toastr/toastr.css" />
 <link rel="stylesheet" type="text/css" href="../js/select2/css/select2.min.css" />
+<link rel="stylesheet" type="text/css" href="../js/Selectric/selectric.css" />
 
 
 	<style type="text/css"> 
@@ -74,11 +75,37 @@
 		}
 		
 		.record_biz tbody > tr:hover td{background-color: #eee;color: #494A5F;}
+		
+		.selectric .label {
+			  display: block;
+			  white-space: nowrap;
+			  overflow: hidden;
+			  text-overflow: ellipsis;
+			  margin: 0 20px 0 10px;
+			  font-size: 12px;
+			  line-height: 25px;
+			  /* color: #FFF; */
+			  height: 25px;
+			}
+			
+	    .selectric .button {
+			  display: block;
+			  position: absolute;
+			  right: 0;
+			  top: 0;
+			  width: 25px;
+			  height: 25px;
+			  color: #FFF;
+			  text-align: center;
+			  font: 0/0 a;
+			  *font: 20px/25px Lucida Sans Unicode, Arial Unicode MS, Arial;
+		}
 	</style>
 	
 	<script type="text/javascript" src="../js/jquery.js"></script>
 	<script type="text/javascript" src="../js/toastr/toastr.js"></script>
 	<script type="text/javascript" src="../js/select2/js/select2.min.js"></script>
+	<script type="text/javascript" src="../js/Selectric/jquery.selectric.min.js"></script>
 	
 	<script type="text/javascript">
 			
@@ -86,6 +113,11 @@
 			
 			$(".record_biz tbody> tr:odd").addClass("odd");
 			$(".record_biz tbody> tr:even").addClass("even");
+			
+			// 设置多选框
+			$("#zzlxDm").selectric({
+				maxWidth:100
+			});
 			
 			// 页面加载时进行
 			var curDlVal = $("#paydl_dm").val();
@@ -492,7 +524,10 @@
 								
 								<th>转账类型</th>
 								<td>
-									<s:select id="zzlxDm" list="#request.dm_zzlx" listKey="key" listValue="value" name="zzlx_dm" headerKey="" headerValue="全部" theme="simple" class="selectInput" />	
+									<%-- <s:select id="zzlxDm" list="#request.dm_zzlx" listKey="key" listValue="value" name="zzlx_dm" headerKey="" headerValue="全部" theme="simple" class="selectInput" /> --%>
+									<div style="max-width: 120px">
+										<s:select id="zzlxDm" list="#request.dm_zzlx" listKey="key" listValue="value" name="zzlx_dm" headerKey="" headerValue="全部" theme="simple" class="selectInput" multiple="true"/>
+									</div>	
       							</td>
       							
 								<th></th>

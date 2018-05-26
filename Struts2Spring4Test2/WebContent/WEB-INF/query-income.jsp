@@ -90,16 +90,16 @@
 			}
 			
 	    .selectric .button {
-		  display: block;
-		  position: absolute;
-		  right: 0;
-		  top: 0;
-		  width: 25px;
-		  height: 25px;
-		  color: #FFF;
-		  text-align: center;
-		  font: 0/0 a;
-		  *font: 20px/25px Lucida Sans Unicode, Arial Unicode MS, Arial;
+			  display: block;
+			  position: absolute;
+			  right: 0;
+			  top: 0;
+			  width: 25px;
+			  height: 25px;
+			  color: #FFF;
+			  text-align: center;
+			  font: 0/0 a;
+			  *font: 20px/25px Lucida Sans Unicode, Arial Unicode MS, Arial;
 		}
 	</style>
 	
@@ -115,9 +115,19 @@
 			
 			$(".record_biz tbody> tr:odd").addClass("odd");
 			$(".record_biz tbody> tr:even").addClass("even");
+			
+			// 设置多选框
 			$("#sel_lb").selectric({
 				maxWidth:100
 			});
+			
+			// 设置已选的多选框
+			/* var sel_srlb = $("#selected-srlb").val().split(",");
+			
+			for(var i=0; i<sel_srlb.length;i++){
+				var srlb = sel_srlb[i];
+				$('#sel_lb').prop('selectedIndex', srlb);
+			} */
 			
 			// 页面加载时进行
 			var curDlVal = $("#paydl_dm").val();
@@ -485,6 +495,7 @@
 									  	<option value="GL">格陵兰</option>
 									 </select> --%>
 									 <%-- <s:select id="sel_lb" name="srlb_dm" list="#request.srlb_dm" listKey="key" listValue="value"  headerKey="" headerValue="全部" theme="simple" class="selectInput" /> --%>
+									 <%-- <s:textfield id="selected-srlb" name="selected_srlb" value="%{#request.selected_srlb}" disabled="true" /> --%>
 									 <div style="max-width: 120px">
 									 	<s:select id="sel_lb" name="srlb_dm" list="#request.srlb_dm" listKey="key" listValue="value"  headerKey="" headerValue="全部" theme="simple" class="selectInput" multiple="true"/>
 									 </div>
@@ -562,7 +573,16 @@
 										<td>${seller }</td> <!-- 实际是付款方 -->
 									</tr>
 								</s:iterator>
+								
 							</tbody>
+							<tfoot class="record_biz">
+								<tr>
+									<td>小计</td>
+									<td></td>
+									<td></td>
+									<td>${incomeSum }</td>
+								</tr>
+							</tfoot>
 						</table>
 					</div>
 					
