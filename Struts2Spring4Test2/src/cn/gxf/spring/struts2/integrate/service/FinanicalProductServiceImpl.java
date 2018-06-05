@@ -77,7 +77,9 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 		}
 		Map<String, String> deltailMap = new HashMap<String, String>();
 		for (FinancialProductDetail d:details){
-			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getDateCount()+"Ìì-"+d.getJe());
+			String startDate = d.getStartDateToShow() == null ? "null" : d.getStartDateToShow().replaceAll("-", "");
+			String endDate = d.getEndDateToShow() == null ? "null" : d.getEndDateToShow().replaceAll("-", "");
+			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getJe()+"-"+d.getDateCount()+"Ìì-"+startDate+"-"+endDate);
 		}
 		return deltailMap;
 	}

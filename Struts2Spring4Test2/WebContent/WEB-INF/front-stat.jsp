@@ -255,7 +255,8 @@
 							&nbsp;
 						
 							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-							<s:submit method="reProcStat" key="重新统计" theme="simple" class="button button-primary button-rounded button-small"></s:submit>
+							<s:submit method="reProcStat" key="重新统计" theme="simple" class="button button-primary button-rounded button-small" />
+							&nbsp&nbsp<s:submit method="reProcStatThisMonth" key="刷新本月" theme="simple" class="button button-primary button-rounded button-small" />
 						</s:form>
 					</div>
 					

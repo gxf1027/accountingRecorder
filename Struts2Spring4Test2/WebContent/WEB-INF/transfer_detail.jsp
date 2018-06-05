@@ -724,7 +724,7 @@
 						<tr>
 							<th>理财产品</th>
 							<td>
-								<s:textfield name="product-redeemed-show" value="%{financialProductDetail.productName} %{financialProductDetail.dateCount}天" theme="simple" class="recordInput" readonly="true"/> 
+								<s:textfield name="product-redeemed-show" value="%{financialProductDetail.productName} %{financialProductDetail.dateCount}天 " theme="simple" class="recordInput" readonly="true"/> 
 							</td>
 						</tr>
 					</s:else>

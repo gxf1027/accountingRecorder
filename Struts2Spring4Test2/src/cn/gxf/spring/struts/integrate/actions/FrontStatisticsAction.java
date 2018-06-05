@@ -66,7 +66,7 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 	public String reProcStat(){
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
-		// 调用存储过程，中心生产数据
+		// 调用存储过程，生产数据（根据年度和根据类别的统计）
 		frontStatService.reProcStat(this.nd, user.getId());
 		
 		List<StatByMonth> list = frontStatService.getStatByYear(this.nd, user.getId());
@@ -75,8 +75,35 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 		StatByMonth statSum = calcAggregationProp(list);
 		myrequest.put("statsum", statSum);
 		
+		// 获得生成的根据类别的统计
 		List<StatByCategory> incomeStatLb = frontStatService.getIncomeStatByLb(nd, user.getId());
 		List<StatByCategory> paymentStatDl = frontStatService.getPaymentStatByDl(nd, user.getId());
+		
+		myrequest.put("incomeStatLb", incomeStatLb);
+		myrequest.put("paymentStatDl", paymentStatDl);
+		
+		return "inputOk";
+	}
+	
+	public String reProcStatThisMonth(){
+		
+		// 获得当前年度
+		Calendar date =  Calendar.getInstance();
+		String thisyear = String.valueOf(date.get(Calendar.YEAR));
+		
+		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		// 调用存储过程，中心生产数据
+		frontStatService.reProcStatThisMonth(user.getId());
+		
+		List<StatByMonth> list = frontStatService.getStatByYear(thisyear, user.getId());
+		myrequest.put("statistics", list);
+		
+		StatByMonth statSum = calcAggregationProp(list);
+		myrequest.put("statsum", statSum);
+		
+		List<StatByCategory> incomeStatLb = frontStatService.getIncomeStatByLb(thisyear, user.getId());
+		List<StatByCategory> paymentStatDl = frontStatService.getPaymentStatByDl(thisyear, user.getId());
 		
 		myrequest.put("incomeStatLb", incomeStatLb);
 		myrequest.put("paymentStatDl", paymentStatDl);

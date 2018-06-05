@@ -23,6 +23,13 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 		
 		statDao.procAccStatByNd(nd, user_id);
 	}
+	
+	@CacheEvict(value="front-stat", allEntries=true)
+	@Override
+	public void reProcStatThisMonth(Integer user_id) {
+		
+		statDao.procAccStatThisMonth(user_id);
+	}
 
 	// 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器
 	@Cacheable(value="front-stat")  
@@ -45,5 +52,7 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 	
 		return statDao.getPaymentStatOnDl(nd, user_id);
 	}
+
+	
 
 }

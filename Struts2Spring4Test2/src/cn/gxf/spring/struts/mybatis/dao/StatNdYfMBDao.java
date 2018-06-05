@@ -11,6 +11,7 @@ import cn.gxf.spring.struts2.integrate.model.StatByMonth;
 @MapperScan
 public interface StatNdYfMBDao {
 	public void procAccStatByNd(@Param("nd") String nd,@Param("user_id") Integer user_id);
+	public void procAccStatThisMonth(@Param("user_id") Integer user_id);
 	public List<StatByMonth> getNdYfStat(@Param("nd") String nd,@Param("user_id") Integer user_id);
 	public List<StatByCategory> getPaymentStatOnDl(@Param("nd") String nd,@Param("user_id") Integer user_id);
 	public List<StatByCategory> getIncomeStatOnSrlb(@Param("nd") String nd,@Param("user_id") Integer user_id);

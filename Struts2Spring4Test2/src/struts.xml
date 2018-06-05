@@ -121,7 +121,7 @@
         
         <action name="frontStatistics" class="frontStatisticsAction">
         	<result name="inputOk">/WEB-INF/front-stat.jsp</result>
-        	<allowed-methods>inputFront,reProcStat</allowed-methods>
+        	<allowed-methods>inputFront,reProcStat,reProcStatThisMonth</allowed-methods>
         </action>
         
         <action name="billsend" class="billAction" method="ajaxrequest"></action>
