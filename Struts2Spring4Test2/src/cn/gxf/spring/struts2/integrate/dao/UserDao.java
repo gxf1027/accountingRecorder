@@ -5,4 +5,5 @@ import java.util.Map;
 
 public interface UserDao {
 	public Map<String, String> getUserEmail(List<String> useridList);
+	public Map<String, String> getUsersIdNames();
 }

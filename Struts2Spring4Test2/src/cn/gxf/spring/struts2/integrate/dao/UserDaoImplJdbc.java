@@ -38,4 +38,22 @@ public class UserDaoImplJdbc implements UserDao{
 		
 	}
 
+	@Override
+	public Map<String, String> getUsersIdNames() {
+		
+		String sql = "SELECT id, username FROM  user_ss";
+		Map<String, String> paramMap = new HashMap<>();
+		return namedTemplate.query(sql, paramMap, new ResultSetExtractor<Map<String, String>>() {
+
+			@Override
+			public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Map<String, String> map = new TreeMap<String, String>();
+				while(rs.next()){
+					map.put(rs.getString("id"), rs.getString("username"));
+				}
+				return map;
+			}
+		});
+	}
+
 }

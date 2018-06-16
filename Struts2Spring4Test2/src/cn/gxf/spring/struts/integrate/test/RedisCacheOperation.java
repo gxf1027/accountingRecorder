@@ -8,6 +8,7 @@ import org.springframework.dao.DataAccessException;
 import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.cache.support.SimpleValueWrapper;
 import java.io.Serializable;
+import java.util.concurrent.Callable;
 
 public class RedisCacheOperation implements Cache {
 	 private RedisTemplate<String, Object> redisTemplate;
@@ -112,4 +113,16 @@ public class RedisCacheOperation implements Cache {
 	    public void setName(String name) {
 	        this.name = name;
 	    }
+
+		@Override
+		public <T> T get(Object arg0, Callable<T> arg1) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ValueWrapper putIfAbsent(Object arg0, Object arg1) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 }
