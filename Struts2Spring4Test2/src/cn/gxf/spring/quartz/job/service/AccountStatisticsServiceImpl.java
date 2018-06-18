@@ -29,8 +29,18 @@ public class AccountStatisticsServiceImpl implements AccountStatisticsService {
 		Map<String, String> users = userDao.getUsersIdNames();
 		for (String userid : users.keySet()){
 			statDao.procAccStatThisMonth(Integer.valueOf(userid));
-			System.out.println("updateStatThisMonth username:"+users.get(userid));
+			//System.out.println("updateStatThisMonth username:"+users.get(userid));
 		}
+	}
+
+	@Override
+	public void updateStatThisMonth(Integer user_id) {
+		if (null == user_id){
+			return;
+		}
+		
+		statDao.procAccStatThisMonth(user_id);
+		//System.out.println("updateStatThisMonth user_id:"+ user_id);
 	}
 
 }

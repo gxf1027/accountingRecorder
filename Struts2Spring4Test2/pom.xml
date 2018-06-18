@@ -14,7 +14,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	<struts.version>2.3.32</struts.version> 
 	<spring.version>4.3.14.RELEASE</spring.version>  
-	<cxf.version>3.2.2</cxf.version> 
+	<cxf.version>3.2.2</cxf.version>
+	<org.springframework.security.version>3.2.6.RELEASE</org.springframework.security.version>
   </properties>
 
   <dependencies>
@@ -230,6 +231,62 @@
 			<artifactId>transactions-jms</artifactId>
 			<version>4.0.4</version>
 		</dependency>
+
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<version>1.5.2.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session</artifactId>
+			<version>1.3.1.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-jdbc</artifactId>
+			<version>2.0.2.RELEASE</version>
+		</dependency>
+		
+		
+		<dependency>  
+            <groupId>org.springframework.security</groupId>  
+            <artifactId>spring-security-web</artifactId>  
+            <version>${org.springframework.security.version}</version>  
+        </dependency>  
+        <dependency>  
+            <groupId>org.springframework.security</groupId>  
+            <artifactId>spring-security-config</artifactId>  
+            <version>${org.springframework.security.version}</version>  
+        </dependency>  
+        <dependency>  
+            <groupId>org.springframework.security</groupId>  
+            <artifactId>spring-security-core</artifactId>  
+            <version>${org.springframework.security.version}</version>  
+        </dependency>  
+        <dependency>  
+            <groupId>org.springframework.security</groupId>  
+            <artifactId>spring-security-acl</artifactId>  
+            <version>${org.springframework.security.version}</version>  
+        </dependency>  
+        <dependency>  
+            <groupId>org.springframework.security</groupId>  
+            <artifactId>spring-security-aspects</artifactId>  
+            <version>${org.springframework.security.version}</version>  
+        </dependency>   
+        <dependency>  
+            <groupId>org.springframework.security</groupId>  
+            <artifactId>spring-security-taglibs</artifactId>  
+            <version>${org.springframework.security.version}</version>  
+        </dependency>  
+
+
 
 
   </dependencies>

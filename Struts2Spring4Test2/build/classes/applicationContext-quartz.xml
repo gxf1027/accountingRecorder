@@ -15,7 +15,7 @@
      http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
 
 
-  	<!-- quartz -->
+  	<!-- 1. bill job -->
     <bean id="creditCardJobDetial" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">  
 	    <property name="jobClass" value="cn.gxf.spring.quartz.job.CreditCardsBillJob" />  
 	    <property name="jobDataMap">  
@@ -28,25 +28,53 @@
 	</bean>     
 	
 	
-	<bean id="simpleTrigger"  class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">  
+	<bean id="simpleTrigger1"  class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">  
 	    <property name="jobDetail" ref="creditCardJobDetial" />  
-	    <property name="startDelay" value="100000" />  
+	    <property name="startDelay" value="100000" /> <!-- 100000 --> 
 	    <property name="repeatInterval" value="86400000" />  <!-- (ms) one day -->
 	    <property name="repeatCount" value="-1" />
 	</bean>   
 	
-	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
+	
+	
+	
+	<!-- 2. statistics job -->
+	 <bean id="statJobDetial" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">  
+	    <property name="jobClass" value="cn.gxf.spring.quartz.job.StatBillJob" />  
+	    <property name="jobDataMap">  
+	        <map>  
+	            <entry key="statProcessor" value-ref="accountStatProcessor"></entry>
+	        </map>  
+	    </property>  
+	    <property name="durability" value="true" /> 
+	</bean>  
+	
+	<bean id="statTrigger"
+          class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="statJobDetial" />
+        <property name="cronExpression">
+        	<!-- each n minuts -->
+            <!-- <value>0 0/1 * * * ?</value> -->
+            <!-- everyday 23 o'clock -->
+            <value>0 0 23 * * ?</value>
+        </property>
+    </bean>   
+    
+    
+    
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
 	    <property name="jobDetails">  
 	        <list>  
-	            <ref bean="creditCardJobDetial" />  
+	            <ref bean="creditCardJobDetial" /> 
+	            <ref bean="statJobDetial" /> 
 	        </list>  
 	    </property>  
 	  
 	    <property name="triggers">  
 	        <list>  
-	            <ref bean="simpleTrigger" />
+	            <ref bean="simpleTrigger1" />
+	            <ref bean="statTrigger" />
 	        </list>  
 	    </property>  
 	</bean>
-	 
 </beans>
