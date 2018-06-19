@@ -9,7 +9,8 @@
 	<link rel="stylesheet" type="text/css" href="../css/header-account.css" />
 	<link rel="stylesheet" type="text/css" href="../css/footer.css" />
 	<link rel="stylesheet" type="text/css" href="../css/left-nav.css" />
-	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/js/checkbix/css/checkbix.css"> 
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/js/checkbix/css/checkbix.css">
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/js/go2top/style.css"> 
 	
 <style type="text/css">
 	body {
@@ -244,6 +245,8 @@
 	<%-- <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<script src="../bootstrap/js/bootstrap.min.js"></script> --%>
 	<script src="../js/checkbix/js/checkbix.min.js"></script>
+	<script src="../js/go2top/main.js"></script>
+	
 	<script>
 		Checkbix.init();
 	</script>
@@ -783,6 +786,8 @@
 		</div>
 		</div>
 		</div>
+		
+		<a href="#0" class="cd-top">Top</a>
 	</div>
 		
 		<section class="footer-evaluate">

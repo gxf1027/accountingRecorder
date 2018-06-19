@@ -58,9 +58,9 @@ public class AccountStatProcessor {
 			Map<String, Object> params = new HashMap<>();
 			params.put("user_id", userid);
 			params.put("date_from", lastproc);
-			List<String> income_list = statProcDao.isNewIncomeDataExists(params);
-			List<String> payment_list = statProcDao.isNewPaymentDataExists(params);
-			if (income_list.size() == 0 && payment_list.size() == 0){
+			int income_num = statProcDao.isNewIncomeDataExists(params);
+			int payment_num = statProcDao.isNewPaymentDataExists(params);
+			if (income_num == 0 && payment_num == 0){
 				// 从上次运行存储过程到现在，没有新增数据
 				System.out.println("username:"+username+" hasn't new data.");
 				return;

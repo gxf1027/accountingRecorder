@@ -14,6 +14,6 @@ public interface StatProcDao {
 	public void updateProcTime(@Param("proc_time") Date proc_time, @Param("user_id") int user_id);
 	public Date getLastProcTime(@Param("user_id") int user_id);
 	
-	public List<String> isNewIncomeDataExists(Map<String, Object> params);
-	public List<String> isNewPaymentDataExists(Map<String, Object> params);
+	public int isNewIncomeDataExists(Map<String, Object> params);
+	public int isNewPaymentDataExists(Map<String, Object> params);
 }

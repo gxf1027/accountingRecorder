@@ -21,16 +21,16 @@
 	</select>
 	
 	
-	<select id="isNewIncomeDataExists" parameterType="map" resultType="string">
-		SELECT 1 FROM account_income_detail p 
+	<select id="isNewIncomeDataExists" parameterType="map" resultType="int">
+		SELECT COUNT(1) FROM account_income_detail p 
 			WHERE p.shijian &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s')
 			AND p.user_id = #{user_id} 
 			AND p.yxbz='Y'
 	</select>
 	
 	
-	<select id="isNewPaymentDataExists" parameterType="map" resultType="string">
-		SELECT 1 FROM account_payment_detail p
+	<select id="isNewPaymentDataExists" parameterType="map" resultType="int">
+		SELECT COUNT(1) FROM account_payment_detail p
 			WHERE  p.shijian &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s')
 			AND p.user_id = #{user_id} 
 			AND p.yxbz='Y'

@@ -56,7 +56,7 @@
         	<!-- each n minuts -->
             <!-- <value>0 0/1 * * * ?</value> -->
             <!-- everyday 23 o'clock -->
-            <value>0 0 23 * * ?</value>
+            <value>0 0 20 * * ?</value>
         </property>
     </bean>   
     
