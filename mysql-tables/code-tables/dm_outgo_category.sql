@@ -1,0 +1,9 @@
+INSERT INTO `dm_outgo_category` VALUES ('101', '日常', NULL, 'Y', 'Y');
+INSERT INTO `dm_outgo_category` VALUES ('102', '旅游', NULL, 'Y', 'Y');
+INSERT INTO `dm_outgo_category` VALUES ('103', '装修', NULL, 'Y', 'Y');
+INSERT INTO `dm_outgo_category` VALUES ('105', '婚嫁', NULL, 'Y', 'Y');
+INSERT INTO `dm_outgo_category` VALUES ('106', '蜜月', 5, 'Y', 'Y');
+INSERT INTO `dm_outgo_category` VALUES ('107', '房贷', 6, 'Y', 'Y');
+INSERT INTO `dm_outgo_category` VALUES ('108', '给爸妈买的', 5, 'Y', 'Y');
+INSERT INTO `dm_outgo_category` VALUES ('109', '宝宝', 5, 'Y', 'Y');
+INSERT INTO `dm_outgo_category` VALUES ('110', '宝宝', 6, 'Y', 'Y');

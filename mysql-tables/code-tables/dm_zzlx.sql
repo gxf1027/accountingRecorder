@@ -1,0 +1,9 @@
+INSERT INTO `dm_zzlx` VALUES ('0001', '一般转账', NULL, 'Y', 'Y');
+INSERT INTO `dm_zzlx` VALUES ('0002', '购买理财', NULL, 'Y', 'Y');
+INSERT INTO `dm_zzlx` VALUES ('0003', '购买基金', NULL, 'Y', 'Y');
+INSERT INTO `dm_zzlx` VALUES ('0004', '购买股票', NULL, 'Y', 'Y');
+INSERT INTO `dm_zzlx` VALUES ('0005', '老婆转入', 5, 'Y', 'Y');
+INSERT INTO `dm_zzlx` VALUES ('0006', '转出给老婆', 5, 'Y', 'Y');
+INSERT INTO `dm_zzlx` VALUES ('0007', '还信用卡', NULL, 'Y', 'Y');
+INSERT INTO `dm_zzlx` VALUES ('0008', '还花呗', 5, 'Y', 'Y');
+INSERT INTO `dm_zzlx` VALUES ('0009', '理财赎回', NULL, 'Y', 'Y');

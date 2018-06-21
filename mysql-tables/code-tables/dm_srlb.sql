@@ -1,0 +1,15 @@
+INSERT INTO `dm_srlb` VALUES ('2001', '理财利息', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2002', '工资薪水', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2003', '奖金', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2004', '福利补贴', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2005', '兼职外快', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2006', '退款', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2007', '礼金', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2008', '红包', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2009', '基金分红（货币基金）', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2010', '营业收入', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2011', '工程款', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2012', '股票收益', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2013', '基金收益', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2014', '公积金', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2099', '其他', 'Y', 'Y');
