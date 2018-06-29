@@ -12,4 +12,5 @@ INSERT INTO `dm_srlb` VALUES ('2011', '工程款', 'Y', 'Y');
 INSERT INTO `dm_srlb` VALUES ('2012', '股票收益', 'Y', 'Y');
 INSERT INTO `dm_srlb` VALUES ('2013', '基金收益', 'Y', 'Y');
 INSERT INTO `dm_srlb` VALUES ('2014', '公积金', 'Y', 'Y');
+INSERT INTO `dm_srlb` VALUES ('2015', '活期利息', 'Y', 'Y');
 INSERT INTO `dm_srlb` VALUES ('2099', '其他', 'Y', 'Y');

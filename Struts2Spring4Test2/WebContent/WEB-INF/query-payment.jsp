@@ -294,7 +294,7 @@
 				break;
 			
 			case "queryPayment":
-				window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputQuery";
+				window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputPaymentQuery";
 				break;
 				
 			case "detail-all":

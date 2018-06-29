@@ -1,5 +1,6 @@
 package cn.gxf.spring.struts2.integrate.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,16 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 	public void reProcStat(String nd, Integer user_id) {
 		
 		statDao.procAccStatByNd(nd, user_id);
+		
+		// 获取该用户上次更新时间
+		Date lastproc = statDao.getLastProcTime(user_id);
+		Date current = new Date();
+		if (null == lastproc){
+			// 如果表中还没有这个用户的运行时间记录
+			statDao.insertProcTime(current, user_id);
+		}else{
+			statDao.updateProcTime(current, user_id);
+		}
 	}
 	
 	@CacheEvict(value="front-stat", allEntries=true)
@@ -29,6 +40,16 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 	public void reProcStatThisMonth(Integer user_id) {
 		
 		statDao.procAccStatThisMonth(user_id);
+		
+		// 获取该用户上次更新时间
+		Date lastproc = statDao.getLastProcTime(user_id);
+		Date current = new Date();
+		if (null == lastproc){
+			// 如果表中还没有这个用户的运行时间记录
+			statDao.insertProcTime(current, user_id);
+		}else{
+			statDao.updateProcTime(current, user_id);
+		}
 	}
 
 	// 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器

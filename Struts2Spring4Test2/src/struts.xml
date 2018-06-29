@@ -116,7 +116,7 @@
         	<!-- <result name="queryOk" type="redirectAction">customTailoredQuery!inputQuery</result> -->
         	<!-- <result name="queryOk">/WEB-INF/query-payment.jsp</result> -->
         	<interceptor-ref name="myinterceptorStack" />
-        	<allowed-methods>inputQuery,inputPaymentQuery,inputIncomeQuery,inputTransferQuery,paymentQuery,incomeQuery,transferQuery</allowed-methods>
+        	<allowed-methods>inputPaymentQuery,inputIncomeQuery,inputTransferQuery,paymentQuery,incomeQuery,transferQuery</allowed-methods>
         </action>
         
         <action name="frontStatistics" class="frontStatisticsAction">
