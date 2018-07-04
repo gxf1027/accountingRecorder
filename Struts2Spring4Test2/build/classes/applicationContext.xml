@@ -146,18 +146,29 @@
 		<property name="namespaceUri" value="http://service.ws.loan.cn/" />
 	</bean> -->
 	
-	<!-- spring基于EhCache的缓存配置 -->
-	<cache:annotation-driven cache-manager="cacheManager" key-generator="userKeyGenerator" />  
+	
+	<!-- <cache:annotation-driven key-generator="userKeyGenerator" />  
 
+	<bean id="cacheManager" class="org.springframework.cache.support.CompositeCacheManager">
+	     <property name="cacheManagers"> 
+	       <list> 
+	         <ref bean="eHcacheManager" /> 
+	         <ref bean="redisCacheManager"/>
+	       </list> 
+	     </property> 
+	     <property name="fallbackToNoOpCache" value="true" /> 
+   </bean> 
+   
+    spring基于EhCache的缓存配置
 	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  
         <property name="configLocation" value="classpath:ehcache.xml"></property>  
-    </bean>  
+    </bean>
     
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">  
+    <bean id="eHcacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">  
         <property name="cacheManager" ref="ehcache"></property>  
     </bean>
     
-    <bean id="userKeyGenerator" class="cn.gxf.spring.struts.integrate.test.SpringCacheKeyGenerator" />
+    <bean id="userKeyGenerator" class="cn.gxf.spring.struts.integrate.test.SpringCacheKeyGenerator" /> -->
 	
 	<!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">

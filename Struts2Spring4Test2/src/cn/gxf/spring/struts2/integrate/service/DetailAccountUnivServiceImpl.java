@@ -3,14 +3,17 @@ package cn.gxf.spring.struts2.integrate.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.gxf.spring.struts.integrate.test.StatDetailKeyGenerator;
 import cn.gxf.spring.struts.mybatis.dao.AccountDetailMBDao;
 import cn.gxf.spring.struts.mybatis.dao.FinancialProductDetailMBDao;
 import cn.gxf.spring.struts.mybatis.dao.FundDetailMBDao;
@@ -53,6 +56,12 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	
 	@Autowired
 	private AccountBookDao accountBookDao;
+	
+	@Autowired
+	private AccountStatService accountStatService;
+
+	@Autowired
+	private StatDetailKeyGenerator statDetailKeyGenerator;
 	
 	// 通过accuuid获得具体的明细对象
 	public AccountObject getOneItem(String accuuid){
@@ -125,7 +134,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		return this.accountDetailMBDao.getAccountingDetailByPatchUuid(accuuidList);
 	}
 	
-	@CacheEvict(value="statCache", allEntries=true)
+	//@CacheEvict(value="statCache", allEntries=true)
 	@Transactional("dsTransactionManager")
 	public void saveOne(T detail) {
 		
@@ -150,6 +159,10 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		detail.setAccuuid(accountingDetail.getAccuuid());
 		//detail.setMxuuid(accUtil.generateUuid());
 		//repository.addOne(detail);
+		
+		Set<String> keys = new HashSet<String>();
+		keys.add(this.statDetailKeyGenerator.detailAllKey(accountingDetail.getUser_id(), accountingDetail.getShijian()));
+		
 		if ( detail instanceof IncomeDetail ){
 			IncomeDetail incomeDetail = (IncomeDetail) detail;
 			incomeDetailMBDao.addOne(incomeDetail);
@@ -158,10 +171,16 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 				// mxuuid通过mybatis的主键回写获得
 				this.financialProductDetailMBDao.setRealReturn(incomeDetail.getFinprodUuid(), incomeDetail.getMxuuid(), incomeDetail.getJe());
 			}
+			
+			// 清除“收入明细”的缓存(redis)
+			keys.add(this.statDetailKeyGenerator.detailIncomeKey(incomeDetail.getUser_id(), incomeDetail.getShijian()));
 		}else if (detail instanceof PaymentDetail){
 			PaymentDetail paymentDetail = (PaymentDetail)detail;
 			paymentDetailMBDao.addOne(paymentDetail);
 			accountBookDao.updateYe(paymentDetail.getZh_dm(), -1.0f*paymentDetail.getJe());
+			
+			// 清除“支出明细”的缓存(redis)
+			keys.add(this.statDetailKeyGenerator.detailPaymentKey(paymentDetail.getUser_id(), paymentDetail.getShijian()));
 		}else if (detail instanceof TransferDetail){
 			TransferDetail transferDetail = (TransferDetail)detail; 
 			transferDetailMBDao.addOne(transferDetail);
@@ -188,18 +207,29 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 				// 设置对应理财产品赎回标志为Y, 并设置关联的赎回转账交易
 				financialProductDetailMBDao.setRedeem(financialProductDetail.getUuid(), financialProductDetail.getRedeemUuid());
 			}
+			
+			// 清除“转账明细”的缓存(redis)
+			keys.add(this.statDetailKeyGenerator.detailTransferKey(transferDetail.getUser_id(), transferDetail.getShijian()));
 		}
+		
+	    // 清除缓存
+		this.accountStatService.EvictDateStatRedis(keys);
 	}
 
-	@CacheEvict(value="statCache", allEntries=true)
+	//@CacheEvict(value="redisCacheStat", allEntries=true)
 	@Transactional("dsTransactionManager")
 	public void updateOne(T detail) {
 		
 		AccountingDetail accountingDetail = accountDetailMBDao.getAccountingDetailByUuid(detail.getAccuuid());
+		Set<String> keys = new HashSet<String>();
+		// 被更新前数据的缓存key
+		keys.add(this.statDetailKeyGenerator.detailAllKey(accountingDetail.getUser_id(), accountingDetail.getShijian()));
+		
 		accountingDetail.setJe(detail.getJe());
 		accountingDetail.setShijian(detail.getShijian());
 		accountingDetail.setXgrq(detail.getXgrq());
-		
+		// 被更新后数据的缓存key
+		keys.add(this.statDetailKeyGenerator.detailAllKey(accountingDetail.getUser_id(), accountingDetail.getShijian()));
 		accountDetailMBDao.updateOne(accountingDetail);
 		
 		if ( detail instanceof IncomeDetail ){
@@ -213,7 +243,9 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			}
 			
 			incomeDetailMBDao.updateOne((IncomeDetail)detail);
-		
+			
+			keys.add(this.statDetailKeyGenerator.detailIncomeKey(incomeDetail_new.getUser_id(), incomeDetail_new.getShijian()));
+			keys.add(this.statDetailKeyGenerator.detailIncomeKey(incomeDetail_old.getUser_id(), incomeDetail_old.getShijian()));
 		}else if (detail instanceof PaymentDetail){
 			PaymentDetail paymentDetail_new = (PaymentDetail) detail;
 			PaymentDetail paymentDetail_old = paymentDetailMBDao.getPaymentDetailByUuid(paymentDetail_new.getMxuuid());
@@ -226,6 +258,8 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			
 			paymentDetailMBDao.updateOne((PaymentDetail)detail);
 			
+			keys.add(this.statDetailKeyGenerator.detailPaymentKey(paymentDetail_new.getUser_id(), paymentDetail_new.getShijian()));
+			keys.add(this.statDetailKeyGenerator.detailPaymentKey(paymentDetail_old.getUser_id(), paymentDetail_old.getShijian()));
 		}else if (detail instanceof TransferDetail){
 			TransferDetail transferDetail_new = (TransferDetail)detail;
 			TransferDetail transferDetail_old = this.getTransferDetailByMxuuid(transferDetail_new.getMxuuid()); //transferDetailMBDao.getTransferDetailByUuid(transferDetail_new.getMxuuid());
@@ -282,10 +316,15 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 				//FinancialProductDetail financialProductDetail = transferDetail_new.getFinancialProductDetail();
 				//this.financialProductDetailMBDao.setRedeem(financialProductDetail.getUuid(), transferDetail_old.getMxuuid());
 			}
+			
+			keys.add(this.statDetailKeyGenerator.detailTransferKey(transferDetail_new.getUser_id(), transferDetail_new.getShijian()));
+			keys.add(this.statDetailKeyGenerator.detailTransferKey(transferDetail_old.getUser_id(), transferDetail_old.getShijian()));
 		}
+		
+		this.accountStatService.EvictDateStatRedis(keys);
 	}
 	
-	@CacheEvict(value="statCache", allEntries=true)
+	//@CacheEvict(value="redisCacheStat",  allEntries=true)
 	@Transactional("dsTransactionManager")
 	public void deleteOne(T detail){
 		
@@ -293,7 +332,8 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		Map<String , Object> paramMap = new HashMap<>();
 		paramMap.put("mxuuid", detail.getMxuuid());
 		paramMap.put("xgrq", xgrq);
-
+		Set<String> keys = new HashSet<String>();
+		
 		if ( detail instanceof IncomeDetail ){
 			IncomeDetail incomeDetail = (IncomeDetail) detail;
 			incomeDetailMBDao.deleteOne(paramMap);
@@ -303,10 +343,18 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 				this.financialProductDetailMBDao.cancelRealReturn(incomeDetail.getMxuuid());
 			}
 			
+			// 清除“收入明细”的缓存(redis)
+			keys.add(this.statDetailKeyGenerator.detailIncomeKey(incomeDetail.getUser_id(), incomeDetail.getShijian()));
+			keys.add(this.statDetailKeyGenerator.detailAllKey(incomeDetail.getUser_id(), incomeDetail.getShijian()));
+			
 		}else if (detail instanceof PaymentDetail){
 			PaymentDetail paymentDetail = (PaymentDetail) detail;
 			paymentDetailMBDao.deleteOne(paramMap);
 			accountBookDao.updateYe(paymentDetail.getZh_dm(), paymentDetail.getJe());
+			
+			// 清除“支出明细”的缓存(redis)
+			keys.add(this.statDetailKeyGenerator.detailPaymentKey(paymentDetail.getUser_id(), paymentDetail.getShijian()));
+			keys.add(this.statDetailKeyGenerator.detailAllKey(paymentDetail.getUser_id(), paymentDetail.getShijian()));
 			
 		}else if (detail instanceof TransferDetail){
 			TransferDetail transferDetail = (TransferDetail)detail; 
@@ -327,21 +375,27 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 				// 如果转账类型为“赎回理财产品”，那么对应的理财产品的赎回信息被清除
 				financialProductDetailMBDao.cancelRedeem(transferDetail.getMxuuid());
 			}
+			
+			// 清除“转账明细”的缓存(redis)
+			keys.add(this.statDetailKeyGenerator.detailTransferKey(transferDetail.getUser_id(), transferDetail.getShijian()));
+			keys.add(this.statDetailKeyGenerator.detailAllKey(transferDetail.getUser_id(), transferDetail.getShijian()));
 		}
 		
 		paramMap.put("accuuid", detail.getAccuuid());
 		accountDetailMBDao.deleteOne(paramMap);
+		
+		this.accountStatService.EvictDateStatRedis(keys);
 	}
 	
 	
-	@CacheEvict(value="statCache", allEntries=true)
+	//@CacheEvict(value="redisCacheStat", allEntries=true)
 	@Transactional("dsTransactionManager")
 	public void deletePatch(List<T> detailObjs){
 		if (detailObjs.size() == 0){
 			System.out.println("deletePatch size==0");
 			return;
 		}
-		
+		Set<String> keys = new HashSet<String>();
 		List<String> mxuuidList = new ArrayList<>();
 		List<String> accuuidList = new ArrayList<>();
 		for (T item : detailObjs){
@@ -358,6 +412,10 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 					// 如果收入类型是“理财收益”,那么关联的理财产品信息被清除
 					this.financialProductDetailMBDao.cancelRealReturn(incomeItem.getMxuuid());
 				}
+				
+				// 准备删除缓存
+				keys.add(this.statDetailKeyGenerator.detailAllKey(incomeItem.getUser_id(), incomeItem.getShijian()));
+				keys.add(this.statDetailKeyGenerator.detailIncomeKey(incomeItem.getUser_id(), incomeItem.getShijian()));
 			}
 			
 		}else if (detailObjs.get(0) instanceof PaymentDetail){
@@ -365,6 +423,9 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			for (T item : detailObjs){
 				PaymentDetail paymentItem = (PaymentDetail) item; 
 				accountBookDao.updateYe(paymentItem.getZh_dm(), paymentItem.getJe());
+				// 准备删除缓存
+				keys.add(this.statDetailKeyGenerator.detailAllKey(paymentItem.getUser_id(), paymentItem.getShijian()));
+				keys.add(this.statDetailKeyGenerator.detailPaymentKey(paymentItem.getUser_id(), paymentItem.getShijian()));
 			}
 		}else if (detailObjs.get(0) instanceof TransferDetail){
 			transferDetailMBDao.deletePatch(mxuuidList);
@@ -378,20 +439,27 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 				if (transferItem.getZzlx_dm().equals(DmService.zzlx_redeem_fin_prod_dm)){
 					financialProductDetailMBDao.cancelRedeem(transferItem.getMxuuid());
 				}
+				
+				// 准备删除缓存
+				keys.add(this.statDetailKeyGenerator.detailAllKey(transferItem.getUser_id(), transferItem.getShijian()));
+				keys.add(this.statDetailKeyGenerator.detailTransferKey(transferItem.getUser_id(), transferItem.getShijian()));
 			}
 		}
 		
 		accountDetailMBDao.deletePatch(accuuidList);
+		
+		// 清除缓存
+		this.accountStatService.EvictDateStatRedis(keys);
 	}
 	
-	@CacheEvict(value="statCache", allEntries=true)
+	//@CacheEvict(value="redisCacheStat", allEntries=true)
 	@Transactional("dsTransactionManager")
 	public void deletePatchByAccuuid(List<AccountingDetail> list){
 		if (list.size() == 0){
 			System.out.println("deletePatch size==0");
 			return;
 		}
-		
+		Set<String> keys = new HashSet<String>();
 		List<String> incomeAccList = new ArrayList<>();
 		List<String> paymentAccList = new ArrayList<>();
 		List<String> transferAccList = new ArrayList<>();
@@ -399,6 +467,8 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		for (AccountingDetail detail : list){
 			String accuuid = detail.getAccuuid();
 			accuuidList.add(accuuid);
+			// 为清除缓存做准备
+			keys.add(this.statDetailKeyGenerator.detailAllKey(detail.getUser_id(), detail.getShijian()));
 			switch (detail.getRec_dm()) {
 			case 1:
 				incomeAccList.add(accuuid);
@@ -415,12 +485,15 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		}
 		
 		accountDetailMBDao.deletePatch(accuuidList);
+
 		
 		if ( incomeAccList.size()>0 ){
 			List<IncomeDetail> incomeDetailList = incomeDetailMBDao.getDetailByPatchAccuuid(incomeAccList);
 			List<String> mxuuidList = new ArrayList<>();
 			for (IncomeDetail income : incomeDetailList){
 				mxuuidList.add(income.getMxuuid());
+				// 为清除缓存做准备
+				keys.add(this.statDetailKeyGenerator.detailIncomeKey(income.getUser_id(), income.getShijian()));
 			}
 			
 			incomeDetailMBDao.deletePatch(mxuuidList);
@@ -440,6 +513,8 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			List<String> mxuuidList = new ArrayList<>();
 			for (PaymentDetail payment : paymentDetailList){
 				mxuuidList.add(payment.getMxuuid());
+				// 为清除缓存做准备
+				keys.add(this.statDetailKeyGenerator.detailIncomeKey(payment.getUser_id(), payment.getShijian()));
 			}
 			
 			paymentDetailMBDao.deletePatch(mxuuidList);
@@ -454,6 +529,8 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			List<String> mxuuidList = new ArrayList<>();
 			for (TransferDetail transfer : transferDetailList){
 				mxuuidList.add(transfer.getMxuuid());
+				// 为清除缓存做准备
+				keys.add(this.statDetailKeyGenerator.detailIncomeKey(transfer.getUser_id(), transfer.getShijian()));
 			}
 			
 			transferDetailMBDao.deletePatch(mxuuidList);
@@ -469,6 +546,9 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 				}
 			}
 		}
+		
+		// 清除缓存
+		this.accountStatService.EvictDateStatRedis(keys);
 		 
 	}
 }

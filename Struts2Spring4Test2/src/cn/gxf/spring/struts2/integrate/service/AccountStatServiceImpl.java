@@ -8,10 +8,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import cn.gxf.spring.struts.mybatis.dao.AccountVoMBDao;
@@ -30,6 +33,9 @@ public class AccountStatServiceImpl implements AccountStatService{
 	
 	@Autowired
 	private AccountVoMBDao accountVoMBDao;
+	
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
 	
 	@Override
 	public List<AccDateStat> getDateStat(int user_id, String nd, String yf)  {
@@ -179,8 +185,9 @@ public class AccountStatServiceImpl implements AccountStatService{
 		return stat_list;
 	}
 	
-	//@Cacheable(value="statCache", key="{#user_id, #date_from, #date_to, #root.method.name}")
-	@Cacheable(value="statCache")  // 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器 
+	//@Cacheable(value="redisCacheStat", key="{#user_id, #date_from, #date_to, #root.method.name}")
+	//@Cacheable(value="redisCacheStat")  // 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器
+	@Cacheable(value="redisCacheStat", key="'getDateStatMB_'+#user_id+'_'+#date_from+'_'+#date_to")
 	@Override
 	public List<AccDateStat> getDateStatMB(int user_id, Date date_from , Date date_to){
 		
@@ -267,6 +274,13 @@ public class AccountStatServiceImpl implements AccountStatService{
 		return stat_list;
 	}
 
+	// 对应删除getDateStatMB(int user_id, Date date_from , Date date_to)的缓存
+	/*@CacheEvict(value="redisCacheStat", key="'getDateStatMB_'+#user_id+'_'+#date_from+'_'+#date_to")
+	@Override
+	public void EvictDateStatMB(int user_id, Date date_from , Date date_to){
+		
+	}*/
+	
 	
 	@Override
 	public List<AccDateStat> getDateStatIncome(int user_id, String nd, String yf) {
@@ -324,7 +338,8 @@ public class AccountStatServiceImpl implements AccountStatService{
 	}
 
 	//@Cacheable(value="statCache",  key="{#user_id, #date_from, #date_to, #root.method.name}")
-	@Cacheable(value="statCache")  // 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器 
+	//@Cacheable(value="statCache")  // 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器
+	@Cacheable(value="redisCacheStat", key="'getDateStatIncome_'+#user_id+'_'+#date_from+'_'+#date_to")
 	@Override
 	public List<AccDateStat> getDateStatIncome(int user_id, Date date_from , Date date_to) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -381,6 +396,12 @@ public class AccountStatServiceImpl implements AccountStatService{
 
 	}
 
+	// 对应删除getDateStatMB(int user_id, Date date_from , Date date_to)的缓存
+	/*@CacheEvict(value="redisCacheStat", key="'getDateStatIncome_'+#user_id+'_'+#date_from+'_'+#date_to")
+	@Override
+	public void EvictDateStatIncome(int user_id, Date date_from , Date date_to){
+		
+	}*/
 	
 	@Override
 	public List<AccDateStat> getDateStatPayment(int user_id, String nd, String yf) {
@@ -438,7 +459,8 @@ public class AccountStatServiceImpl implements AccountStatService{
 	}
 	
 	//@Cacheable(value="statCache",  key="{#user_id, #date_from, #date_to, #root.method.name}")
-	@Cacheable(value="statCache")  // 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器 
+	//@Cacheable(value="statCache")  // 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器
+	@Cacheable(value="redisCacheStat", key="'getDateStatPayment_'+#user_id+'_'+#date_from+'_'+#date_to")
 	@Override
 	public List<AccDateStat> getDateStatPayment(int user_id, Date date_from, Date date_to){
 		System.out.println("getDateStatPayment...........");
@@ -493,6 +515,12 @@ public class AccountStatServiceImpl implements AccountStatService{
 		Collections.sort(stat_list);
 		return stat_list;
 	}
+	
+	/*@CacheEvict(value="redisCacheStat", key="'getDateStatPayment_'+#user_id+'_'+#date_from+'_'+#date_to")
+	@Override
+	public void EvictDateStatPayment(int user_id, Date date_from , Date date_to){
+		
+	}*/
 	
 	@Override
 	public List<AccDateStat> getDateStatTransfer(int user_id, String nd, String yf) {
@@ -551,7 +579,8 @@ public class AccountStatServiceImpl implements AccountStatService{
 	
 	
 	//@Cacheable(value="statCache",  key="{#user_id, #date_from, #date_to, #root.method.name}")
-	@Cacheable(value="statCache")  // 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器 
+	//@Cacheable(value="statCache")  // 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器
+	@Cacheable(value="redisCacheStat", key="'getDateStatTransfer_'+#user_id+'_'+#date_from+'_'+#date_to")
 	@Override
 	public List<AccDateStat> getDateStatTransfer(int user_id, Date date_from, Date date_to) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -604,6 +633,40 @@ public class AccountStatServiceImpl implements AccountStatService{
 		Collections.sort(stat_list);
 		
 		return stat_list;
+	}
+	
+	/*@CacheEvict(value="redisCacheStat", key="'getDateStatTransfer_'+#user_id+'_'+#date_from+'_'+#date_to")
+	@Override
+	public void EvictDateStatTransfer(int user_id, Date date_from , Date date_to){
+		
+	}*/
+	
+	//  stringRedisTemplate.keys方法不能用在生产上！！！有性能问题。
+	// 使用redis中方法删除缓存, 由于某些情形下很难根据user_id+date_from+date_to来删除缓存，所以考虑将user_id有关（不论哪个时间段）的缓存一起清除
+	/*@Override
+	public void EvictByUserId(int user_id){
+		
+		// 清除“所有明显”中的有关user_id的缓存（不论哪个时间段）
+		Set<String> keys = stringRedisTemplate.keys("getDateStatMB_"+user_id+"*");
+		stringRedisTemplate.delete(keys);
+		// 清除“收入”中的有关user_id的缓存（不论哪个时间段）
+		keys = stringRedisTemplate.keys("getDateStatIncome_"+user_id+"*");
+		stringRedisTemplate.delete(keys);
+		// 清除“支出”中的有关user_id的缓存（不论哪个时间段）
+		keys = stringRedisTemplate.keys("getDateStatPayment_"+user_id+"*");
+		stringRedisTemplate.delete(keys);
+		// 清除“转账”中的有关user_id的缓存（不论哪个时间段）
+		keys = stringRedisTemplate.keys("getDateStatTransfer_"+user_id+"*");
+		stringRedisTemplate.delete(keys);
+	}*/
+	
+	
+	@Override
+	public void EvictDateStatRedis(Set<String> keys){
+		if (keys == null || keys.size() == 0){
+			return;
+		}
+		this.stringRedisTemplate.delete(keys);
 	}
 	
 	

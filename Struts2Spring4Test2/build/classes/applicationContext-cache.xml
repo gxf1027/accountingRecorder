@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"   
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+     http://www.springframework.org/schema/cache 
+     http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
+    
+   
+	
+	<cache:annotation-driven key-generator="userKeyGenerator" />  
+
+	<bean id="cacheManager" class="org.springframework.cache.support.CompositeCacheManager">
+	     <property name="cacheManagers"> 
+	       <list> 
+	         <ref bean="eHcacheManager" /> 
+	         <ref bean="redisCacheManager"/>
+	       </list> 
+	     </property> 
+	     <property name="fallbackToNoOpCache" value="true" /> 
+   </bean> 
+   
+   <!-- spring基于EhCache的缓存配置 -->
+	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  
+        <property name="configLocation" value="classpath:ehcache.xml"></property>  
+    </bean>
+    
+    <bean id="eHcacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">  
+        <property name="cacheManager" ref="ehcache"></property>  
+    </bean>
+    
+    <!-- spring基于Redis的缓存配置 -->
+    <bean id="redisCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+     	<constructor-arg index="0" ref="redisTemplate" /> <!-- applicationContext-session-redis.xml -->
+     	<property name="defaultExpiration" value="6000" />
+     	<property name="cacheNames">
+     		<list>
+     			<value>redisCacheStat</value>
+     		</list>
+     	</property>
+     </bean>
+    
+    <bean id="userKeyGenerator" class="cn.gxf.spring.struts.integrate.test.SpringCacheKeyGenerator" />
+    
+</beans>

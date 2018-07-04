@@ -26,6 +26,9 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 	@Autowired
 	private FrontStatisticsService frontStatService;
 	
+//	@Autowired
+//	private AccTools accTools; 
+	
 	private StatByMonth calcAggregationProp(List<StatByMonth> list){
 		// ºÏ¼ÆÊý
 		StatByMonth statSum = new StatByMonth();
