@@ -2,6 +2,7 @@ package cn.gxf.spring.struts.integrate.actions;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,12 +57,18 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		List<AccountBook> books = dmService.getZhInfo(user.getId());
-		Map<String, String> transfer_dm = dmService.getTransferType(user.getId());
+		Map<String, String> transfer_dm_com = dmService.getTransferTypeCommon();
+		Map<String, String> transfer_dm_user = dmService.getTransferType(user.getId());
 		Map<String, String> fund_type = dmService.getFundType();
 		Map<String, String> yh_dm = dmService.getYhInfo();
 		this.myrequest.put("ZH_INFO", books);
 		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
-		this.myrequest.put("dm_zzlx", transfer_dm);
+		this.myrequest.put("dm_zzlx_user", transfer_dm_user);
+		this.myrequest.put("dm_zzlx_com", transfer_dm_com);
+		/*Map<String, String> transfer_dm = new HashMap<String, String>();
+		transfer_dm.putAll(transfer_dm_com);
+		transfer_dm.putAll(transfer_dm_user);
+		this.myrequest.put("dm_zzlx", transfer_dm);*/
 		this.myrequest.put("fund_type", fund_type);
 		this.myrequest.put("yh_dm", yh_dm);
 		this.myrequest.put("fin_prod_type", dmService.getFinancialProdType());
@@ -80,8 +87,15 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		this.myrequest.put("ZH_INFO", books);
 		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user.getId()));
 		
-		Map<String, String> transfer_dm = dmService.getTransferType(user.getId());
-		this.myrequest.put("dm_zzlx", transfer_dm);
+		Map<String, String> transfer_dm_user = dmService.getTransferType(user.getId());
+		this.myrequest.put("dm_zzlx_user", transfer_dm_user);
+		Map<String, String> transfer_dm_com = dmService.getTransferTypeCommon();
+		this.myrequest.put("dm_zzlx_com", transfer_dm_com);
+		/*Map<String, String> transfer_dm = new HashMap<String, String>();
+		transfer_dm.putAll(transfer_dm_com);
+		transfer_dm.putAll(transfer_dm_user);
+		this.myrequest.put("dm_zzlx", transfer_dm);*/
+		
 		Map<String, String> fund_type = dmService.getFundType();
 		this.myrequest.put("fund_type", fund_type);
 		Map<String, String> yh_dm = dmService.getYhInfo();

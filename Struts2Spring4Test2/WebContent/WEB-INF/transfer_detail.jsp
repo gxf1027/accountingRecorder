@@ -540,12 +540,23 @@
 						<s:if test="#request.DETAIL_MODE == 'EDIT'"> 
 							<!-- 编辑模式下zzlx的input为只读模式，由于select设置为只读比较麻烦，所以使用textfield代替 -->
 							<!-- 只用于显示 -->
-							<s:textfield id="zzlxDm_show" name="zzlx_dm_show" value="%{#request.dm_zzlx[zzlx_dm]}" disabled="true"  class="recordInput" theme="simple"/>
+							<!-- 20180707修改：%{#request.dm_zzlx_user[zzlx_dm]} %{#request.dm_zzlx_com[zzlx_dm]},代码表来自两部分，公共部分和用户部分 -->
+							<input type="text" id="zzlxDm_show" name="zzlx_dm_show" value="${dm_zzlx_user[zzlx_dm] }${dm_zzlx_com[zzlx_dm] }" disabled="true"  class="recordInput">
+							<%-- <s:textfield id="zzlxDm_show" name="zzlx_dm_show" value="%{#request.dm_zzlx_user[zzlx_dm]} %{#request.dm_zzlx_com[zzlx_dm]}" disabled="true"  class="recordInput" theme="simple"/> --%>
 							<!-- 接受editshow的数据，并用于提交时传递数据，不可见 -->
 							<s:textfield id="zzlxDm" name="zzlx_dm" readonly="true" style="display: none;" theme="simple" />
 						</s:if>
 						<s:else>
-							<s:select id="zzlxDm" list="#request.dm_zzlx" listKey="key" listValue="value" name="zzlx_dm" theme="simple" class="selectInput" />
+							<%-- <s:select id="zzlxDm" list="#request.dm_zzlx" listKey="key" listValue="value" name="zzlx_dm" theme="simple" class="selectInput" /> --%>
+							<!-- 20180707修改：代码表来自两部分，公共部分和用户部分 -->
+							<select id="zzlxDm" name="zzlx_dm" class="selectInput">
+								<s:iterator value="#request.dm_zzlx_com" >
+									<option value="${key }">${value }</option>
+								</s:iterator>
+								<s:iterator value="#request.dm_zzlx_user" >
+									<option value="${key }">${value }</option>
+								</s:iterator>
+							</select>
 						</s:else>
 					</td>
 				</tr>

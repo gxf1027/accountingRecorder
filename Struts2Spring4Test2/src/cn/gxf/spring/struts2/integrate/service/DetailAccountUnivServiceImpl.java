@@ -13,7 +13,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.gxf.spring.struts.integrate.test.StatDetailKeyGenerator;
+import cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator;
 import cn.gxf.spring.struts.mybatis.dao.AccountDetailMBDao;
 import cn.gxf.spring.struts.mybatis.dao.FinancialProductDetailMBDao;
 import cn.gxf.spring.struts.mybatis.dao.FundDetailMBDao;

@@ -50,6 +50,6 @@
      	</property>
      </bean>
     
-    <bean id="userKeyGenerator" class="cn.gxf.spring.struts.integrate.test.SpringCacheKeyGenerator" />
+    <bean id="userKeyGenerator" class="cn.gxf.spring.struts.integrate.cache.SpringCacheKeyGenerator" />
     
 </beans>

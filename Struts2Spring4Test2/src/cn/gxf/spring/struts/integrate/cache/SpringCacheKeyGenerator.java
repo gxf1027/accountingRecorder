@@ -1,4 +1,4 @@
-package cn.gxf.spring.struts.integrate.test;
+package cn.gxf.spring.struts.integrate.cache;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;

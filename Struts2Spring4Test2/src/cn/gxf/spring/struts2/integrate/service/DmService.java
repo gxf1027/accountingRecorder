@@ -26,6 +26,8 @@ public interface DmService {
 	public Map<String, String> getYhInfo();
 	public Map<String, String> getZhLx();
 	public Map<String, String> getOutgoCategory(Integer user_id);
+	public Map<String, String> getOutgoCategoryCommon();
 	public Map<String, String> getTransferType(Integer user_id);
+	public Map<String, String> getTransferTypeCommon();
 	public void doCacheEvict();
 }

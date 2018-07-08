@@ -30,7 +30,7 @@ public class DmUtilDaoImplJdbc implements DmUtilDao{
 	@Autowired
 	private NamedParameterJdbcTemplate namedTemplate;
 
-	
+	public static final String common = "common";
 	
 	public Map<String, String> getPaymentDl() {
 		
@@ -243,7 +243,48 @@ public class DmUtilDaoImplJdbc implements DmUtilDao{
 		});
 	}
 
+	// 获取整个类别代码表
+	@Override
+	public Map<String, Map<String, String>> getOutgoCategory(){
+		String sql = "SELECT outgo_category_dm, outgo_category_mc, user_id"
+				+ " FROM dm_outgo_category "
+				+ "WHERE yxbz='Y' and xybz='Y'"
+				+ "ORDER BY outgo_category_dm";
+	
+		
 
+		return 	jdbcTemplate.query(sql, new ResultSetExtractor<Map<String, Map<String, String>>>() {
+
+			@Override
+			public Map<String, Map<String, String>> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				
+				//Map<String, String> map = new TreeMap<String, String>();
+				String user_id;
+				String outgo_category_dm, outgo_category_mc;
+				Map<String, Map<String, String>> userCat = new HashMap<>();
+				while(rs.next()){
+					outgo_category_dm = rs.getString("outgo_category_dm");
+					outgo_category_mc = rs.getString("outgo_category_mc");
+					user_id = String.valueOf(rs.getInt("user_id"));
+					if (null == user_id || user_id.equals("0")){
+						user_id = DmUtilDaoImplJdbc.common;
+					}
+					Map<String, String> catMap = userCat.get(user_id);
+					if (null == catMap){
+						catMap = new TreeMap<String, String>();
+						catMap.put(outgo_category_dm, outgo_category_mc);
+						userCat.put(user_id.toString(), catMap);
+					}else{
+						catMap.put(outgo_category_dm, outgo_category_mc);
+					}
+				}
+				return userCat;
+			}
+			
+		});
+	}
+	
+	// 获取user_id为制定值以及user_id为空（公用）的类别代码表
 	@Override
 	public Map<String, String> getOutgoCategory(Integer user_id) {
 		String sql = "SELECT outgo_category_dm, outgo_category_mc"
@@ -299,6 +340,46 @@ public class DmUtilDaoImplJdbc implements DmUtilDao{
 				}
 				return map;
 			}
+		});
+	}
+
+	// 获取转账类似的代码表（完整）
+	@Override
+	public Map<String, Map<String, String>> getTransferType() {
+		String sql = "SELECT zzlx_dm, zzlx_mc, user_id"
+				+ " FROM dm_zzlx "
+				+ "WHERE yxbz='Y' and xybz='Y'"
+				+ "ORDER BY zzlx_dm";
+	
+
+		return 	jdbcTemplate.query(sql, new ResultSetExtractor<Map<String, Map<String, String>>>() {
+
+			@Override
+			public Map<String, Map<String, String>> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				
+				//Map<String, String> map = new TreeMap<String, String>();
+				String user_id;
+				String zzlx_dm, zzlx_mc;
+				Map<String, Map<String, String>> userTransType = new HashMap<>();
+				while(rs.next()){
+					zzlx_dm = rs.getString("zzlx_dm");
+					zzlx_mc = rs.getString("zzlx_mc");
+					user_id = String.valueOf(rs.getInt("user_id"));
+					if (null == user_id || user_id.equals("0")){
+						user_id = DmUtilDaoImplJdbc.common;
+					}
+					Map<String, String> catMap = userTransType.get(user_id);
+					if (null == catMap){
+						catMap = new TreeMap<String, String>();
+						catMap.put(zzlx_dm, zzlx_mc);
+						userTransType.put(user_id.toString(), catMap);
+					}else{
+						catMap.put(zzlx_dm, zzlx_mc);
+					}
+				}
+				return userTransType;
+			}
+			
 		});
 	}
 

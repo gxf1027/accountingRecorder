@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import cn.gxf.spring.struts2.integrate.dao.AccountBookDao;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDao;
+import cn.gxf.spring.struts2.integrate.dao.DmUtilDaoImplJdbc;
 import cn.gxf.spring.struts2.integrate.model.AccountBook;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
@@ -146,18 +147,53 @@ public class DmServiceImpl implements DmService {
 		return dmUtilDao.getPaymentXl();
 	}
 
+	// 为了缓存不重复使用getOutgoCategoryCommon+getOutgoCategory(Integer user_id)两个函数，
+	// 分别获取类别代码表的公用部分和某个用户的特定部分
 	@Cacheable(value="dmCache")
 	@Override
-	public Map<String, String> getOutgoCategory(Integer user_id) {
+	public Map<String, String> getOutgoCategoryCommon(){
+		Map<String, Map<String, String>> userCat = dmUtilDao.getOutgoCategory();
+		if (userCat == null){
+			return new HashMap<String, String>();
+		}
 		
-		return dmUtilDao.getOutgoCategory(user_id);
+		return userCat.get(DmUtilDaoImplJdbc.common);
 	}
 
 	@Cacheable(value="dmCache")
 	@Override
+	public Map<String, String> getOutgoCategory(Integer user_id) {
+		
+		Map<String, Map<String, String>> userCat = dmUtilDao.getOutgoCategory();
+		if (userCat == null){
+			return new HashMap<String, String>();
+		}
+		
+		return userCat.get(user_id.toString());
+	}
+
+	@Cacheable(value="dmCache")
+	@Override
+	public Map<String, String> getTransferTypeCommon(){
+		Map<String, Map<String, String>> userTransType = dmUtilDao.getTransferType();
+		if (userTransType == null){
+			return new HashMap<String, String>();
+		}
+		
+		return userTransType.get(DmUtilDaoImplJdbc.common);
+	}
+	
+	
+	@Cacheable(value="dmCache")
+	@Override
 	public Map<String, String> getTransferType(Integer user_id) {
 		
-		return dmUtilDao.getTransferType(user_id);
+		Map<String, Map<String, String>> userTransType = dmUtilDao.getTransferType();
+		if (userTransType == null){
+			return new HashMap<String, String>();
+		}
+		
+		return userTransType.get(user_id.toString());
 	}
 	
 	@Cacheable(value="dmCache")
