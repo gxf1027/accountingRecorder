@@ -265,10 +265,10 @@ public class DmUtilDaoImplJdbc implements DmUtilDao{
 				while(rs.next()){
 					outgo_category_dm = rs.getString("outgo_category_dm");
 					outgo_category_mc = rs.getString("outgo_category_mc");
-					user_id = String.valueOf(rs.getInt("user_id"));
-					if (null == user_id || user_id.equals("0")){
-						user_id = DmUtilDaoImplJdbc.common;
-					}
+					//System.out.println("test-------"+rs.getInt("user_id"));
+					// 如果user_id为空值，rs.getInt("user_id")返回为0
+					//user_id = String.valueOf(rs.getInt("user_id"));
+					user_id = rs.getObject("user_id") == null ? DmUtilDaoImplJdbc.common : String.valueOf(rs.getInt("user_id"));
 					Map<String, String> catMap = userCat.get(user_id);
 					if (null == catMap){
 						catMap = new TreeMap<String, String>();
@@ -364,10 +364,11 @@ public class DmUtilDaoImplJdbc implements DmUtilDao{
 				while(rs.next()){
 					zzlx_dm = rs.getString("zzlx_dm");
 					zzlx_mc = rs.getString("zzlx_mc");
-					user_id = String.valueOf(rs.getInt("user_id"));
-					if (null == user_id || user_id.equals("0")){
-						user_id = DmUtilDaoImplJdbc.common;
-					}
+					user_id = rs.getObject("user_id") == null ? DmUtilDaoImplJdbc.common : String.valueOf(rs.getInt("user_id")); 
+//					user_id = String.valueOf(rs.getInt("user_id"));
+//					if (null == user_id || user_id.equals("0")){
+//						user_id = DmUtilDaoImplJdbc.common;
+//					}
 					Map<String, String> catMap = userTransType.get(user_id);
 					if (null == catMap){
 						catMap = new TreeMap<String, String>();
