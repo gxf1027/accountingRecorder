@@ -1,6 +1,7 @@
 package cn.gxf.spring.struts2.integrate.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +100,14 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getDateCount()+"Ìì-"+d.getJe());
 		}
 		return deltailMap;
+	}
+
+	@Override
+	public List<FinancialProductDetail> getFinancialProductByRedeemDate(Integer userId, Date date_from, Date date_to) {
+		if (userId == null){
+			return null;
+		}
+		return this.financialProductDetailMBDao.queryFinancialProductDetailByRedeemDate(userId, date_from, date_to);
 	}
 
 	

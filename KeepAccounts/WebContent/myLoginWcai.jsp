@@ -262,7 +262,7 @@ font-style: normal;
 	            <li id="login-tab-pass" class="login-tab-li">扫码登录<b></b></li>
 	        </ul> -->
 			<div id="account-login" class="account-login">
-				<form name='f' action='/Struts2Spring4Test2/j_spring_security_check'
+				<form name='f' action="${pageContext.request.contextPath }/j_spring_security_check"
 					method='POST' onsubmit="return checkForNull()" style="margin: 0;padding-top: 20px;padding-left: 10px">
 					<h2 class="loginTitle">账户登录</h2>
 					

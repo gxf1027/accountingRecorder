@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="Struts2Spring4Test2">
+    <wb-module deploy-name="KeepAccounts">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <property name="context-root" value="Struts2Spring4Test2"/>
-        <property name="java-output-path" value="/Struts2Spring4Test2/build/classes"/>
+        <property name="java-output-path" value="/KeepAccounts/build/classes"/>
+        <property name="context-root" value="KeepAccounts"/>
     </wb-module>
 </project-modules>
