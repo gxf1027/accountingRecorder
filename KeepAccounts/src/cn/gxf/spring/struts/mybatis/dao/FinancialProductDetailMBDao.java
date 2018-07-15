@@ -17,7 +17,7 @@ public interface FinancialProductDetailMBDao {
 	public FinancialProductDetail getFinancialProductDetailByReturnUuid(String uuid);
 	public List<FinancialProductDetail> getFinancialProductDetailByUserId(Integer userId);
 	public List<FinancialProductDetail> getFinancialProductDetailUnreturned(Integer userId); // 还没有关联“收入”的理财产品
-	public List<FinancialProductDetail> queryFinancialProductDetailByRedeemDate(@Param("user_id") Integer userId, @Param("date_from") Date date_from, @Param("date_to") Date date_to); // 查询到期时间在制定时间段之间的理财产品
+	public List<FinancialProductDetail> queryFinancialProductDetailByEndDate(@Param("date_from") Date date_from, @Param("date_to") Date date_to); // 查询到期时间在指定时间段之间的理财产品
 	
 	public void addOne(FinancialProductDetail financialProductDetail);
 	public void updateOne(FinancialProductDetail financialProductDetail);

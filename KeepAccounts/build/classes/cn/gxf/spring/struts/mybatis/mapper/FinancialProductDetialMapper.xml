@@ -135,11 +135,12 @@
 			  AND b.user_id = #{userId} AND returnuuid IS NULL AND a.yxbz='Y' AND b.yxbz='Y'
 	</select>
 	
-	<select id="queryFinancialProductDetailByRedeemDate" resultType="FinancialProductDetail">
+	<select id="queryFinancialProductDetailByEndDate" resultType="FinancialProductDetail">
 		SELECT  a.uuid,
 				a.transferuuid AS transferUuid, 
 				a.redeemuuid AS redeemUuid,
 				a.returnuuid AS returnUuid,
+				b.user_id,
 				a.product_name AS productName,
 				yh_dm AS yh_dm,
 				(SELECT y.yh_mc FROM dm_yh y WHERE y.yh_dm = a.yh_dm) AS yh_mc, 
@@ -154,10 +155,10 @@
 				a.xgrq 
 			  FROM financial_product_detail a, account_transfer_detail b
 		WHERE a.transferuuid = b.mxuuid
-		AND b.user_id = #{user_id}
 		AND a.product_type = 'FP_A1'
 		AND a.end_date  &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d')
 		AND a.end_date  &lt;= DATE_FORMAT(#{date_to}, '%Y-%m-%d 23:59:59')
+		AND a.redeemuuid IS NULL
 		AND a.yxbz='Y' AND b.yxbz='Y'
 	</select>
 	

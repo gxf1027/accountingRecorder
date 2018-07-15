@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"   
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:motan="http://api.weibo.com/schema/motan"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+     http://api.weibo.com/schema/motan
+     http://api.weibo.com/schema/motan.xsd">
+     
+    <!-- 使用consul作为注册中心 --> 
+    <motan:registry regProtocol="consul" name="my_consul" address="127.0.0.1:8500"/>
+     
+    <bean id="rpcServiceImpl" class="cn.gxf.spring.quartz.job.service.RpcServiceImpl" />   
+    
+    <!-- 使用consul为注册中心 -->
+    <motan:service interface="cn.gxf.spring.quartz.job.service.RpcService" ref="rpcServiceImpl" registry="my_consul" export="8002" />
+    
+    <!-- 不使用注册中心 -->
+    <!-- <motan:service interface="cn.gxf.spring.quartz.job.service.RpcService" ref="rpcServiceImpl" export="8002" /> -->
+       
+</beans>

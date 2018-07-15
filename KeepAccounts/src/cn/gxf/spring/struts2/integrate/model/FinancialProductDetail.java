@@ -12,6 +12,7 @@ public class FinancialProductDetail implements Serializable{
 	private String transferUuid;
 	private String redeemUuid;
 	private String returnUuid;
+	private Integer user_id;
 	private String productName;
 	private String productType;
 	private String yh_dm;
@@ -60,6 +61,14 @@ public class FinancialProductDetail implements Serializable{
 		this.returnUuid = returnUuid;
 	}
 
+	public Integer getUser_id() {
+		return user_id;
+	}
+	
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	
 	public String getProductName() {
 		return productName;
 	}

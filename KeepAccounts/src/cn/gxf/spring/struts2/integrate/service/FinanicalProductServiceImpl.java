@@ -103,11 +103,9 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 	}
 
 	@Override
-	public List<FinancialProductDetail> getFinancialProductByRedeemDate(Integer userId, Date date_from, Date date_to) {
-		if (userId == null){
-			return null;
-		}
-		return this.financialProductDetailMBDao.queryFinancialProductDetailByRedeemDate(userId, date_from, date_to);
+	public List<FinancialProductDetail> getFinancialProductUnRedeemed(Date date_from, Date date_to) {
+		
+		return this.financialProductDetailMBDao.queryFinancialProductDetailByEndDate(date_from, date_to);
 	}
 
 	

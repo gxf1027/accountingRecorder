@@ -1,6 +1,9 @@
 package cn.gxf.spring.quartz.job;
 
 
+import java.io.Serializable;
+
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
@@ -34,6 +37,23 @@ public class JMSSenderImpl implements JMSSender{
 		};
 
 		jmsTemplate.send(messageCreator);
+		
+	}
+	
+	
+	@Override
+	public void send(Destination destination, Serializable objMsg) {
+		MessageCreator messageCreator = new MessageCreator(){
+
+			public Message createMessage(Session session) throws JMSException {
+				ObjectMessage objMessage = session.createObjectMessage(objMsg);
+			
+				//System.out.println("·¢ËÍÏûÏ¢£º"+ objMessage.toString());
+				return objMessage;
+			}
+		};
+
+		jmsTemplate.send(destination, messageCreator);
 		
 	}
 	

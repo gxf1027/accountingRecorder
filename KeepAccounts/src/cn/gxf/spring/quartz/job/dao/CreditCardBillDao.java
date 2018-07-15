@@ -13,7 +13,8 @@ import cn.gxf.spring.quartz.job.model.CreditCardTransRecord;
 
 @MapperScan
 public interface CreditCardBillDao {
-	public List<String> getCreditCardInZDR(@Param("zdr") int zdr);
+	//public List<String> getCreditCardInZDR(@Param("zdr") int zdr);
+	public List<CreditCard> getCreditCardInZDR(@Param("zdr") int zdr);
 	public List<CreditCard> getCreditCardbyUserId(@Param("user_id") int user_id);
 	
 	public List<CreditCardTransRecord> getCreditCardTranscationRecordInZDQ(Map<String, Object> params);

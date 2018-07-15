@@ -5,8 +5,8 @@
 
 <mapper namespace="cn.gxf.spring.quartz.job.dao.CreditCardBillDao">
 
-	<select id="getCreditCardInZDR" parameterType="int" resultType="string">
-		SELECT a.zh_dm  
+	<select id="getCreditCardInZDR" parameterType="int" resultType="CreditCard">
+		SELECT a.zh_dm, a.zh_mc, b.zdr, a.user_id, a.ye
 				FROM zh_detail_info a, zh_detail_creditcard b 
 				WHERE a.zh_dm = b.zh_dm 
 				AND a.yxbz='Y' 

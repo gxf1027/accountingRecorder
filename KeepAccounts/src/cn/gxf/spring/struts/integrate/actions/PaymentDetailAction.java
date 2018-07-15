@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
+import com.weibo.api.motan.common.MotanConstants;
+import com.weibo.api.motan.util.MotanSwitcherUtil;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
 import cn.gxf.spring.struts.mybatis.dao.AccountVoMBDao;
@@ -67,6 +69,7 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		this.myrequest.put("outgo_category", map_cat);
 		Map<String, String> map_cat_com = dmService.getOutgoCategoryCommon();
 		this.myrequest.put("outgo_cat_common", map_cat_com);
+		
 		
 		return "PaymentInputOk";
 	}

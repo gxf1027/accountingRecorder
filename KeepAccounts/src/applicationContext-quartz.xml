@@ -58,8 +58,27 @@
             <!-- everyday 23 o'clock -->
             <value>0 45 22 * * ?</value>
         </property>
-    </bean>   
+    </bean>  
     
+    <!-- 3. financial products notice -->  
+    <bean id="financialProductsNoticeJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">  
+	    <property name="jobClass" value="cn.gxf.spring.quartz.job.FinancialProductsNoticeJob" />  
+	    <property name="jobDataMap">  
+	        <map>
+	            <entry key="financialProdProcessor" value-ref="financialProductsNoticeProcessor"></entry>
+	        </map>  
+	    </property>  
+	    <property name="durability" value="true" /> 
+	</bean>    
+	
+    <bean id="financialProductNoticeTrigger"
+          class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="financialProductsNoticeJobDetail" />
+        <property name="cronExpression">
+        	<!-- 每月第一天执行 -->
+            <value>0 0 20 1 1/1 ? *</value>
+        </property>
+    </bean>    
     
     
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
@@ -67,6 +86,7 @@
 	        <list>  
 	            <ref bean="creditCardJobDetial" /> 
 	            <ref bean="statJobDetial" /> 
+	            <ref bean="financialProductsNoticeJobDetail" />
 	        </list>  
 	    </property>  
 	  
@@ -74,6 +94,7 @@
 	        <list>  
 	            <ref bean="simpleTrigger1" />
 	            <ref bean="statTrigger" />
+	            <ref bean="financialProductNoticeTrigger" />
 	        </list>  
 	    </property>  
 	</bean>
