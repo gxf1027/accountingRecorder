@@ -1,4 +1,4 @@
-##日常生活流水账记录系统（学习系统 自娱自乐）
+## 日常生活流水账记录系统（学习系统 自娱自乐） ##
 
 
 ###**项目说明**  <br>  
@@ -8,7 +8,7 @@
 * 定时任务：月度/年度收入、支出统计，信用卡账单邮件发送，理财产品到期邮件提醒<br>  
 
 
-###**技术框架**：<br>  
+### **技术框架**：<br>  
 * 核心框架：Spring framework 4.0+  <br>  
 * 安全框架：Spring Security 3.0+  <br>  
 * 视图框架：Struts2  <br>  
@@ -23,7 +23,7 @@
 * RPC：weibocom/motan https://github.com/weibocom/motan<br>  
 * WebService：CXF <br>  
 
-###**软件需求** <br>  
+### **软件需求** <br>  
 * JDK1.8 <br>  
 * MySQL5.5+ <br>  
 * Tomcat8+ <br>  
