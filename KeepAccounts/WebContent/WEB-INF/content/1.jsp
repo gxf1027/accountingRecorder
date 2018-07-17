@@ -14,9 +14,9 @@
 <p>Session 超时</p> <br>
 <a href="homepage">返回主页</a> <br>
 
-<s:property value="exceptionStack"/>
+<%-- <s:property value="exceptionStack"/> --%>
 <s:fielderror />
-<s:property value="actionErrors"/>
+<%-- <s:property value="actionErrors"/> --%>
 	
 <s:debug></s:debug>
 

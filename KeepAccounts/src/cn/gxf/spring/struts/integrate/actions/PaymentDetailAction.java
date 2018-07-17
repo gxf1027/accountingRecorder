@@ -16,15 +16,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
-import com.weibo.api.motan.common.MotanConstants;
-import com.weibo.api.motan.util.MotanSwitcherUtil;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
-import cn.gxf.spring.struts.mybatis.dao.AccountVoMBDao;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
 import cn.gxf.spring.struts2.integrate.model.PaymentDetail;
-import cn.gxf.spring.struts2.integrate.model.PaymentDetailVO;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountService;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountUnivServiceImpl;
 import cn.gxf.spring.struts2.integrate.service.DmService;

@@ -225,6 +225,6 @@
         <property name="baseAddress" value="http://localhost:9809/services/"/>
     </bean> -->
     
-    <bean class="cn.gxf.spring.struts.integrate.util.InstantiationTracingBeanPostProcessor"/>
-    <bean class="cn.gxf.spring.struts.integrate.util.SpringContextHelper" />
+    <bean class="cn.gxf.spring.struts.integrate.sysctr.InstantiationTracingBeanPostProcessor"/>
+    <bean class="cn.gxf.spring.struts.integrate.sysctr.SpringContextCloseListener" />
 </beans>
