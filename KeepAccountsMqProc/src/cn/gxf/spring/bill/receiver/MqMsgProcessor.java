@@ -16,9 +16,10 @@ import cn.gxf.spring.bill.mailsender.MailSenderService;
 import cn.gxf.spring.cxf.AuthorizingInterceptor;
 import cn.gxf.spring.quartz.job.endpoint.BillServiceEndpoint;
 import cn.gxf.spring.quartz.job.model.CreditCardBill;
+import cn.gxf.spring.quartz.job.model.FinancialProductsNotice;
 
 @Service
-public class BillProcessor implements ApplicationContextAware{
+public class MqMsgProcessor implements ApplicationContextAware{
 	private static int count=1;
 	
 	@Autowired
@@ -64,6 +65,12 @@ public class BillProcessor implements ApplicationContextAware{
 		
 		System.out.println("billProcessed");
 		
+	}
+	
+	public void financialProductsNoticeProcessing(FinancialProductsNotice notice){
+		System.out.println("financialProductsNoticeProcessing: " + notice);
+		
+		System.out.println("noticeProcessed");
 	}
 	
 	private void setBillMailed(CreditCardBill bill){

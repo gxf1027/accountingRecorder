@@ -66,6 +66,13 @@
 		<!-- 设置消息队列的名字 -->
 		<constructor-arg index="0" value="mailQueue" />
 	</bean>
+	
+	<!-- 接收消息的队列：理财产品到期通知 -->
+	<bean id="mailQueueDest_FinaProducts"
+		class="org.apache.activemq.command.ActiveMQQueue">
+		<!-- 设置消息队列的名字 -->
+		<constructor-arg index="0" value="mailQueueFinaProducts" />
+	</bean>
     
     <!-- 监听方式一：使用实现MessageListener的类的onMessage()方法进行监听 -->
     <!-- creditCardBillMsgListener implements MessageListener -->
@@ -80,12 +87,20 @@
 	</bean> -->
 	
 	 <!-- 监听方式二：将POJO作为message处理类，处理消息的方法可以任意设置-->
-	<bean id="messageAdapter"
+	<bean id="msgAdapterCreditCardBill"
 	      class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
 	    <constructor-arg>
-	        <bean class="cn.gxf.spring.bill.receiver.BillProcessor"/> <!-- 将POJO作为message处理类 -->
+	        <bean class="cn.gxf.spring.bill.receiver.MqMsgProcessor"/> <!-- 将POJO作为message处理类 -->
 	    </constructor-arg>
 	    <property name="defaultListenerMethod" value="billProcessing"/> <!-- 处理消息的方法 -->
+	</bean>
+	
+	<bean id="msgAdapterFinanProdNotice"
+	      class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+	    <constructor-arg>
+	        <bean class="cn.gxf.spring.bill.receiver.MqMsgProcessor"/> <!-- 将POJO作为message处理类 -->
+	    </constructor-arg>
+	    <property name="defaultListenerMethod" value="financialProductsNoticeProcessing"/> <!-- 处理消息的方法 -->
 	</bean>
 	
 	<!--
@@ -113,7 +128,16 @@
 	<bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 	    <property name="connectionFactory" ref="amqConnectionFactory"/>
 	    <property name="destination" ref="mailQueueDest"/>
-	    <property name="messageListener" ref="messageAdapter" /> <!-- 使用MessageListenerAdapter来作为消息监听器 -->
+	    <property name="messageListener" ref="msgAdapterCreditCardBill" /> <!-- 使用MessageListenerAdapter来作为消息监听器 -->
+	    <property name="sessionTransacted" value="true"/>
+	    <property name="transactionManager" ref="springJtaTxManager"/> <!-- 配置后函数不需要使用@Transactional注解 -->
+	    <!-- <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>  --> <!--使用JTA的情况下，即为客户端确认，这个配置被忽略 -->  
+	</bean>
+	
+	<bean id="jmsContainerFinanProdNotice" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	    <property name="connectionFactory" ref="amqConnectionFactory"/>
+	    <property name="destination" ref="mailQueueDest_FinaProducts"/>
+	    <property name="messageListener" ref="msgAdapterFinanProdNotice" /> <!-- 使用MessageListenerAdapter来作为消息监听器 -->
 	    <property name="sessionTransacted" value="true"/>
 	    <property name="transactionManager" ref="springJtaTxManager"/> <!-- 配置后函数不需要使用@Transactional注解 -->
 	    <!-- <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>  --> <!--使用JTA的情况下，即为客户端确认，这个配置被忽略 -->  
