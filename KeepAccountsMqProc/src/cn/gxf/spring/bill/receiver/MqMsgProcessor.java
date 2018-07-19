@@ -17,6 +17,7 @@ import cn.gxf.spring.cxf.AuthorizingInterceptor;
 import cn.gxf.spring.quartz.job.endpoint.BillServiceEndpoint;
 import cn.gxf.spring.quartz.job.model.CreditCardBill;
 import cn.gxf.spring.quartz.job.model.FinancialProductsNotice;
+import cn.gxf.spring.quartz.job.service.RpcService;
 
 @Service
 public class MqMsgProcessor implements ApplicationContextAware{
@@ -68,8 +69,11 @@ public class MqMsgProcessor implements ApplicationContextAware{
 	}
 	
 	public void financialProductsNoticeProcessing(FinancialProductsNotice notice){
-		System.out.println("financialProductsNoticeProcessing: " + notice);
+		System.out.println("notice: " + notice);
 		
+		this.mailSenderService.sendSimpleMailThymeleaf(notice);
+		
+		this.setNoticeMailed(notice);
 		System.out.println("noticeProcessed");
 	}
 	
@@ -84,6 +88,17 @@ public class MqMsgProcessor implements ApplicationContextAware{
 		cxfClient.getOutInterceptors().add(authorizingInterceptor);
 		
 		billService.SetBillMailed(bill.getMxUuidList());
+	}
+	
+	private void setNoticeMailed(FinancialProductsNotice notice){
+		
+		try {
+			RpcService rpc = (RpcService) appCtx.getBean("rpcService");
+			rpc.setFinanProductsNoticeMailed(notice.getUuid());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	@Override

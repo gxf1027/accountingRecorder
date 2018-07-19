@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>理财到期提醒</title>
+	</head>
+	<body>
+		账单日起：<span th:text="${notice.ssqq}"></span><br>
+		账单日止：<span th:text="${notice.ssqz}"></span><br>
+		<table border="1" cellspacing="0">
+			<thead>
+				<tr>
+					<td width='40'>序号</td>
+					<td width='150'>产品名称</td>
+					<td width='100'>产品起息</td>
+					<td width='100'>产品到期</td>
+					<td width='60'>天数</td>
+					<td width='100'>金额</td>
+				</tr>
+			</thead>
+			<tbody th:remove="all-but-first">
+				<tr th:each="record : ${notice.finanProducts}">
+					<td th:text="${recordStat.count}">1</td>
+					<td th:text="${record.productName}">理财产品名称</td>
+					<td th:text="${#dates.format(record.startDate, 'yyyy-MMM-dd')}">28-Jun-2018</td>
+					<td th:text="${#dates.format(record.endDate, 'yyyy-MMM-dd')}">31-Jun-2013</td>
+					<td th:text="${record.dateCount}">182</td>
+					<td th:text="${'¥' + #numbers.formatDecimal(record.je, 1, 2)}">¥100000</td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</html>
+
+

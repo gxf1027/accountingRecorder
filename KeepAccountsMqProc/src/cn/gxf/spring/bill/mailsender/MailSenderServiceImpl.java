@@ -21,11 +21,13 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import cn.gxf.spring.quartz.job.model.CreditCardBill;
 import cn.gxf.spring.quartz.job.model.CreditCardRecordSimplified;
+import cn.gxf.spring.quartz.job.model.FinancialProductsNotice;
 
 public class MailSenderServiceImpl implements MailSenderService {
 
 	private ApplicationContext applicationContext;
-	private static final String EMAIL_SIMPLE_TEMPLATE_NAME = "bill-format";
+	private static final String EMAIL_SIMPLE_TEMPLATE_BILL = "bill-format";
+	private static final String EMAIL_SIMPLE_TEMPLATE_NOTICE = "notice-format";
 	
 	private JavaMailSenderImpl mailSender;
     private SpringTemplateEngine templateEngine;
@@ -136,7 +138,7 @@ public class MailSenderServiceImpl implements MailSenderService {
 		    message.setTo(bill.getEmail()); //收件人
 
 		    // Create the HTML body using Thymeleaf
-		    final String htmlContent = this.templateEngine.process(EMAIL_SIMPLE_TEMPLATE_NAME, ctx);
+		    final String htmlContent = this.templateEngine.process(EMAIL_SIMPLE_TEMPLATE_BILL, ctx);
 		    System.out.println("mail content: " + htmlContent);
 		    message.setText(htmlContent, true /* isHtml */);
 		} catch (Exception e) {
@@ -150,6 +152,39 @@ public class MailSenderServiceImpl implements MailSenderService {
         this.mailSender.send(mimeMessage);
     }
     
+
+	@Override
+	public void sendSimpleMailThymeleaf(FinancialProductsNotice notice) {
+		
+		// Prepare the evaluation context
+        final Context ctx = new Context();
+        ctx.setVariable("notice", notice);
+        // Prepare message using a Spring helper
+        final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+        final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
+        try {
+			message.setSubject(notice.getSsqq()+" 至  "+notice.getSsqz()+" 理财产品到期提醒");
+			message.setFrom(mailSender.getUsername()); // 发件人
+			if (null == notice.getEmail()){
+				System.out.println("userid: " + notice.getUser_id() + "username: " + notice.getUsername() + " email addr is null");
+				return;
+			}
+		    message.setTo(notice.getEmail()); //收件人
+
+		    // Create the HTML body using Thymeleaf
+		    final String htmlContent = this.templateEngine.process(EMAIL_SIMPLE_TEMPLATE_NOTICE, ctx);
+		    System.out.println("mail content: " + htmlContent);
+		    message.setText(htmlContent, true /* isHtml */);
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+       
+
+        // Send email
+        this.mailSender.send(mimeMessage);
+	}
 
 	@Override
 	public void sendTest() {
