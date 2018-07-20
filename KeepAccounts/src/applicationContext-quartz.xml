@@ -28,14 +28,21 @@
 	</bean>     
 	
 	
-	<bean id="simpleTrigger1"  class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">  
+	<!-- <bean id="simpleTrigger1"  class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">  
 	    <property name="jobDetail" ref="creditCardJobDetial" />  
-	    <property name="startDelay" value="100000" /> <!-- 100000 --> 
-	    <property name="repeatInterval" value="86400000" />  <!-- (ms) one day -->
+	    <property name="startDelay" value="100000" /> 100000 
+	    <property name="repeatInterval" value="86400000" />  (ms) one day
 	    <property name="repeatCount" value="-1" />
-	</bean>   
+	</bean>  -->  
 	
-	
+	<bean id="creditBillTrigger"  
+			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+	    <property name="jobDetail" ref="creditCardJobDetial" />  
+	    <property name="cronExpression">
+ 			<!-- 每天某个时段 -->
+            <value>0 0 20 * * ?</value>
+        </property>
+	</bean> 
 	
 	
 	<!-- 2. statistics job -->
@@ -92,7 +99,7 @@
 	  
 	    <property name="triggers">  
 	        <list>  
-	            <ref bean="simpleTrigger1" />
+	            <ref bean="creditBillTrigger" />
 	            <ref bean="statTrigger" />
 	            <ref bean="financialProductNoticeTrigger" />
 	        </list>  

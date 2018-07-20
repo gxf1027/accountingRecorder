@@ -8,7 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jms.Destination;
+import javax.jms.Queue;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +31,11 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 	private CreditCardBillDao creditCardBillDao;
 	
 	@Autowired
-	private JMSSender mailSender;
+	@Qualifier("mailQueueDest")
+	private Queue queue;
+	
+	@Autowired
+	private JMSSender jmsSender;
 	
 	@Autowired
 	private UserService userService;
@@ -67,7 +75,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
         
         
         // 4. 发送至JMS
-        sendToJMS(bills);
+        sendToJMS(this.queue, bills);
         
         return 1;
 	}
@@ -108,7 +116,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
         
         
         // 4. 发送至JMS
-        sendToJMS(bills);
+        sendToJMS(this.queue, bills);
         
         return 1;
 	}
@@ -251,9 +259,9 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 	}*/
 	
 	@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
-	public void sendToJMS(List<CreditCardBill> bills){
+	public void sendToJMS(Destination destination, List<CreditCardBill> bills){
 		for (CreditCardBill bill : bills){
-			this.mailSender.send(bill);
+			this.jmsSender.send(destination, bill);
 		}
 	}
 }

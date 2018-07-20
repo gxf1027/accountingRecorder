@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.activemq.command.ActiveMQQueue;
+import javax.jms.Queue;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -32,11 +33,11 @@ public class FinancialProductsNoticeServiceImpl implements FinancialProductsNoti
 	private FinanProductsNoticeDao noticeDao;
 	
 	@Autowired
-	private JMSSender mailSender;
+	private JMSSender jmsSender;
 	
 	@Autowired
 	@Qualifier("mailQueueDest_FinaProducts")
-	private ActiveMQQueue queue;
+	private Queue queue;
 	
 	
 	// 既可以处理多个用户，也可以处理单个用户
@@ -56,6 +57,7 @@ public class FinancialProductsNoticeServiceImpl implements FinancialProductsNoti
 		
 		// 用户--通知对照
 		Map<String, FinancialProductsNotice> noticeMaps = new HashMap<String, FinancialProductsNotice>();
+		
 		for(FinancialProductDetail item : finanProdList){
 			FinancialProductsNotice notice = noticeMaps.get(item.getUser_id().toString());
 			if (null == notice){
@@ -88,7 +90,7 @@ public class FinancialProductsNoticeServiceImpl implements FinancialProductsNoti
 			noticeDao.saveNotice(notice);
 			
 			// JMS发送
-			mailSender.send(queue/*destination*/, notice);
+			jmsSender.send(this.queue/*destination*/, notice);
 		}
 		
 		return 1;
