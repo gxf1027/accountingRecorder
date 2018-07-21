@@ -18,7 +18,7 @@ import cn.gxf.spring.quartz.job.service.AccountStatisticsService;
 import cn.gxf.spring.struts2.integrate.dao.UserDao;
 
 @Service
-public class AccountStatProcessor {
+public class AccountStatProcessor implements JobProcessor{
 	
 	@Autowired
 	private UserDao userDao;
@@ -26,8 +26,9 @@ public class AccountStatProcessor {
 	@Autowired
 	private AccountStatisticsService statisticsService;
 	
+	@Override
 	@CacheEvict(value="front-stat", allEntries=true)
-	public void updateStatThisMonth() {
+	public int process() {
 		
 		// 获得所有用户
 		Map<String, String> users = userDao.getUsersIdNames();
@@ -37,6 +38,8 @@ public class AccountStatProcessor {
 			statisticsService.updateStatThisMonthByUserid(userid, users.get(userid));
 			
 		}
+		
+		return 1;
 	}
 	
 	

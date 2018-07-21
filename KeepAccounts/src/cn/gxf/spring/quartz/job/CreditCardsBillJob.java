@@ -22,7 +22,9 @@ public class CreditCardsBillJob implements Job{
 		CreditCardBillDao creditCardBillDao = (CreditCardBillDao) jetc.getJobDetail().getJobDataMap().get("creditCardBillDao");
 		//System.out.println(creditCardBillDao);
 		 */		
-		BillProcessor ccbp = (BillProcessor) jetc.getJobDetail().getJobDataMap().get("ccbProcessor");
+		//BillProcessor ccbp = (BillProcessor) jetc.getJobDetail().getJobDataMap().get("ccbProcessor");
+		String processorName =  (String) jetc.getJobDetail().getJobDataMap().get("processorName");
+		ProcessorDispatcher dispatcher = (ProcessorDispatcher) jetc.getJobDetail().getJobDataMap().get("dispatcher");
 		// test
 		/*StatNdYfMBDao dao = (StatNdYfMBDao) jetc.getJobDetail().getJobDataMap().get("mbdao");
 		System.out.println(dao.getIncomeStatOnSrlb("2018", 5));*/
@@ -30,7 +32,8 @@ public class CreditCardsBillJob implements Job{
 		//CreditCardsBillProcessor ccbp = new CreditCardsBillProcessor();
 		
 		try {
-			ccbp.processCreditCardBill();
+			// ccbp.processCreditCardBill();
+			dispatcher.execute(processorName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

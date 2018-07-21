@@ -18,7 +18,7 @@ import cn.gxf.spring.struts.mybatis.dao.FinancialProductDetailMBDao;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
 
 @Service
-public class FinancialProductsNoticeProcessor {
+public class FinancialProductsNoticeProcessor implements JobProcessor{
 	
 	@Autowired
 	private FinancialProductDetailMBDao finanProdDetailDao;
@@ -32,7 +32,8 @@ public class FinancialProductsNoticeProcessor {
 	
 	// 在一个事务内，如果数据库/JMS抛出异常，会回滚
 	//@Transactional(value="JtaXAManager",propagation=Propagation.REQUIRED)
-	public int processFinanProductsNotice(){
+	@Override
+	public int process(){
 		
 		Date current = new Date();
 		Date date_from = AuxiliaryTools.getMonthFirstDate(current);

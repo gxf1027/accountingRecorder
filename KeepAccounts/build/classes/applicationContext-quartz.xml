@@ -21,7 +21,8 @@
 	    <property name="jobDataMap">  
 	        <map>  
 	            <entry key="size" value="10" />  
-	            <entry key="ccbProcessor" value-ref="billProcessor"></entry>
+	            <entry key="dispatcher" value-ref="processorDispatcher" />
+	            <entry key="processorName" value="billProcessor" />
 	        </map>  
 	    </property>  
 	    <property name="durability" value="true" /> 
@@ -36,11 +37,13 @@
 	</bean>  -->  
 	
 	<bean id="creditBillTrigger"  
-			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
-	    <property name="jobDetail" ref="creditCardJobDetial" />  
+			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="group" value="mailInfo" />  
+	    <property name="jobDetail" ref="creditCardJobDetial" />
+	    <!-- <property name="misfireInstruction" value="1" /> --> <!-- MISFIRE_INSTRUCTION_FIRE_ONCE_NOW -->
 	    <property name="cronExpression">
  			<!-- 每天某个时段 -->
-            <value>0 0 20 * * ?</value>
+            <value>0 52 23 * * ?</value>
         </property>
 	</bean> 
 	
@@ -50,7 +53,9 @@
 	    <property name="jobClass" value="cn.gxf.spring.quartz.job.StatBillJob" />  
 	    <property name="jobDataMap">  
 	        <map>  
-	            <entry key="statProcessor" value-ref="accountStatProcessor"></entry>
+	            <!-- <entry key="statProcessor" value-ref="accountStatProcessor"></entry> -->
+	            <entry key="dispatcher" value-ref="processorDispatcher" />
+	            <entry key="processorName" value="accountStatProcessor" />
 	        </map>  
 	    </property>  
 	    <property name="durability" value="true" /> 
@@ -58,6 +63,7 @@
 	
 	<bean id="statTrigger"
           class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="group" value="mailInfo" />
         <property name="jobDetail" ref="statJobDetial" />
         <property name="cronExpression">
         	<!-- each n minuts -->
@@ -72,7 +78,9 @@
 	    <property name="jobClass" value="cn.gxf.spring.quartz.job.FinancialProductsNoticeJob" />  
 	    <property name="jobDataMap">  
 	        <map>
-	            <entry key="financialProdProcessor" value-ref="financialProductsNoticeProcessor"></entry>
+	            <!-- <entry key="financialProdProcessor" value-ref="financialProductsNoticeProcessor"></entry> -->
+	            <entry key="dispatcher" value-ref="processorDispatcher" />
+	            <entry key="processorName" value="financialProductsNoticeProcessor" />
 	        </map>  
 	    </property>  
 	    <property name="durability" value="true" /> 
@@ -80,10 +88,12 @@
 	
     <bean id="financialProductNoticeTrigger"
           class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="group" value="mailInfo" />
         <property name="jobDetail" ref="financialProductsNoticeJobDetail" />
         <property name="cronExpression">
         	<!-- 每月第一天执行 -->
             <value>0 0 20 1 1/1 ? *</value>
+            <!-- <value>0 5 0 * * ?</value> -->
         </property>
     </bean>    
     
@@ -104,5 +114,8 @@
 	            <ref bean="financialProductNoticeTrigger" />
 	        </list>  
 	    </property>  
+	    
+	    <property name="dataSource" ref="datasource" />
+	    <!-- <property name="transactionManager" ref="dataSourceTransactionManager" /> -->
 	</bean>
 </beans>

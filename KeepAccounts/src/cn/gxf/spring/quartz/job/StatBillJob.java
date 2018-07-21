@@ -12,10 +12,13 @@ public class StatBillJob implements Job{
 	@Override
 	public void execute(JobExecutionContext jetc) throws JobExecutionException {
 
-		AccountStatProcessor statProcessor = (AccountStatProcessor) jetc.getJobDetail().getJobDataMap().get("statProcessor");
+		//AccountStatProcessor statProcessor = (AccountStatProcessor) jetc.getJobDetail().getJobDataMap().get("statProcessor");
+		String processorName =  (String) jetc.getJobDetail().getJobDataMap().get("processorName");
+		ProcessorDispatcher dispatcher = (ProcessorDispatcher) jetc.getJobDetail().getJobDataMap().get("dispatcher");
 
 		try {
-			statProcessor.updateStatThisMonth();
+			//statProcessor.process();
+			dispatcher.execute(processorName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

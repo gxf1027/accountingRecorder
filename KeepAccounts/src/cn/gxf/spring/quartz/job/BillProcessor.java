@@ -20,8 +20,9 @@ import cn.gxf.spring.quartz.job.model.CreditCard;
 import cn.gxf.spring.quartz.job.service.CreditCardsBillService;
 
 @Service
-public class BillProcessor {
-	
+public class BillProcessor implements JobProcessor{
+
+
 	@Autowired
 	private CreditCardBillDao creditCardBillDao;
 	
@@ -31,7 +32,8 @@ public class BillProcessor {
 	// 在一个事务内，如果数据库/JMS抛出异常，会回滚
 	// 总的函数不用事务，可能超时
 	//@Transactional(value="JtaXAManager",propagation=Propagation.REQUIRED)
-	public int processCreditCardBill(){
+	@Override
+	public int process(){
 		
 		Date jyqz = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 交易日起为本日 

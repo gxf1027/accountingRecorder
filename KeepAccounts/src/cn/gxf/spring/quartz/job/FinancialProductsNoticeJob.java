@@ -9,10 +9,13 @@ public class FinancialProductsNoticeJob implements Job{
 	@Override
 	public void execute(JobExecutionContext jetc) throws JobExecutionException {
 		
-		FinancialProductsNoticeProcessor finanProdProc = (FinancialProductsNoticeProcessor) jetc.getJobDetail().getJobDataMap().get("financialProdProcessor");
+		//FinancialProductsNoticeProcessor finanProdProc = (FinancialProductsNoticeProcessor) jetc.getJobDetail().getJobDataMap().get("financialProdProcessor");
+		String processorName =  (String) jetc.getJobDetail().getJobDataMap().get("processorName");
+		ProcessorDispatcher dispatcher = (ProcessorDispatcher) jetc.getJobDetail().getJobDataMap().get("dispatcher");
 		
 		try {
-			finanProdProc.processFinanProductsNotice();
+			//finanProdProc.process();
+			dispatcher.execute(processorName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
