@@ -22,10 +22,14 @@ public class ProcessorDispatcher implements Serializable{
 	 */
 	private static final long serialVersionUID = 1068867817750858030L;
 	
-	public void execute(String processorName){
+	/**
+	 * @param processorName
+	 * @param ctx 从调用者注入context
+	 */
+	public void execute(String processorName, ApplicationContext ctx){
 		
 		try {
-			ApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
+			//ApplicationContext ctx = ContextLoader.getCurrentWebApplicationContext();
 			JobProcessor processor = (JobProcessor)ctx.getBean(processorName);
 			processor.process();
 		} catch (Exception e) {
