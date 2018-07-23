@@ -100,7 +100,7 @@
 			<AppenderRef ref="RollingFileWarn" />
 		</Logger>
 		
-		<Logger name="cn.gxf.spring.quartz.job.dao" level="DEBUG">
+		<Logger name="cn.gxf.spring.quartz" level="DEBUG">
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="RollingFileDebug" />
 		</Logger>
