@@ -18,7 +18,17 @@
     
     <context:component-scan base-package="cn" />
      
-	<context:property-placeholder location="classpath:db.properties" />
+	<!-- <context:property-placeholder location="classpath:db.properties" /> -->
+	<!-- 带密码加密的配置文件读取 -->
+	<bean id="propertyConfigurer" class="cn.gxf.spring.struts.integrate.sysctr.KeepAccPropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:db.properties</value>
+				<value>classpath:mq.properties</value>
+			</list>
+		</property>
+	</bean>
+	
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
 	
 	

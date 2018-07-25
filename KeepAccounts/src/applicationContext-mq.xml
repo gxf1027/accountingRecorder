@@ -23,9 +23,9 @@
 	</bean> -->
 	
 	<bean id="jmsXaConnectionFactory" class="org.apache.activemq.ActiveMQXAConnectionFactory" lazy-init="true">
-        <property name="brokerURL" value="tcp://localhost:61616" />
-        <property name="userName" value="keepaccounts"></property>
-		<property name="password" value="keepaccounts"></property>
+        <property name="brokerURL" value="${mq.url}" />
+        <property name="userName" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
         <property name="redeliveryPolicy">
         	<bean id="redeliveryPolicy" class="org.apache.activemq.RedeliveryPolicy">
         		<property name="useExponentialBackOff" value="true"></property>
