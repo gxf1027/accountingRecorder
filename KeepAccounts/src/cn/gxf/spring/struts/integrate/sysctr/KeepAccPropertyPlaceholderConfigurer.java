@@ -8,17 +8,20 @@ import cn.gxf.spring.struts.integrate.util.AESUtil;
 
 public class KeepAccPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer {
 
+	private String postfix = ".encryption";
+	
 	@Override
 	public void processProperties(ConfigurableListableBeanFactory beanFactory, Properties props) {
 		Enumeration<?> keys = props.propertyNames();
 		while (keys.hasMoreElements()) {
 			String key = (String) keys.nextElement();
 			String value = props.getProperty(key);
-			if (key.endsWith(".encryption") && null != value) {
+			if (key.endsWith(this.postfix) && null != value) {
 				props.remove(key);
-				key = key.substring(0, key.length() - 11);
+				key = key.substring(0, key.length() - this.postfix.length());
 				// Ω‚√‹
 				value = AESUtil.decrypt(value.trim());
+				System.out.println("key:"+key+" value:"+value);
 				props.setProperty(key, value);
 			}
 			System.setProperty(key, value);
