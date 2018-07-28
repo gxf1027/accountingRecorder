@@ -26,6 +26,16 @@
     <context:component-scan base-package="cn" />
     <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
     
+    <bean id="propertyConfigurer" class="cn.gxf.spring.keepacc.mqproc.sysctr.KeepAccPropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:db.properties</value>
+				<value>classpath:mq.properties</value>
+				<value>classpath:mailsender.properties</value>
+			</list>
+		</property>
+	</bean>
+    
 <!--     <bean id="creditCardBillMsgListener" class="cn.gxf.spring.bill.receiver.CreditCardBillMsgListener">
     	<property name="mailSenderService" ref="mailSenderServiceImpl"></property>
     </bean> -->
@@ -38,7 +48,9 @@
         password="admin"/> -->
         
     <bean id="jmsXaConnectionFactory" class="org.apache.activemq.ActiveMQXAConnectionFactory">
-        <property name="brokerURL" value="tcp://localhost:61616" />
+        <property name="brokerURL" value="${mq.url}" />
+        <property name="userName" value="${mq.username}"></property>
+		<property name="password" value="${mq.password}"></property>
         <property name="redeliveryPolicy">
         	<bean id="redeliveryPolicy" class="org.apache.activemq.RedeliveryPolicy">
         		<property name="useExponentialBackOff" value="true"></property>
