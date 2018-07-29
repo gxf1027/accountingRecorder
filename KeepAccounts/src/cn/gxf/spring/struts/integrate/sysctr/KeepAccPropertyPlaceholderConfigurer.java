@@ -21,7 +21,6 @@ public class KeepAccPropertyPlaceholderConfigurer extends PropertyPlaceholderCon
 				key = key.substring(0, key.length() - this.postfix.length());
 				// Ω‚√‹
 				value = AESUtil.decrypt(value.trim());
-				System.out.println("key:"+key+" value:"+value);
 				props.setProperty(key, value);
 			}
 			System.setProperty(key, value);

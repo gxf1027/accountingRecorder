@@ -23,6 +23,6 @@
        
     <!-- 具体rpc服务配置，声明实现的接口类。-->
     <motan:service interface="cn.gxf.spring.motan.test.SayHi"
-                   ref="motanServiceTest" export="keepAccMotan:8019" basicService="serviceBasicConfig" filter="accessAuthFilter">
+                   ref="motanServiceTest" export="keepAccMotan:8819" basicService="serviceBasicConfig" filter="accessAuthFilter">
     </motan:service>
 </beans>

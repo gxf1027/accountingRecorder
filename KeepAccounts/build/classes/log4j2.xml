@@ -127,6 +127,11 @@
 	        <AppenderRef ref="RollingFileDebug" />
 	    </Logger>
 	    
+	    <Logger name="cn.gxf.spring.motan" level="DEBUG">
+	        <AppenderRef ref="Console" />
+	        <AppenderRef ref="RollingFileDebug" />
+	    </Logger>
+	    
 		<!-- https://www.atomikos.com/Documentation/ConfiguringTheLogs -->
 		<Logger name="com.atomikos" level="DEBUG">
 	        <AppenderRef ref="Console" />

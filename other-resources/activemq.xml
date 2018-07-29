@@ -55,6 +55,7 @@
 							<authorizationEntry queue="USERS.>" read="users" write="users" admin="users"/>
 							<authorizationEntry queue="GUEST.>" read="guests" write="guests,users" admin="guests,users"/>
 							<authorizationEntry queue="mailQueue" read="guests" write="users" admin="admins"/>
+							<authorizationEntry queue="mailQueueFinaProducts" read="guests" write="users" admin="admins"/>
 							<authorizationEntry topic=">" read="admins" write="admins" admin="admins"/>
 							<authorizationEntry topic="USERS.>" read="users" write="users" admin="users"/>
 							<authorizationEntry topic="GUEST.>" read="guests" write="guests,users" admin="guests,users"/>
