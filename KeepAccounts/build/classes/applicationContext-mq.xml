@@ -39,6 +39,8 @@
         <property name="uniqueResourceName" value="XAactiveMQ"/>  
         <property name="xaConnectionFactory" ref="jmsXaConnectionFactory"/>  
         <property name="poolSize" value="10"/>
+        <property name="minPoolSize" value="10"/>
+        <property name="maxPoolSize" value="50"/>
     </bean>
     
     <!-- 发送消息的目的地（队列）：信用卡账单信息 -->

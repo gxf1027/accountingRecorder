@@ -1,1 +1,2 @@
 cn.gxf.spring.motan.filter.AccessAuthFilter
+cn.gxf.spring.motan.filter.LoggingFilter

@@ -25,11 +25,9 @@ import com.weibo.api.motan.util.MotanFrameworkUtil;
 import cn.gxf.spring.motan.dao.RpcAuthenInfoDao;
 
 @SpiMeta(name="accessAuthFilter")
-@Activation(sequence=1, key = MotanConstants.NODE_TYPE_SERVICE)
+@Activation(sequence=2, key = MotanConstants.NODE_TYPE_SERVICE)
 public class AccessAuthFilter implements Filter{
 	
-	private static final String ACCESS_USERNAME = "rpc_username";
-	private static final String ACCESS_PASSWORD = "rpc_password";
 	private Logger logger = LogManager.getLogger();
 	
 	//private RpcAuthenInfoDao rpcAuthenInfoDao;
@@ -37,9 +35,9 @@ public class AccessAuthFilter implements Filter{
 	@Override
 	public Response filter(Caller<?> caller, Request request) {
 
-		logger.info("RequestId: " + request.getRequestId() + " Host: " + request.getAttachments().get("host") + " call: " + MotanFrameworkUtil.getFullMethodString(request));
-		logger.info("Arguments: " + request.getArguments().toString());
-		logger.info("Caller url: " + caller.getUrl());
+//		logger.info("RequestId: " + request.getRequestId() + " Host: " + request.getAttachments().get("host") + " call: " + MotanFrameworkUtil.getFullMethodString(request));
+//		logger.info("Arguments: " + request.getArguments().toString());
+//		logger.info("Caller url: " + caller.getUrl());
 		
 		RpcContext ctx = RpcContext.getContext();
 		ApplicationContext springCtx = ContextLoader.getCurrentWebApplicationContext();
@@ -49,9 +47,9 @@ public class AccessAuthFilter implements Filter{
 		if (caller instanceof Provider) { // server end
 			System.out.println("in filter: caller " + caller + " request: " + request);
 			
-			String username = request.getAttachments().get(ACCESS_USERNAME);
-			String confidentialCode = request.getAttachments().get(ACCESS_PASSWORD);
-			logger.info("RequestId: " + request.getRequestId() + "RequestId: " + request.getRequestId() + " Request username: " + username + " Request confidential code: " + confidentialCode);
+			String username = request.getAttachments().get(FilterConstants.ACCESS_USERNAME);
+			String confidentialCode = request.getAttachments().get(FilterConstants.ACCESS_PASSWORD);
+			logger.info("RequestId: " + request.getRequestId() + " Request username: " + username + " Request confidential code: " + confidentialCode);
 			//System.out.println("Request username: " + username + " Request confidential code: " + confidentialCode);
 			// 只能用这种方式过去Spring中的bean
 			RpcAuthenInfoDao rpcAuthenInfoDao = (RpcAuthenInfoDao) springCtx.getBean("rpcAuthenInfoDao");

@@ -733,6 +733,49 @@ DEFAULT CHARACTER SET=latin1 COLLATE=latin1_swedish_ci
 
 ;
 
+
+-- ----------------------------
+-- Table structure for rpc_authentication
+-- ----------------------------
+DROP TABLE IF EXISTS `rpc_authentication`;
+CREATE TABLE `rpc_authentication` (
+  `username` varchar(128) NOT NULL,
+  `confidential_code` varchar(256) NOT NULL,
+  `lrrq` datetime DEFAULT NULL,
+  `yxbz` varchar(2) NOT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- ----------------------------
+-- Table structure for rpc_interface
+-- ----------------------------
+DROP TABLE IF EXISTS `rpc_interface`;
+CREATE TABLE `rpc_interface` (
+  `uuid` varchar(128) NOT NULL,
+  `rpc_interface_name` varchar(255) NOT NULL,
+  `rp_method_name` varchar(255) NOT NULL,
+  `readyonly` varchar(2) NOT NULL,
+  `comments` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `yxbz` varchar(2) NOT NULL,
+  PRIMARY KEY (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- ----------------------------
+-- Table structure for rpc_interface_control
+-- ----------------------------
+DROP TABLE IF EXISTS `rpc_interface_control`;
+CREATE TABLE `rpc_interface_control` (
+  `rpc_username` varchar(128) NOT NULL,
+  `rpc_interface_uuid` varchar(255) NOT NULL,
+  `lrrq` datetime DEFAULT NULL,
+  `yxbz` varchar(2) DEFAULT NULL,
+  PRIMARY KEY (`rpc_username`,`rpc_interface_uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
 -- ----------------------------
 -- Procedure structure for proc_acc_stat_nd
 -- ----------------------------
