@@ -16,4 +16,7 @@ public interface StatProcDao {
 	
 	public int isNewIncomeDataExists(Map<String, Object> params);
 	public int isNewPaymentDataExists(Map<String, Object> params);
+	public List<String> queryMonthsHaveNewIncomeData(Map<String, Object> params);
+	public List<String> queryMonthsHaveNewPaymentData(Map<String, Object> params);
+	public List<String> queryMonthsHaveNewData(Map<String, Object> params);
 }

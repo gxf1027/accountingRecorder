@@ -37,8 +37,7 @@
 	 <bean id="amqConnectionFactory"  
           class="com.atomikos.jms.AtomikosConnectionFactoryBean" init-method="init" destroy-method="close" lazy-init="true">  
         <property name="uniqueResourceName" value="XAactiveMQ"/>  
-        <property name="xaConnectionFactory" ref="jmsXaConnectionFactory"/>  
-        <property name="poolSize" value="10"/>
+        <property name="xaConnectionFactory" ref="jmsXaConnectionFactory"/>
         <property name="minPoolSize" value="10"/>
         <property name="maxPoolSize" value="50"/>
     </bean>

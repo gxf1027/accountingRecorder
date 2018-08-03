@@ -17,6 +17,12 @@
 		}
 	</select>
 
+	<select id="procAccStatByMonth" statementType="CALLABLE">
+		{
+			call proc_acc_stat_by_month(#{user_id, mode=IN, jdbcType=INTEGER}, #{nd, mode=IN, jdbcType=VARCHAR}, #{yf, mode=IN, jdbcType=VARCHAR})
+		}
+	</select>
+	
 	<select id="getNdYfStat" resultType="cn.gxf.spring.struts2.integrate.model.StatByMonth" >
 		SELECT	* FROM
 			(

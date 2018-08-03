@@ -666,7 +666,13 @@ public class AccountStatServiceImpl implements AccountStatService{
 		if (keys == null || keys.size() == 0){
 			return;
 		}
-		this.stringRedisTemplate.delete(keys);
+		
+		try {
+			this.stringRedisTemplate.delete(keys);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 	
 	
