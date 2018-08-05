@@ -51,11 +51,13 @@
 	    <constructor-arg ref="sessionRepository"/>
 	</bean>
 	
-	<bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />  
+	<bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+	<bean id="kryoRedisSerializer" class="cn.gxf.spring.struts.integrate.sysctr.KryoRedisSerializer" />  
 	<!-- redis模板 -->
     <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">    
          <property name="connectionFactory" ref="jedisConnectionFactory" />
          <property name="keySerializer" ref="stringRedisSerializer" />
+         <property name="valueSerializer" ref="kryoRedisSerializer" />
     </bean>
     
     <bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
