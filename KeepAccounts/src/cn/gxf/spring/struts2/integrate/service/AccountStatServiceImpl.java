@@ -187,7 +187,13 @@ public class AccountStatServiceImpl implements AccountStatService{
 	
 	//@Cacheable(value="redisCacheStat", key="{#user_id, #date_from, #date_to, #root.method.name}")
 	//@Cacheable(value="redisCacheStat")  // 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器
-	@Cacheable(value="redisCacheStat", key="'getDateStatMB_'+#user_id+'_'+#date_from+'_'+#date_to")
+//	@Cacheable(value="redisCacheStat", 
+//			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailAllPrefix+"
+//					+ "#user_id+'_'"
+//					+ "+T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_from)+'_'+"
+//					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_to)")
+	@Cacheable(value="redisCacheStat",
+				key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailAllPrefix, #user_id, #date_from, #date_to)")
 	@Override
 	public List<AccDateStat> getDateStatMB(int user_id, Date date_from , Date date_to){
 		
@@ -339,7 +345,13 @@ public class AccountStatServiceImpl implements AccountStatService{
 
 	//@Cacheable(value="statCache",  key="{#user_id, #date_from, #date_to, #root.method.name}")
 	//@Cacheable(value="statCache")  // 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器
-	@Cacheable(value="redisCacheStat", key="'getDateStatIncome_'+#user_id+'_'+#date_from+'_'+#date_to")
+//	@Cacheable(value="redisCacheStat", 
+//			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailIncomePrefix+"
+//					+ "#user_id+'_'+"
+//					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_from)+'_'+"
+//					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_to)")
+	@Cacheable(value="redisCacheStat",
+			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailIncomePrefix, #user_id, #date_from, #date_to)")
 	@Override
 	public List<AccDateStat> getDateStatIncome(int user_id, Date date_from , Date date_to) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -460,10 +472,16 @@ public class AccountStatServiceImpl implements AccountStatService{
 	
 	//@Cacheable(value="statCache",  key="{#user_id, #date_from, #date_to, #root.method.name}")
 	//@Cacheable(value="statCache")  // 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器
-	@Cacheable(value="redisCacheStat", key="'getDateStatPayment_'+#user_id+'_'+#date_from+'_'+#date_to")
+//	@Cacheable(value="redisCacheStat", 
+//			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailPaymentPrefix+"
+//					+ "#user_id+'_'+"
+//					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_from)+'_'+"
+//					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_to)")
+	@Cacheable(value="redisCacheStat",
+			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailPaymentPrefix, #user_id, #date_from, #date_to)")
 	@Override
 	public List<AccDateStat> getDateStatPayment(int user_id, Date date_from, Date date_to){
-		System.out.println("getDateStatPayment...........");
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Map<String, Object> mapParam = new HashMap<>();
 		mapParam.put("date_from", date_from == null ? null : sdf.format(date_from));
@@ -580,7 +598,13 @@ public class AccountStatServiceImpl implements AccountStatService{
 	
 	//@Cacheable(value="statCache",  key="{#user_id, #date_from, #date_to, #root.method.name}")
 	//@Cacheable(value="statCache")  // 使用<cache:annotation-driven ... key-generator="userKeyGenerator" />配置的自定义key生成器
-	@Cacheable(value="redisCacheStat", key="'getDateStatTransfer_'+#user_id+'_'+#date_from+'_'+#date_to")
+//	@Cacheable(value="redisCacheStat", 
+//			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailTransferPrefix+"
+//					+ "#user_id+'_'+"
+//					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_from)+'_'+"
+//					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_to)")
+	@Cacheable(value="redisCacheStat",
+			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailTransferPrefix, #user_id, #date_from, #date_to)")
 	@Override
 	public List<AccDateStat> getDateStatTransfer(int user_id, Date date_from, Date date_to) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
