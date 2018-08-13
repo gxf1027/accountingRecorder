@@ -41,10 +41,18 @@
 				AND t.shijian <![CDATA[ <= ]]> DATE_FORMAT(#{jyqz}, '%Y-%m-%d 23:59:59') 
 				AND t.yxbz = 'Y'
 				AND t.zh_dm = z.zh_dm
-				AND t.zh_dm IN
-				<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
-					#{dm}
-				</foreach>
+				<if test="zh_dm.size() > 1">
+					AND t.zh_dm IN
+					<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
+						#{dm}
+					</foreach>
+				</if>
+				<if test="zh_dm.size() == 1">
+					AND t.zh_dm = 
+					<foreach collection="zh_dm" index="index" item="dm" open="" separator="" close="">
+						#{dm}
+					</foreach>
+				</if>
 			
 			union all
 			
@@ -63,10 +71,18 @@
 				AND t.shijian <![CDATA[ <= ]]> DATE_FORMAT(#{jyqz}, '%Y-%m-%d 23:59:59') 
 				AND t.yxbz = 'Y'
 				AND t.tgtZh_dm = z.zh_dm
-				AND t.tgtZh_dm IN
-				<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
-					#{dm}
-				</foreach>) as bill
+				<if test="zh_dm.size() > 1">
+					AND t.tgtZh_dm IN
+					<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
+						#{dm}
+					</foreach>
+				</if>
+				<if test="zh_dm.size() == 1">
+					AND t.tgtZh_dm =
+					<foreach collection="zh_dm" index="index" item="dm" open="" separator="" close="">
+						#{dm}
+					</foreach>
+				</if>) as bill
 		ORDER BY user_id, zh_dm, jysj desc
 	</select>
 	

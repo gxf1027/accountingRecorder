@@ -129,9 +129,16 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 		params.put("jyqq", jyqq);
 		params.put("jyqz", jyqz);
 		params.put("zh_dm", zhdmList);
-		List<CreditCardTransRecord> recList = null;
+		List<CreditCardTransRecord> recList = new ArrayList<>();
 		try {
-			recList = creditCardBillDao.getCreditCardTranscationRecordInZDQ(params);
+			List<String> zhdm_list1 = new ArrayList<String>();
+			for (String zhdm : zhdmList){
+				zhdm_list1.clear();
+				zhdm_list1.add(zhdm);
+				params.put("zh_dm", zhdm_list1);
+				// 避免一次查询多个zhdm，避免SQL中将使用IN(,,,)表达式
+				recList.addAll(creditCardBillDao.getCreditCardTranscationRecordInZDQ(params));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException();

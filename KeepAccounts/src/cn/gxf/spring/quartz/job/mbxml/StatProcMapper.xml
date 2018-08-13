@@ -42,19 +42,19 @@
 	
 	
 	<select id="queryMonthsHaveNewIncomeData" parameterType="map" resultType="string">
-		SELECT DATE_FORMAT(#{p.shijian}, '%Y-%m') FROM account_income_detail p 
+		SELECT DATE_FORMAT(p.shijian, '%Y-%m') FROM account_income_detail p 
 			WHERE p.lrrq &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s')
 			AND p.user_id = #{user_id} 
 			AND p.yxbz='Y'
-			GROUP BY DATE_FORMAT(#{p.shijian}, '%Y-%m')
+			GROUP BY DATE_FORMAT(p.shijian, '%Y-%m')
 	</select>
 	
 	<select id="queryMonthsHaveNewPaymentData" parameterType="map" resultType="string">
-		SELECT DATE_FORMAT(#{p.shijian}, '%Y-%m') FROM account_payment_detail p
+		SELECT DATE_FORMAT(p.shijian, '%Y-%m') FROM account_payment_detail p
 			WHERE  p.lrrq &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s')
 			AND p.user_id = #{user_id} 
 			AND p.yxbz='Y'
-			GROUP BY DATE_FORMAT(#{p.shijian}, '%Y-%m')
+			GROUP BY DATE_FORMAT(p.shijian, '%Y-%m')
 	</select>
 
 	<select id="queryMonthsHaveNewData" parameterType="map" resultType="string">
