@@ -55,10 +55,28 @@
   	
   	<update id="deletePatch" parameterType="List">
   		UPDATE account_transfer_detail SET yxbz='N', xgrq=NOW() 
-  			WHERE mxuuid in 
-  			<foreach collection="list" index="index" item="mxuuid" open="(" separator="," close=")">  
-        		#{mxuuid}  
-    		</foreach>  
+  			WHERE
+  			<choose>
+  				<when test="list == null or list.size() == 0">
+  					1 = 0
+  				</when>
+  				<otherwise>
+  					<choose>
+  						<when test="list.size() == 1">
+  							mxuuid = 
+			  				<foreach collection="list" index="index" item="mxuuid" open="" separator="" close="">  
+			        			#{mxuuid}  
+			    			</foreach>  
+  						</when>
+  						<otherwise>
+  							mxuuid IN 
+				  			<foreach collection="list" index="index" item="mxuuid" open="(" separator="," close=")">  
+				        		#{mxuuid}  
+				    		</foreach> 
+  						</otherwise>
+  					</choose>
+  				</otherwise>
+  			</choose>
   	</update>
     
 </mapper>

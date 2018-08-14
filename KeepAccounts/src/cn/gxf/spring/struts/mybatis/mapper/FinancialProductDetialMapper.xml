@@ -208,10 +208,27 @@
   	<update id="deletePatch" parameterType="List">
   		UPDATE financial_product_detail SET yxbz='N', xgrq=NOW() 
   			WHERE yxbz='Y' 
-  			AND transferuuid IN 
-  			<foreach collection="list" index="index" item="uuid" open="(" separator="," close=")">  
-        		#{uuid}  
-    		</foreach>  
+  			<choose>
+  				<when test="list == null or list.size() == 0">
+  					AND 1 = 0
+  				</when>
+  				<otherwise>
+  					<choose>
+  						<when test="list.size() == 1">
+  							AND transferuuid = 
+			  				<foreach collection="list" index="index" item="uuid" open="" separator="" close="">  
+			        			#{uuid}  
+			    			</foreach>  
+  						</when>
+  						<otherwise>
+  							AND transferuuid IN 
+				  			<foreach collection="list" index="index" item="uuid" open="(" separator="," close=")">  
+				        		#{uuid}  
+				    		</foreach> 
+  						</otherwise>
+  					</choose>
+  				</otherwise>
+  			</choose>
   	</update>
     
 </mapper>
