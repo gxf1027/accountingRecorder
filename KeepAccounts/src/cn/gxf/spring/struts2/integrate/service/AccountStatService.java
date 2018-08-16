@@ -10,6 +10,7 @@ public interface AccountStatService {
 		// Í³¼Æ
 		public List<AccDateStat> getDateStatMB(int user_id, String nd, String yf);
 		public List<AccDateStat> getDateStatMB(int user_id, Date date_from , Date date_to);
+		public List<AccDateStat> getDateStatMBRefresh(int user_id, Date date_from , Date date_to);
 	
 		public List<AccDateStat> getDateStatIncome(int user_id, String nd, String yf);
 		public List<AccDateStat> getDateStatIncome(int user_id, Date date_from, Date date_to);

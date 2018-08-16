@@ -41,18 +41,27 @@
 				AND t.shijian <![CDATA[ <= ]]> DATE_FORMAT(#{jyqz}, '%Y-%m-%d 23:59:59') 
 				AND t.yxbz = 'Y'
 				AND t.zh_dm = z.zh_dm
-				<if test="zh_dm.size() > 1">
-					AND t.zh_dm IN
-					<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
-						#{dm}
-					</foreach>
-				</if>
-				<if test="zh_dm.size() == 1">
-					AND t.zh_dm = 
-					<foreach collection="zh_dm" index="index" item="dm" open="" separator="" close="">
-						#{dm}
-					</foreach>
-				</if>
+				<choose>
+					<when test="zh_dm == null or zh_dm.size() == 0">
+						AND 1 = 0
+					</when>
+					<otherwise>
+						<choose>
+							<when test="zh_dm.size() > 1">
+								AND t.zh_dm IN
+								<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
+									#{dm}
+								</foreach>
+							</when>
+							<otherwise>
+								AND t.zh_dm = 
+								<foreach collection="zh_dm" index="index" item="dm" open="" separator="" close="">
+									#{dm}
+								</foreach>
+							</otherwise>
+						</choose>
+					</otherwise>
+				</choose>
 			
 			union all
 			
@@ -71,18 +80,27 @@
 				AND t.shijian <![CDATA[ <= ]]> DATE_FORMAT(#{jyqz}, '%Y-%m-%d 23:59:59') 
 				AND t.yxbz = 'Y'
 				AND t.tgtZh_dm = z.zh_dm
-				<if test="zh_dm.size() > 1">
-					AND t.tgtZh_dm IN
-					<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
-						#{dm}
-					</foreach>
-				</if>
-				<if test="zh_dm.size() == 1">
-					AND t.tgtZh_dm =
-					<foreach collection="zh_dm" index="index" item="dm" open="" separator="" close="">
-						#{dm}
-					</foreach>
-				</if>) as bill
+				<choose>
+					<when test="zh_dm == null or zh_dm.size() == 0">
+					 	AND 1 = 0
+					</when>
+					<otherwise>
+						<choose>
+							<when test="zh_dm.size() > 1">
+								AND t.tgtZh_dm IN
+								<foreach collection="zh_dm" index="index" item="dm" open="(" separator="," close=")">
+									#{dm}
+								</foreach>
+							</when>
+							<otherwise>
+								AND t.tgtZh_dm =
+								<foreach collection="zh_dm" index="index" item="dm" open="" separator="" close="">
+									#{dm}
+								</foreach>
+							</otherwise>
+						</choose>
+					</otherwise>
+				</choose>) as bill
 		ORDER BY user_id, zh_dm, jysj desc
 	</select>
 	

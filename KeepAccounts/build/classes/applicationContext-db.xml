@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"   
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+     http://www.springframework.org/schema/cache 
+     http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
+    
+    <!-- master -->
+    <bean id="datasource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}"></property>
+		<property name="url" value="${jdbc.url}"></property>
+		<property name="username" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<property name="maxTotal" value="50" />
+		<property name="maxWaitMillis" value="6000" />
+		<property name="initialSize" value="10" />
+		<property name="maxIdle" value="20"></property>
+		<property name="minIdle" value="10" /> 
+	</bean>
+	
+	<!-- slave1 -->
+    <bean id="slave1" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}"></property>
+		<property name="url" value="${jdbc.url.slave1}"></property>
+		<property name="username" value="${jdbc.username.slave1}"></property>
+		<property name="password" value="${jdbc.password.slave1}"></property>
+		<property name="maxTotal" value="50" />
+		<property name="maxWaitMillis" value="6000" />
+		<property name="initialSize" value="10" />
+		<property name="maxIdle" value="20" />
+		<property name="minIdle" value="10" />
+		<property name="validationQuery" value="SELECT 1" />
+	</bean>
+    
+   	<bean id="dynamicDataSource" class="cn.gxf.spring.struts.integrate.sysctr.dbconfig.DynamicDataSource">
+		<!-- 设置多个数据源 -->
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<!-- 这个key需要和程序中的key一致 -->
+				<entry key="master" value-ref="datasource"/>
+				<entry key="slave" value-ref="slave1"/>
+			</map>
+		</property>
+		<!-- 设置默认的数据源，这里默认写库 -->
+		<property name="defaultTargetDataSource" ref="datasource"/>
+		<property name="masterOnly" value="false" />
+	</bean>
+	
+	<bean id="dataSourceAspect"  class="cn.gxf.spring.struts.integrate.sysctr.dbconfig.DataSourceAspect"/>
+	
+	<aop:config>	
+		<!-- 定义切面，所有的service的所有方法 -->
+		<aop:pointcut id="dynamicDbPointcut" expression="execution(public * cn.gxf.spring.struts2.integrate.service.*.*(..))" />
+		
+		<!-- 将切面应用到自定义的切面处理器上，-9999保证该切面优先级最高执行 -->
+		<aop:aspect ref="dataSourceAspect" order="-9999">
+			<aop:before method="before" pointcut-ref="dynamicDbPointcut" />
+		</aop:aspect>
+	</aop:config>
+	
+	
+</beans>

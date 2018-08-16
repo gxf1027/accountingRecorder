@@ -97,6 +97,20 @@ public class ListDetailAction extends ActionSupport implements RequestAware, Pre
 		return "listOk";
 	}
 	
+	public String listByMonthRefresh(){
+		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		List<AccDateStat> list = accountStatService.getDateStatMBRefresh(user.getId(), this.date_from, this.date_to);
+		this.myrequest.put("detailList", list);
+		
+		// 用于时间回显
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		this.myrequest.put("date_from", sdf.format(this.date_from));
+		this.myrequest.put("date_to", sdf.format(this.date_to));
+		this.myrequest.put("listType", "listAll");
+		
+		return "listOk";
+	}
+	
 	
 	public String listIncomeByMonth(){
 		

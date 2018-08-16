@@ -19,6 +19,7 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
+import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.dao.AccDetailVoDao;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
 import cn.gxf.spring.struts2.integrate.model.IncomeDetail;
@@ -126,6 +127,10 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		//this.incomeDetail.setXgrq(new Date());
 		//System.out.println(this.incomeDetail);
 		detailAccountUnivServiceImpl.saveOne(this.incomeDetail);
+		
+		// 延迟一段时间等待主从同步
+		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		
 		return "saveOk";
 	}
 	
@@ -145,12 +150,20 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		}
 		this.incomeDetail.setXgrq(new Date());
 		detailAccountUnivServiceImpl.updateOne(this.incomeDetail);
+		
+		// 延迟一段时间等待主从同步
+		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+				
 		return "saveOk";
 	}
 	
 	public String delPatch(){
 		List<IncomeDetail> list = detailAccountUnivServiceImpl.getIncomeDetailByPatchMxuuid(mxuuidList);
 		detailAccountUnivServiceImpl.deletePatch(list);
+		
+		// 延迟一段时间等待主从同步
+		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+				
 		return "delOk";
 	}
 	

@@ -105,7 +105,7 @@
         	<result name="listOk">/WEB-INF/list_detail.jsp</result>
         	<result name="listTransferOk">/WEB-INF/list_transfer.jsp</result>
         	<interceptor-ref name="myinterceptorStack" />
-        	<allowed-methods>listByMonth,listIncomeByMonth,listPaymentByMonth,listTransferByMonth</allowed-methods>
+        	<allowed-methods>listByMonth,listByMonthRefresh,listIncomeByMonth,listPaymentByMonth,listTransferByMonth</allowed-methods>
         </action>
         
         <action name="customTailoredQuery" class="customTailoredQueryAction">

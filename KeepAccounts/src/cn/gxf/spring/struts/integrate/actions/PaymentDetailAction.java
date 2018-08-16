@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.SessionAware;
@@ -18,6 +20,7 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
+import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
 import cn.gxf.spring.struts2.integrate.model.PaymentDetail;
@@ -100,6 +103,10 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		//this.paymentDetail.setXgrq(new Date());
 		//detailAccountService.saveOnePaymentMB(this.paymentDetail);
 		detailAccountUnivServiceImpl.saveOne(this.paymentDetail);
+		
+		// 延迟一段时间等待主从同步
+		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+
 		return "saveOk";
 	}
 	
@@ -119,12 +126,19 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		}
 		this.paymentDetail.setXgrq(new Date());
 		detailAccountUnivServiceImpl.updateOne(this.paymentDetail);
+		
+		// 延迟一段时间用于主从同步
+		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 		return "saveOk";
 	}
 
 	public String delPatch(){
 		List<PaymentDetail> list = detailAccountUnivServiceImpl.getPaymentDetailByPatchMxuuid(mxuuidList);
 		detailAccountUnivServiceImpl.deletePatch(list);
+		
+		// 延迟一段时间用于主从同步
+		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+				
 		return "delOk";
 	}
 	

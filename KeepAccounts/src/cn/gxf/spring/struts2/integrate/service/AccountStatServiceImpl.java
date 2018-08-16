@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,10 +14,13 @@ import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator;
 import cn.gxf.spring.struts.mybatis.dao.AccountVoMBDao;
 import cn.gxf.spring.struts2.integrate.dao.AccDetailVoDao;
 import cn.gxf.spring.struts2.integrate.model.AccDateStat;
@@ -36,6 +40,9 @@ public class AccountStatServiceImpl implements AccountStatService{
 	
 	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
+	
+	@Autowired
+	private RedisTemplate redisTemplate;
 	
 	@Override
 	public List<AccDateStat> getDateStat(int user_id, String nd, String yf)  {
@@ -278,6 +285,24 @@ public class AccountStatServiceImpl implements AccountStatService{
 		Collections.sort(stat_list);
 		
 		return stat_list;
+	}
+	
+	
+	@CachePut(value="redisCacheStat",
+			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailAllPrefix, #user_id, #date_from, #date_to)")
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<AccDateStat> getDateStatMBRefresh(int user_id, Date date_from , Date date_to){
+		
+//		String key = StatDetailKeyGenerator.generateKey(StatDetailKeyGenerator.detailAllPrefix, user_id, date_from, date_to);
+//		this.stringRedisTemplate.delete(key);
+		
+		// 自调用不会使用缓存，符合refresh要求
+		List<AccDateStat> list = this.getDateStatMB(user_id, date_from, date_to);
+		
+//		this.redisTemplate.opsForValue().set(key, list);
+		
+		return list;
 	}
 
 	// 对应删除getDateStatMB(int user_id, Date date_from , Date date_to)的缓存

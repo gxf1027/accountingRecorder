@@ -195,7 +195,7 @@
 	}
 
 	
-	#sub_query, #patch_del, #editOne{
+	#sub_query, #patch_del, #editOne, #refreshdetail{
 	height: 26px; width:80px;background: #ffffff;  border: 2px solid #CCC;
 	}
 	
@@ -258,18 +258,22 @@
 			{
 				$("#detail-outgo").siblings().removeClass("current");
 				$("#detail-outgo").addClass("current");	
+				$("#refreshdetail").hide();
 			}	
 			else if (url.indexOf("Income")!=-1 || url.indexOf("income")!=-1){
 				$("#detail-income").siblings().removeClass("current");
 				$("#detail-income").addClass("current");	
+				$("#refreshdetail").hide();
 			}
 			else if(url.indexOf("Transfer")!=-1 || url.indexOf("transfer")!=-1){
 				$("#detail-transfer").siblings().removeClass("current");
-				$("#detail-transfer").addClass("current");	
+				$("#detail-transfer").addClass("current");
+				$("#refreshdetail").hide();
 			}
 			else {
 				$("#detail-all").siblings().removeClass("current");
 				$("#detail-all").addClass("current");	
+				$("#refreshdetail").show();
 			}
 			
 			$('#logout-url').click(function (){	
@@ -474,6 +478,26 @@
 			window.location.href = url;
 		}
 		
+		function refresh(){
+			var  url;
+			var  thisurl = window.location.href;
+			
+			if (thisurl.indexOf("Payment")!=-1 || thisurl.indexOf("payment")!=-1){
+				return;
+			}else if (thisurl.indexOf("Income")!=-1 || thisurl.indexOf("income")!=-1){
+				return;
+			}else if(thisurl.indexOf("Transfer")!=-1 || thisurl.indexOf("transfer")!=-1){
+				return;
+			}else{
+				url = "${pageContext.request.contextPath}/demo/listDetail!listByMonthRefresh?";
+			}
+			
+			url += "&date_from=" + $("#date_from").val();
+			url += "&date_to=" + $("#date_to").val();
+			
+			window.location.href = url;
+		}
+		
 		function deleteAccItem(){
 			var chk_value =[]; 
 			var  url;
@@ -622,6 +646,9 @@
 		</div>
 		<div style="float:left; margin-left: 10px; ">
 			<input id="editOne" type="button" value="编辑" onclick="editAccItem();">
+		</div>
+		<div style="float:left; margin-left: 10px; ">
+			<input id="refreshdetail" type="button" value="刷新" onclick="refresh();">
 		</div>
 	</div>
 	</s:form>

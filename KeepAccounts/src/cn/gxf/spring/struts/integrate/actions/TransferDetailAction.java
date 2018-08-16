@@ -18,6 +18,7 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
+import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDaoImplJdbc;
 import cn.gxf.spring.struts2.integrate.model.AccountBook;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
@@ -131,6 +132,10 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		}
 		System.out.println(this.transferDetail.getFinancialProductDetail().getStartDate());
 		detailAccountUnivServiceImpl.saveOne(this.transferDetail);
+		
+		// 延迟一段时间等待主从同步
+		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+				
 		return "saveOk";
 	}
 	
@@ -189,12 +194,20 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		}
 		
 		detailAccountUnivServiceImpl.updateOne(this.transferDetail);
+		
+		// 延迟一段时间等待主从同步
+		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		
 		return "saveOk";
 	}
 	
 	public String delPatch(){
 		List<TransferDetail> list = detailAccountUnivServiceImpl.getTransferDetailByPatchMxuuid(mxuuidList);
 		detailAccountUnivServiceImpl.deletePatch(list);
+		
+		// 延迟一段时间等待主从同步
+		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		
 		return "delOk";
 	}
 	
