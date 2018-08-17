@@ -1,5 +1,7 @@
 package cn.gxf.spring.struts2.integrate.service;
 
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +10,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import cn.gxf.spring.struts.integrate.cache.EhCacheUtils;
+import cn.gxf.spring.struts.integrate.cache.SpringCacheKeyGenerator;
 import cn.gxf.spring.struts.mybatis.dao.StatNdYfMBDao;
 import cn.gxf.spring.struts2.integrate.model.StatByCategory;
 import cn.gxf.spring.struts2.integrate.model.StatByMonth;
@@ -18,9 +22,13 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 	@Autowired
 	private StatNdYfMBDao statDao;
 	
-	@CacheEvict(value="front-stat", allEntries=true)
+	@Autowired
+	private EhCacheUtils cacheUtils;
+	
 	@Override
 	public void reProcStat(String nd, Integer user_id) {
+		
+		removeCache(nd, user_id);
 		
 		statDao.procAccStatByNd(nd, user_id);
 		
@@ -34,10 +42,13 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 			statDao.updateProcTime(current, user_id);
 		}
 	}
-	
-	@CacheEvict(value="front-stat", allEntries=true)
+
 	@Override
 	public void reProcStatThisMonth(Integer user_id) {
+		
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+		removeCache(sdf.format(date), user_id);
 		
 		statDao.procAccStatThisMonth(user_id);
 		
@@ -74,6 +85,26 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 		return statDao.getPaymentStatOnDl(nd, user_id);
 	}
 
+	private void removeCache(String nd, Integer user_id){
+		
+		SpringCacheKeyGenerator keyGenerator = new SpringCacheKeyGenerator();
+		
+		try {
+			
+			for (Method m : this.getClass().getDeclaredMethods()){
+				if (!m.getName().startsWith("get")){
+					continue;
+				}
+				
+				String key = (String) keyGenerator.generate(this, m, nd, user_id);
+				this.cacheUtils.remove("front-stat", key);
+			}
+			
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 
 }
