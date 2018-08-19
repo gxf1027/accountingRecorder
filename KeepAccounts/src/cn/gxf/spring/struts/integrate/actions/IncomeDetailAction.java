@@ -21,12 +21,14 @@ import com.opensymphony.xwork2.Preparable;
 import cn.gxf.spring.struts.integrate.security.UserLogin;
 import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.dao.AccDetailVoDao;
+import cn.gxf.spring.struts2.integrate.model.AccountingDetail;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
 import cn.gxf.spring.struts2.integrate.model.IncomeDetail;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountService;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountUnivServiceImpl;
 import cn.gxf.spring.struts2.integrate.service.DmService;
 import cn.gxf.spring.struts2.integrate.service.FinanicalProductService;
+import cn.gxf.spring.struts2.integrate.service.WaitingForSyncService;
 
 public class IncomeDetailAction extends ActionSupport implements Preparable, RequestAware, SessionAware, ModelDriven<IncomeDetail>{
 
@@ -58,6 +60,9 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 	
 	@Autowired
 	private FinanicalProductService financialProductService;
+	
+	@Autowired
+	private WaitingForSyncService wait4SyncService;
 	
 	public String inputIncome(){
 		Map<String, String> map = dmService.getIncomeLb();
@@ -126,10 +131,12 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		this.incomeDetail.setUser_id(user.getId());
 		//this.incomeDetail.setXgrq(new Date());
 		//System.out.println(this.incomeDetail);
-		detailAccountUnivServiceImpl.saveOne(this.incomeDetail);
+		String accuuid = detailAccountUnivServiceImpl.saveOne(this.incomeDetail);
 		
 		// 延迟一段时间等待主从同步
-		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		int count = wait4SyncService.queryWaiting4Save(accuuid);
+		System.out.println("count: " + count);
 		
 		return "saveOk";
 	}
@@ -149,11 +156,13 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 			return "have-no-authority";
 		}
 		this.incomeDetail.setXgrq(new Date());
-		detailAccountUnivServiceImpl.updateOne(this.incomeDetail);
+		AccountingDetail detailUpdated = detailAccountUnivServiceImpl.updateOne(this.incomeDetail);
 		
 		// 延迟一段时间等待主从同步
-		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
-				
+		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		int count = wait4SyncService.queryWaiting4Update(detailUpdated.getAccuuid(), detailUpdated.getXgrq());
+		//System.out.println("\n\n\n\n\n\n\n count: " + count);
+		
 		return "saveOk";
 	}
 	
@@ -162,7 +171,11 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		detailAccountUnivServiceImpl.deletePatch(list);
 		
 		// 延迟一段时间等待主从同步
-		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		if (list.size()>0){
+			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
+			System.out.println("count: " + count);
+		}
 				
 		return "delOk";
 	}

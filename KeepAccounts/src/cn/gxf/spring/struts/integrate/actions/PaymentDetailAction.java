@@ -21,12 +21,14 @@ import com.opensymphony.xwork2.Preparable;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
 import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
+import cn.gxf.spring.struts2.integrate.model.AccountingDetail;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
 import cn.gxf.spring.struts2.integrate.model.PaymentDetail;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountService;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountUnivServiceImpl;
 import cn.gxf.spring.struts2.integrate.service.DmService;
+import cn.gxf.spring.struts2.integrate.service.WaitingForSyncService;
 
 public class PaymentDetailAction extends ActionSupport implements Preparable, RequestAware, SessionAware, ModelDriven<PaymentDetail>{
 
@@ -48,6 +50,9 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 	
 	@Autowired
 	private DetailAccountUnivServiceImpl<PaymentDetail> detailAccountUnivServiceImpl;
+	
+	@Autowired
+	private WaitingForSyncService wait4SyncService;
 
 	
 	public String inputPayment(){
@@ -102,11 +107,12 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		this.paymentDetail.setUser_id(user.getId());
 		//this.paymentDetail.setXgrq(new Date());
 		//detailAccountService.saveOnePaymentMB(this.paymentDetail);
-		detailAccountUnivServiceImpl.saveOne(this.paymentDetail);
+		String accuuid = detailAccountUnivServiceImpl.saveOne(this.paymentDetail);
 		
 		// 延迟一段时间等待主从同步
-		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
-
+		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		int count = wait4SyncService.queryWaiting4Save(accuuid);
+		
 		return "saveOk";
 	}
 	
@@ -125,10 +131,12 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 			return "have-no-authority";
 		}
 		this.paymentDetail.setXgrq(new Date());
-		detailAccountUnivServiceImpl.updateOne(this.paymentDetail);
+		AccountingDetail detailUpdated = detailAccountUnivServiceImpl.updateOne(this.paymentDetail);
 		
 		// 延迟一段时间用于主从同步
-		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		int count = wait4SyncService.queryWaiting4Update(detailUpdated.getAccuuid(), detailUpdated.getXgrq());
+		
 		return "saveOk";
 	}
 
@@ -137,7 +145,10 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		detailAccountUnivServiceImpl.deletePatch(list);
 		
 		// 延迟一段时间用于主从同步
-		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		if (list.size()>0){
+			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
+		}
 				
 		return "delOk";
 	}

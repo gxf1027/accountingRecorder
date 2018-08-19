@@ -21,6 +21,7 @@ import cn.gxf.spring.struts.integrate.security.UserLogin;
 import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDaoImplJdbc;
 import cn.gxf.spring.struts2.integrate.model.AccountBook;
+import cn.gxf.spring.struts2.integrate.model.AccountingDetail;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
 import cn.gxf.spring.struts2.integrate.model.FundDetail;
 import cn.gxf.spring.struts2.integrate.model.TransferDetail;
@@ -28,6 +29,7 @@ import cn.gxf.spring.struts2.integrate.service.DetailAccountService;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountUnivServiceImpl;
 import cn.gxf.spring.struts2.integrate.service.DmService;
 import cn.gxf.spring.struts2.integrate.service.FinanicalProductService;
+import cn.gxf.spring.struts2.integrate.service.WaitingForSyncService;
 
 public class TransferDetailAction  extends ActionSupport implements Preparable, RequestAware, SessionAware, ModelDriven<TransferDetail>{
 
@@ -53,6 +55,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 	
 	@Autowired
 	private FinanicalProductService financialProductService;
+	
+	@Autowired
+	private WaitingForSyncService wait4SyncService;
 	
 	public void prepareInputTransfer(){
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -131,10 +136,11 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 			this.transferDetail.getFinancialProductDetail().setUuid(this.productUnredeemed); // 设置关联的理财产品uuid
 		}
 		System.out.println(this.transferDetail.getFinancialProductDetail().getStartDate());
-		detailAccountUnivServiceImpl.saveOne(this.transferDetail);
+		String accuuid = detailAccountUnivServiceImpl.saveOne(this.transferDetail);
 		
 		// 延迟一段时间等待主从同步
-		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		int count = wait4SyncService.queryWaiting4Save(accuuid);
 				
 		return "saveOk";
 	}
@@ -193,10 +199,11 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 			break;
 		}
 		
-		detailAccountUnivServiceImpl.updateOne(this.transferDetail);
+		AccountingDetail detailUpdated = detailAccountUnivServiceImpl.updateOne(this.transferDetail);
 		
 		// 延迟一段时间等待主从同步
-		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		int count = wait4SyncService.queryWaiting4Update(detailUpdated.getAccuuid(), detailUpdated.getXgrq());
 		
 		return "saveOk";
 	}
@@ -206,7 +213,10 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		detailAccountUnivServiceImpl.deletePatch(list);
 		
 		// 延迟一段时间等待主从同步
-		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
+		if (list.size()>0){
+			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
+		}
 		
 		return "delOk";
 	}

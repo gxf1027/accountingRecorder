@@ -14,6 +14,15 @@
 		SELECT * from account_detail WHERE accuuid=#{accuuid} AND yxbz='Y'
 	</select>
 	
+	<select id="getAccountingDetailByUuid2" parameterType="String" 
+		resultType="AccountingDetail">
+		SELECT * from account_detail WHERE accuuid=#{accuuid}
+	</select>
+	
+	<select id="getAccountingDetailByUuid3" resultType="AccountingDetail">
+		SELECT * from account_detail WHERE accuuid=#{accuuid} AND xgrq &gt;= #{xgrq} AND yxbz='Y'
+	</select>
+	
 	<select id="getAccountingDetailByPatchUuid" parameterType="List" 
 		resultType="AccountingDetail">
 		SELECT * from account_detail 

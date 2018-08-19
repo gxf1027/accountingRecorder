@@ -136,7 +136,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	
 	//@CacheEvict(value="statCache", allEntries=true)
 	@Transactional("dsTransactionManager")
-	public void saveOne(T detail) {
+	public String saveOne(T detail) {
 		
 		AccountingDetail accountingDetail = new AccountingDetail();
 		//String accuuid = accUtil.generateUuid();
@@ -214,11 +214,13 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		
 	    // Çå³ý»º´æ
 		this.accountStatService.EvictDateStatRedis(keys);
+		
+		return accountingDetail.getAccuuid();
 	}
 
 	//@CacheEvict(value="redisCacheStat", allEntries=true)
 	@Transactional("dsTransactionManager")
-	public void updateOne(T detail) {
+	public AccountingDetail updateOne(T detail) {
 		
 		AccountingDetail accountingDetail = accountDetailMBDao.getAccountingDetailByUuid(detail.getAccuuid());
 		Set<String> keys = new HashSet<String>();
@@ -322,6 +324,8 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		}
 		
 		this.accountStatService.EvictDateStatRedis(keys);
+		
+		return accountingDetail;
 	}
 	
 	//@CacheEvict(value="redisCacheStat",  allEntries=true)

@@ -7,7 +7,7 @@ import java.util.TimerTask;
 
 public class AuxiliaryTools {
 
-	public static final long millisec_wait_mysql_sync = 100;
+	public static final long millisec_wait_mysql_sync = 20;
 
 	static public Date getMonthFirstDate(Date date) {
 		Calendar cale = null;
@@ -37,12 +37,27 @@ public class AuxiliaryTools {
 	}
 
 	static public void delay(long milliseconds) {
-		Timer timer = new Timer();// 实例化Timer类
-		timer.schedule(new TimerTask() {
-			public void run() {
-				// System.out.println("退出");
-				this.cancel();
-			}
-		}, milliseconds);// 五百毫秒
+//		Timer timer = new Timer();// 实例化Timer类
+//		timer.schedule(new TimerTask() {
+//			public void run() {
+//				// System.out.println("退出");
+//				this.cancel();
+//			}
+//		}, milliseconds);// 五百毫秒
+		
+		try {
+			Thread.currentThread().sleep(milliseconds); //毫秒
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args) {
+		
+		long start  = System.currentTimeMillis();
+		AuxiliaryTools.delay(20);
+		
+		System.out.println(System.currentTimeMillis() - start);
 	}
 }

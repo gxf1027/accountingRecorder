@@ -14,6 +14,7 @@ import cn.gxf.spring.struts2.integrate.model.IncomeDetail;
 import cn.gxf.spring.struts2.integrate.model.PaymentDetail;
 import cn.gxf.spring.struts2.integrate.model.TransferDetail;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountUnivServiceImpl;
+import cn.gxf.spring.struts2.integrate.service.WaitingForSyncService;
 
 // 2017-11-18增加，用于处理在查询页面批量删除各种类型的记录
 public class AccountDetailAction extends ActionSupport implements Preparable{
@@ -27,10 +28,19 @@ public class AccountDetailAction extends ActionSupport implements Preparable{
 	@Autowired
 	private DetailAccountUnivServiceImpl<TransferDetail> detailAccountUnivServiceImpl;
 	
+	@Autowired
+	private WaitingForSyncService wait4SyncService;
+	
 	// 用于处理在查询页面批量删除各种类型的记录
 	public String delPatch(){
 		List<AccountingDetail> list = detailAccountUnivServiceImpl.getAccountDetailByPatchAccuuid(accuuidList);
 		detailAccountUnivServiceImpl.deletePatchByAccuuid(list);
+		
+		if (list.size()>0){
+			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
+			//System.out.println("count: " + count);
+		}
+		
 		return "delOk";
 	}
 	
