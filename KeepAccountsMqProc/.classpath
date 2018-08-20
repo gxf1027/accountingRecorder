@@ -128,5 +128,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/log4j-slf4j-impl-2.3.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/log4j-web-2.3.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-pool-1.6.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/SayHi.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

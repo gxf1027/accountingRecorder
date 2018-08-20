@@ -23,9 +23,14 @@
                         application="keepAccounts" protocol="motan" registry="my_consul"
                         id="motantestClientBasicConfig" throwException="true" check="true"/>
 
+	<!-- test 具体referer配置。使用方通过beanid使用服务接口类 -->
+    <motan:referer id="motanTestRpc"
+                   interface="cn.gxf.spring.motan.test.SayHi" filter="attachAuthInfoFilter"
+                   connectTimeout="1000" requestTimeout="1000" basicReferer="motantestClientBasicConfig"/>
+                   
     <!-- 具体referer配置。使用方通过beanid使用服务接口类 -->
     <motan:referer id="rpcService"
-                   interface="cn.gxf.spring.quartz.job.service.RpcService"
+                   interface="cn.gxf.spring.quartz.job.service.RpcService" filter="attachAuthInfoFilter"
                    connectTimeout="1000" requestTimeout="1000" basicReferer="motantestClientBasicConfig"/>
        
 </beans>
