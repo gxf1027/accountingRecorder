@@ -136,7 +136,6 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		// 延迟一段时间等待主从同步
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 		int count = wait4SyncService.queryWaiting4Save(accuuid);
-		System.out.println("count: " + count);
 		
 		return "saveOk";
 	}
@@ -161,7 +160,6 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		// 延迟一段时间等待主从同步
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 		int count = wait4SyncService.queryWaiting4Update(detailUpdated.getAccuuid(), detailUpdated.getXgrq());
-		//System.out.println("\n\n\n\n\n\n\n count: " + count);
 		
 		return "saveOk";
 	}
@@ -174,7 +172,6 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 		if (list.size()>0){
 			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
-			System.out.println("count: " + count);
 		}
 				
 		return "delOk";

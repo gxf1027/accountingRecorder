@@ -3,7 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-<mapper namespace="cn.gxf.spring.quartz.job.dao.StatProcDao">
+<mapper namespace="cn.gxf.spring.struts.mybatis.dao.StatProcDao">
 
 
 	<insert id="insertProcTime">

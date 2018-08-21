@@ -6,26 +6,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 
 import cn.gxf.spring.quartz.job.service.FinancialProductsNoticeService;
 import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
-import cn.gxf.spring.struts.mybatis.dao.FinancialProductDetailMBDao;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
 
 @Service
 public class FinancialProductsNoticeProcessor implements JobProcessor{
 	
-	@Autowired
-	private FinancialProductDetailMBDao finanProdDetailDao;
-	
-	@Autowired
-	@Qualifier("mailQueueDest_FinaProducts")
-	private ActiveMQQueue queue;
 	
 	@Autowired
 	private FinancialProductsNoticeService financialProductsNoticeService;
@@ -39,7 +30,7 @@ public class FinancialProductsNoticeProcessor implements JobProcessor{
 		Date date_from = AuxiliaryTools.getMonthFirstDate(current);
 		Date date_to = AuxiliaryTools.getMonthLastDate(current);
 		// 获取所有用户本月将要到期的理财产品
-		List<FinancialProductDetail> finProducts = finanProdDetailDao.queryFinancialProductDetailByEndDate(date_from, date_to);
+		List<FinancialProductDetail> finProducts = financialProductsNoticeService.queryFinancialProductDetailByEndDate(date_from, date_to);
 		
 		if (finProducts.size() == 0){
 			return 0;

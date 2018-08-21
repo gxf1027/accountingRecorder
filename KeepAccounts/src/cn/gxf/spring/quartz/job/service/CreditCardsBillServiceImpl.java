@@ -121,6 +121,12 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
         return 1;
 	}
 	
+	@Override
+	public List<CreditCard> getCreditCardInZDR(int zdr) {
+		
+		return this.creditCardBillDao.getCreditCardInZDR(zdr);
+	}
+	
 	
 	// 获取某个账单期内的信用卡账单明细记录
 	private List<CreditCardTransRecord> getCreditCardTranscationRecordInZDQ( List<String> zhdmList, Date jyqq, Date jyqz){

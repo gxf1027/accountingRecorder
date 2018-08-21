@@ -47,7 +47,7 @@ public class WaitingForSyncServiceImpl implements WaitingForSyncService{
 			
 			count++;
 		}
-		System.out.println("\n\n snyc cost: " + (System.currentTimeMillis()-start));
+		System.out.println("\n\n snyc cost: " + (System.currentTimeMillis()-start) + " count: " + count);
 		return count;
 	}
 

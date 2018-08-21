@@ -41,6 +41,19 @@
                    ref="rpcServiceImpl" export="keepAccMotan:8002" basicService="serviceBasicConfig">
     </motan:service>
     
+    <motan:service interface="cn.gxf.spring.quartz.job.service.AccountStatisticsService"
+                   ref="accountStatisticsServiceImpl" export="keepAccMotan:8002" basicService="serviceBasicConfig">
+    </motan:service>
+    
+    <motan:service interface="cn.gxf.spring.quartz.job.service.CreditCardsBillService"
+                   ref="creditCardsBillServiceImpl" export="keepAccMotan:8002" basicService="serviceBasicConfig">
+    </motan:service>
+    
+    <motan:service interface="cn.gxf.spring.quartz.job.service.FinancialProductsNoticeService"
+                   ref="financialProductsNoticeServiceImpl" export="keepAccMotan:8002" basicService="serviceBasicConfig">
+    </motan:service>
+    
+    
     <!-- 不使用注册中心 -->
     <!-- <motan:service interface="cn.gxf.spring.quartz.job.service.RpcService" ref="rpcServiceImpl" export="8002" /> -->
        

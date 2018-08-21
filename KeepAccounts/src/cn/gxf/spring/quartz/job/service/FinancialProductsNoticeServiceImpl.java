@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.gxf.spring.quartz.job.JMSSender;
 import cn.gxf.spring.quartz.job.dao.FinanProductsNoticeDao;
 import cn.gxf.spring.quartz.job.model.FinancialProductsNotice;
+import cn.gxf.spring.struts.mybatis.dao.FinancialProductDetailMBDao;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
 import cn.gxf.spring.struts2.integrate.service.UserService;
 
@@ -31,6 +32,9 @@ public class FinancialProductsNoticeServiceImpl implements FinancialProductsNoti
 	
 	@Autowired
 	private FinanProductsNoticeDao noticeDao;
+	
+	@Autowired
+	private FinancialProductDetailMBDao finanProdDetailDao;
 	
 	@Autowired
 	private JMSSender jmsSender;
@@ -94,6 +98,12 @@ public class FinancialProductsNoticeServiceImpl implements FinancialProductsNoti
 		}
 		
 		return 1;
+	}
+	
+	@Override
+	public List<FinancialProductDetail> queryFinancialProductDetailByEndDate(Date date_from, Date date_to) {
+		
+		return finanProdDetailDao.queryFinancialProductDetailByEndDate(date_from, date_to);
 	}
 
 	private String getPch(Integer userId, String ssqq, String ssqz){

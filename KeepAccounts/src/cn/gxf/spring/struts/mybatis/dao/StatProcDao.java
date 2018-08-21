@@ -1,4 +1,4 @@
-package cn.gxf.spring.quartz.job.dao;
+package cn.gxf.spring.struts.mybatis.dao;
 
 import java.util.Date;
 import java.util.List;

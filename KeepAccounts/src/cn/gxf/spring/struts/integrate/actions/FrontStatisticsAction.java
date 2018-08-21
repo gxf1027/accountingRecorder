@@ -1,7 +1,6 @@
 package cn.gxf.spring.struts.integrate.actions;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.opensymphony.xwork2.ActionSupport;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
+import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.model.StatByCategory;
 import cn.gxf.spring.struts2.integrate.model.StatByMonth;
 import cn.gxf.spring.struts2.integrate.service.FrontStatisticsService;
@@ -25,6 +25,7 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 	
 	@Autowired
 	private FrontStatisticsService frontStatService;
+	
 	
 //	@Autowired
 //	private AccTools accTools; 
@@ -85,6 +86,8 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 		myrequest.put("incomeStatLb", incomeStatLb);
 		myrequest.put("paymentStatDl", paymentStatDl);
 		
+		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync*10);
+		
 		return "inputOk";
 	}
 	
@@ -110,6 +113,8 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 		
 		myrequest.put("incomeStatLb", incomeStatLb);
 		myrequest.put("paymentStatDl", paymentStatDl);
+		
+		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync*10);
 		
 		return "inputOk";
 	}

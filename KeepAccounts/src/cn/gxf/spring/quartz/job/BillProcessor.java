@@ -15,16 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import cn.gxf.spring.quartz.job.dao.CreditCardBillDao;
 import cn.gxf.spring.quartz.job.model.CreditCard;
 import cn.gxf.spring.quartz.job.service.CreditCardsBillService;
 
 @Service
 public class BillProcessor implements JobProcessor{
 
-
-	@Autowired
-	private CreditCardBillDao creditCardBillDao;
 	
 	@Autowired
 	private CreditCardsBillService creditCardBillService;
@@ -47,7 +43,7 @@ public class BillProcessor implements JobProcessor{
         
 		// 1. 获取需要处理的账户代码
 		//List<String> zzdmList = creditCardBillDao.getCreditCardInZDR(Integer.valueOf(sdf.format(jyqz).split("-")[2]));
-        List<CreditCard> creditCards = creditCardBillDao.getCreditCardInZDR(Integer.valueOf(sdf.format(jyqz).split("-")[2]));
+        List<CreditCard> creditCards = creditCardBillService.getCreditCardInZDR(Integer.valueOf(sdf.format(jyqz).split("-")[2]));
         
         if (creditCards.size() == 0 ){
         	System.out.println("今天没有信用卡账单需要处理");
