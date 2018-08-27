@@ -16,7 +16,7 @@
      http://www.springframework.org/schema/cache 
      http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
     
-    <context:annotation-config/>  
+    <!-- <context:annotation-config/>   -->
     <!-- 引入redis配置 -->
     <context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true"/>
     
@@ -77,5 +77,44 @@
             </set>    
          </property>    
      </bean> -->
+     
+     
+
+	<!-- 发布订阅 -->
+    <bean id="redisMessageListener" class="cn.gxf.spring.struts.integrate.cache.RedisMessageListener">  
+       <property name="redisTemplate" ref="redisTemplate"></property>  
+       <property name="rpcRequestLogDao" ref="rpcRequestLogDao"></property>
+	</bean> 
+	<bean id="redisMessageListener_friend" class="cn.gxf.spring.struts.integrate.cache.RedisMessageListener">  
+       <property name="redisTemplate" ref="redisTemplate"></property>  
+       <property name="rpcRequestLogDao" ref="rpcRequestLogDao"></property>
+	</bean>
+	  
+	<bean id="topicContainer" class="org.springframework.data.redis.listener.RedisMessageListenerContainer" destroy-method="destroy">
+        <property name="connectionFactory" ref="jedisConnectionFactory"/>  
+        <property name="taskExecutor">
+            <bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler">  
+                <property name="poolSize" value="3" />  
+            </bean>  
+        </property>  
+        <property name="messageListeners">  
+            <map>  
+                <entry key-ref="redisMessageListener">  
+                    <bean class="org.springframework.data.redis.listener.ChannelTopic">  
+                        <constructor-arg value="${redis.topic1}"/>  
+                    </bean>  
+                </entry>  
+                <entry key-ref="redisMessageListener_friend">
+                	<bean class="org.springframework.data.redis.listener.ChannelTopic">  
+                        <constructor-arg value="${redis.topic1}"/>  
+                    </bean> 
+                </entry>
+            </map>  
+        </property>  
+	</bean>  
+	
+	<bean id="redisTopic4Motan" class="cn.gxf.spring.struts.integrate.cache.PseudoRedisTopic" >
+		<property name="topicName" value="${redis.topic1}" />
+	</bean>
 	
 </beans>

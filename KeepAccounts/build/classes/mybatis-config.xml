@@ -29,6 +29,8 @@
     	<typeAlias type="cn.gxf.spring.quartz.job.model.CreditCardTransRecord"  alias="CreditCardTransRecord"/>
     	<typeAlias type="cn.gxf.spring.quartz.job.model.CreditCard"  alias="CreditCard"/>
     	<typeAlias type="cn.gxf.spring.quartz.job.model.FinancialProductsNotice" alias="FinancialProductsNotice"/>
+    	
+    	<typeAlias type="cn.gxf.spring.motan.model.RpcRequestInfo" alias="RpcRequestInfo"/>
     </typeAliases>
     
     

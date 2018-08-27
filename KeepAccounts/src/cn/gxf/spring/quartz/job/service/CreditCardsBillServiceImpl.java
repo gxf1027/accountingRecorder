@@ -54,7 +54,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
         List<CreditCardTransRecord> recList = getCreditCardTranscationRecordInZDQ(zzdmList, jyqq, jyqz);
         System.out.println(recList); 
         if (recList.size() == 0){
-        	System.out.println("信用卡 " + recList + "本期无账单");
+        	System.out.println("信用卡 " + zzdmList + "本期无账单");
         	return 0;
         }
         

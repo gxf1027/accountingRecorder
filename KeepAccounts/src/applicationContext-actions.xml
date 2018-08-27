@@ -23,13 +23,6 @@
 	
 	
 	<!-- 一定要加上scope为prototype -->
-	<bean id="account_action" 
-		class="cn.gxf.spring.struts.integrate.actions.AccountAction" 
-		scope="prototype" />
-		
-	<bean id="exp_action" 
-		class="cn.gxf.spring.struts.integrate.actions.ExpAction"
-		scope="prototype" />
 		
 	<bean id="login_action"
 		class="cn.gxf.spring.struts.integrate.actions.LoginSec"

@@ -126,7 +126,6 @@
         <property name="mapperLocations">
         	<list>
                 <value>classpath:cn/gxf/spring/struts/mybatis/mapper/*.xml</value>
-                <!-- <value>classpath:cn/gxf/spring/quartz/job/mbxml/*.xml</value> -->
             </list>
         </property>
         <property name="configLocation" value="classpath:mybatis-config.xml" />
@@ -143,6 +142,17 @@
 	            </bean>
 	        </array>
 	    </property>
+    </bean>
+    
+    <bean id="sqlSessionFactoryMotan" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="datasource" />
+        
+        <property name="mapperLocations">
+        	<list>
+                <value>classpath:cn/gxf/spring/motan/mbxml/*.xml</value>
+            </list>
+        </property>
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
     </bean>
     
     <!-- XA -->
@@ -164,6 +174,11 @@
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
     </bean>
     
+    <bean id="mapperScannerConfigurerMotan" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="cn.gxf.spring.motan.mbdao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryMotan" />
+    </bean>
+    
     <bean id="mapperScannerConfigurerXA" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="cn.gxf.spring.quartz.job.dao" />
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryXA" />
@@ -175,5 +190,5 @@
     
     <!-- 系统初始化和关闭有关 -->
     <bean class="cn.gxf.spring.struts.integrate.sysctr.InstantiationTracingBeanPostProcessor"/>
-    <bean class="cn.gxf.spring.struts.integrate.sysctr.SpringContextCloseListener" />
+    <!-- <bean class="cn.gxf.spring.struts.integrate.sysctr.SpringContextCloseListener" /> -->
 </beans>

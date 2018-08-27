@@ -30,10 +30,12 @@ public class WaitingForSyncServiceImpl implements WaitingForSyncService{
 			
 			long end = System.currentTimeMillis();
 			if( end - start > max_wait_mills){
+				System.out.println("\n\n max_wait_mills: " + (System.currentTimeMillis()-start) + " count: " + count);
 				return -2;
 			}
 			
 			if ( count > max_iter_num ){
+				System.out.println("\n\n snyc max_iter_num: " + (System.currentTimeMillis()-start) + " count: " + count);
 				return -1;
 			}
 			

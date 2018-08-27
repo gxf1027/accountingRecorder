@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.gxf.spring.motan.mbdao.RpcRequestLogDao">
+  	
+  	
+  	
+	<insert id="saveRequestsInfo" parameterType="java.util.List">
+		
+		INSERT INTO rpc_requests_log(uuid, req_host, req_user, rpc_interface_name,  rpc_method, req_time, ret_time, denied)
+		VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+            (#{item.uuid}, #{item.host}, #{item.userName}, #{item.interfaceName}, #{item.methodName}, #{item.requestTime}, null, 'N')
+        </foreach>  
+		
+	</insert>
+	
+	
+    
+</mapper>
