@@ -42,11 +42,16 @@ public class SpringContextCloseListener implements ApplicationListener<ContextCl
     		if ( 1 == motanController.isRpcInfoPersisted() && sz > 0 ){
     			System.out.println("SpringContextCloseListener.....容器关闭，持久化rpc调用信息.");
     			List<RpcRequestInfo> rpcReqList = new ArrayList<RpcRequestInfo>();
-    			for (long i=0; i<sz; i++){
-    				RpcRequestInfo rpcReq =  (RpcRequestInfo) redisTemplate.opsForList().rightPop(FilterConstants.RPC_REQUEST_LIST);
+    			
+    			RpcRequestInfo rpcReq =  (RpcRequestInfo) redisTemplate.opsForList().rightPop(FilterConstants.RPC_REQUEST_LIST);
+    			while (rpcReq != null){
     				rpcReqList.add(rpcReq);
+    				rpcReq =  (RpcRequestInfo) redisTemplate.opsForList().rightPop(FilterConstants.RPC_REQUEST_LIST);
     			}
-    			rpcRequestLogDao.saveRequestsInfo(rpcReqList);
+    				
+    			if (rpcReqList.size() > 0){
+    				rpcRequestLogDao.saveRequestsInfo(rpcReqList);
+    			}
     		}
         }
 	}
