@@ -6,6 +6,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +33,7 @@ public class SpringContextCloseListener implements ApplicationListener<ContextCl
 	@Autowired
 	private RpcRequestLogDao rpcRequestLogDao;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onApplicationEvent(ContextClosedEvent event) {
 		
@@ -43,15 +48,33 @@ public class SpringContextCloseListener implements ApplicationListener<ContextCl
     			System.out.println("SpringContextCloseListener.....容器关闭，持久化rpc调用信息.");
     			List<RpcRequestInfo> rpcReqList = new ArrayList<RpcRequestInfo>();
     			
-    			RpcRequestInfo rpcReq =  (RpcRequestInfo) redisTemplate.opsForList().rightPop(FilterConstants.RPC_REQUEST_LIST);
+    			/*RpcRequestInfo rpcReq =  (RpcRequestInfo) redisTemplate.opsForList().rightPop(FilterConstants.RPC_REQUEST_LIST);
     			while (rpcReq != null){
     				rpcReqList.add(rpcReq);
     				rpcReq =  (RpcRequestInfo) redisTemplate.opsForList().rightPop(FilterConstants.RPC_REQUEST_LIST);
-    			}
-    				
+    			}*/
+    			
+    			byte[] rawKey = redisTemplate.getKeySerializer().serialize(FilterConstants.RPC_REQUEST_LIST);
+    			rpcReqList = redisTemplate.executePipelined(
+    					new RedisCallback<RpcRequestInfo>() {
+
+							@Override
+							public RpcRequestInfo doInRedis(RedisConnection connection) throws DataAccessException {
+								
+								//StringRedisConnection stringRedisConn = (StringRedisConnection)connection;
+								for(int i=0; i< sz; i++) {
+									connection.rPop(rawKey); //  org.springframework.data.redis.connection.jedis 如果使用pipeline则返回null
+							      }
+								
+								return null;
+							}
+    						
+				});
+    			
     			if (rpcReqList.size() > 0){
     				rpcRequestLogDao.saveRequestsInfo(rpcReqList);
     			}
+    			
     		}
         }
 	}
