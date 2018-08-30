@@ -1,6 +1,7 @@
 package cn.gxf.spring.motan.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class RpcRequestInfo implements Serializable {
@@ -11,7 +12,9 @@ public class RpcRequestInfo implements Serializable {
 	private String userName;
 	private String interfaceName;
 	private String methodName;
-	private Date requestTime;
+	private String params;
+	private Timestamp requestTime;
+	private Timestamp responseTime;
 	private String deniedFlag;
 
 	public String getUuid() {
@@ -54,12 +57,28 @@ public class RpcRequestInfo implements Serializable {
 		this.methodName = methodName;
 	}
 
-	public Date getRequestTime() {
+	public String getParams() {
+		return params;
+	}
+	
+	public void setParams(String params) {
+		this.params = params;
+	}
+	
+	public Timestamp getRequestTime() {
 		return requestTime;
 	}
 
-	public void setRequestTime(Date requestTime) {
+	public void setRequestTime(Timestamp requestTime) {
 		this.requestTime = requestTime;
+	}
+
+	public Timestamp getResponseTime() {
+		return responseTime;
+	}
+
+	public void setResponseTime(Timestamp responseTime) {
+		this.responseTime = responseTime;
 	}
 
 	public String getDeniedFlag() {
@@ -73,9 +92,8 @@ public class RpcRequestInfo implements Serializable {
 	@Override
 	public String toString() {
 		return "RpcRequestInfo [uuid=" + uuid + ", host=" + host + ", userName=" + userName + ", interfaceName="
-				+ interfaceName + ", methodName=" + methodName + ", requestTime=" + requestTime + ", deniedFlag="
-				+ deniedFlag + "]";
+				+ interfaceName + ", methodName=" + methodName + ", params=" + params + ", requestTime=" + requestTime
+				+ ", responseTime=" + responseTime + ", deniedFlag=" + deniedFlag + "]";
 	}
-
 	
 }

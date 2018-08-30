@@ -20,6 +20,7 @@ import cn.gxf.spring.motan.control.MotanController;
 import cn.gxf.spring.motan.filter.FilterConstants;
 import cn.gxf.spring.motan.mbdao.RpcRequestLogDao;
 import cn.gxf.spring.motan.model.RpcRequestInfo;
+import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 
 @Service
 public class SpringContextCloseListener implements ApplicationListener<ContextClosedEvent>{
@@ -38,6 +39,10 @@ public class SpringContextCloseListener implements ApplicationListener<ContextCl
 	public void onApplicationEvent(ContextClosedEvent event) {
 		
         if (event.getApplicationContext().getParent() == null) {
+        	
+        	motanController.setBlocked(1); // 禁止motan接口的调用
+        	AuxiliaryTools.delay(500);
+        	
         	// server程序启动后，需要显式调用心跳开关，注册到consul
         	MotanSwitcherUtil.setSwitcherValue(MotanConstants.REGISTRY_HEARTBEAT_SWITCHER, false);
     		System.out.println("SpringContextCloseListener.....容器关闭，反注册到consul.");

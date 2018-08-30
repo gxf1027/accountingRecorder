@@ -2,6 +2,7 @@ package cn.gxf.spring.motan.filter;
 
 
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
@@ -19,6 +20,7 @@ import com.weibo.api.motan.rpc.Caller;
 import com.weibo.api.motan.rpc.Request;
 import com.weibo.api.motan.rpc.Response;
 import com.weibo.api.motan.rpc.RpcContext;
+import com.weibo.api.motan.rpc.RpcStats;
 import com.weibo.api.motan.util.MotanFrameworkUtil;
 
 import cn.gxf.spring.motan.control.MotanController;
@@ -33,14 +35,13 @@ public class RequestInfoLoggingFilter implements Filter{
 	
 	@Override
 	public Response filter(Caller<?> caller, Request request) {
-
-		long start = System.currentTimeMillis();
 		
 		ApplicationContext springCtx = ContextLoader.getCurrentWebApplicationContext();
 		MotanController controller = (MotanController) springCtx.getBean("motanController");
 		
 		if ( 1 == controller.isRpcInfoPersisted() ){
 		
+			long start = System.currentTimeMillis();
 			//RpcContext ctx = RpcContext.getContext();
 			
 			RedisTemplate redisTemplate = (RedisTemplate) springCtx.getBean("redisTemplate");
@@ -51,23 +52,28 @@ public class RequestInfoLoggingFilter implements Filter{
 			reqInfo.setUserName(request.getAttachments().get(FilterConstants.ACCESS_USERNAME));
 			reqInfo.setInterfaceName(request.getInterfaceName());
 			reqInfo.setMethodName(request.getMethodName());
-			reqInfo.setRequestTime(new Date());
+			reqInfo.setParams(request.getParamtersDesc());
+			reqInfo.setRequestTime(new Timestamp(new Date().getTime()));
 			reqInfo.setDeniedFlag("N");
 			
+			//System.out.println("filter cost:" + (System.currentTimeMillis() - start));
+			
+			Response rs = caller.call(request);
+			// response
+			reqInfo.setResponseTime(new Timestamp(new Date().getTime()));
 			redisTemplate.opsForList().leftPush(FilterConstants.RPC_REQUEST_LIST, reqInfo);
 			
 			long size = redisTemplate.opsForList().size(FilterConstants.RPC_REQUEST_LIST);
 			if (size > FilterConstants.REDIS_LOG_LIST_MAX_SIZE){
 				// 向rpc.stat这个topic推送消息
 				PseudoRedisTopic topic =  (PseudoRedisTopic) springCtx.getBean("redisTopic4Motan");
-				System.out.println("\n\n\n\n topci:" + topic.getTopicName());
 				redisTemplate.convertAndSend(topic.getTopicName(), size);
 			}
 		
+			return rs;
+		}else{
+			return caller.call(request);
 		}
 		
-		System.out.println("filter cost:" + (System.currentTimeMillis() - start));
-		
-		return caller.call(request); 
 	}
 }

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2018-08-29 20:36:01
+Date: 2018-08-30 21:08:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,9 +25,10 @@ CREATE TABLE `rpc_requests_log` (
   `req_user` varchar(255) DEFAULT NULL,
   `rpc_interface_name` varchar(128) NOT NULL,
   `rpc_method` varchar(255) DEFAULT NULL,
-  `req_time` datetime NOT NULL,
-  `ret_time` datetime DEFAULT NULL,
+  `rpc_params` varchar(512) CHARACTER SET utf8 DEFAULT NULL,
+  `req_time` datetime(3) DEFAULT NULL,
+  `ret_time` datetime(3) DEFAULT NULL,
   `denied` varchar(2) DEFAULT NULL,
   PRIMARY KEY (`uuid`),
-  KEY `uuid_index` (`req_time`)
+  KEY `uuid_index` (`uuid`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
