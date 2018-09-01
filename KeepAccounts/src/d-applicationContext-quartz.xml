@@ -25,7 +25,7 @@
 	        <map>  
 	            <entry key="size" value="10" />  
 	            <entry key="dispatcher" value-ref="processorDispatcher" /> <!-- processorDispatcher可以被序列化 -->
-	            <entry key="processorName" value="billProcessor" />
+	            <entry key="processorName" value="creditCardsBillProcessor" />
 	        </map>  
 	    </property>  
 	    <property name="durability" value="true" /> 
@@ -46,7 +46,7 @@
 	    <!-- <property name="misfireInstruction" value="1" /> --> <!-- MISFIRE_INSTRUCTION_FIRE_ONCE_NOW -->
 	    <property name="cronExpression">
  			<!-- 每天某个时段 -->
-            <value>0 34 20 * * ?</value>
+            <value>0 27 20 * * ?</value>
         </property>
 	</bean> 
 	

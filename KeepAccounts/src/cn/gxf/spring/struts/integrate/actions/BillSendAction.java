@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import cn.gxf.spring.quartz.job.BillProcessor;
+import cn.gxf.spring.quartz.job.CreditCardsBillProcessor;
 import cn.gxf.spring.struts.integrate.security.UserLogin;
 
 public class BillSendAction extends ActionSupport {
@@ -21,7 +21,7 @@ public class BillSendAction extends ActionSupport {
 	 */
 	private static final long serialVersionUID = -4298087426612179674L;
 	@Autowired
-	private BillProcessor billProcessor;
+	private CreditCardsBillProcessor billProcessor;
 	
 	private String msg;
 	
