@@ -1,0 +1,108 @@
+@CHARSET "UTF-8";
+
+.header {
+    height: auto;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    min-width: 1080px;
+    position: relative;
+    z-index: 999;
+    height: 34px;
+    padding: 20px 0;
+    background: #fff;
+}
+
+	.header .hd-login .reg {
+	    display: inline-block;
+	    width: 108px;
+	    height: 48px;
+	    line-height: 52px;
+	    margin-left: 20px;
+	    border: 1px solid #ff4f3f;
+	    -webkit-border-radius: 3px;
+	    border-radius: 3px;
+	    text-align: center;
+	    -webkit-transition: all .5s;
+	    transition: all .5s;
+	    padding: 0 12px;
+	    background-color: #fff;
+	    -webkit-transition: background-color .5s;
+	    transition: background-color .5s;
+	    font-size: 17px;
+	}
+	
+	.hd-login a {
+	    color: #fa5546;
+	}
+	
+	.container {
+	    width: 12500px;
+	    overflow: visible;
+	    -webkit-font-smoothing: antialiased;
+	    max-width: 1250px;
+   	 	margin: 0 auto;
+    	overflow: hidden;
+	}
+	.clearfix {
+	    zoom: 0.8;
+	}
+	.clearfix:after {
+    clear: both;
+    content: "";
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    height: 0;
+}
+
+.header .hd-login, .header .hd-login .login-info {
+    width: auto;
+}
+
+.header .hd-login {
+    float: right;
+    text-align: right;
+    color: #d9d9d9;
+    font-size: 14px;
+    line-height: 32px;
+}
+.fr {
+    float: right;
+}
+
+.fl {
+    float: left;
+}
+
+.header .logo {
+    font-size: 24px;
+    float: left;
+}
+
+.header .logo>a {
+    padding-right: 10px;
+    border-right: 1px solid #ccc;
+    width: 175px;
+}
+
+.header .logo a {
+    display: block;
+    width: auto;
+    height: auto;
+    overflow: hidden;
+    background: none;
+    text-indent: 0;
+}
+
+.header .sub-nav-title {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 30px 0 12px;
+    font-weight: 500;
+    background-color: #fff;
+    z-index: 9;
+    vertical-align: middle;
+    line-height: 50px;
+    font-size: 22px;
+    color: #666;
+}

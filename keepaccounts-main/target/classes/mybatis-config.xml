@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration   
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!-- 打印查询语句 -->
+        <setting name="logImpl" value="LOG4J2" /> <!-- STDOUT_LOGGING -->
+        <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>
+        <setting name="defaultStatementTimeout" value="25"/>
+        
+        <!--开启二级缓存-->
+    	<!-- <setting name="cacheEnabled" value="true"/> -->
+    </settings>
+    
+    <typeAliases>
+    	<!-- 别名 -->
+    	<typeAlias type="cn.gxf.spring.struts2.integrate.model.IncomeDetailVO" alias="IncomeDetailVO"/>
+    	<typeAlias type="cn.gxf.spring.struts2.integrate.model.PaymentDetailVO" alias="PaymentDetailVO"/>
+    	<typeAlias type="cn.gxf.spring.struts2.integrate.model.TransferDetailVO" alias="TransferDetailVO"/>
+    	
+    	<typeAlias type="cn.gxf.spring.struts2.integrate.model.IncomeDetail" alias="IncomeDetail"/>
+    	<typeAlias type="cn.gxf.spring.struts2.integrate.model.PaymentDetail" alias="PaymentDetail"/>
+    	<typeAlias type="cn.gxf.spring.struts2.integrate.model.TransferDetail" alias="TransferDetail"/>
+    	<typeAlias type="cn.gxf.spring.struts2.integrate.model.FundDetail" alias="FundDetail" />
+    	<typeAlias type="cn.gxf.spring.struts2.integrate.model.FinancialProductDetail" alias="FinancialProductDetail"/>
+    	<typeAlias type="cn.gxf.spring.struts2.integrate.model.AccountingDetail" alias="AccountingDetail"/>
+    	
+    	<typeAlias type="cn.gxf.spring.quartz.job.model.CreditCardTransRecord"  alias="CreditCardTransRecord"/>
+    	<typeAlias type="cn.gxf.spring.quartz.job.model.CreditCard"  alias="CreditCard"/>
+    	<typeAlias type="cn.gxf.spring.quartz.job.model.FinancialProductsNotice" alias="FinancialProductsNotice"/>
+    	
+    	<typeAlias type="cn.gxf.spring.motan.model.RpcRequestInfo" alias="RpcRequestInfo"/>
+    </typeAliases>
+    
+    
+</configuration>

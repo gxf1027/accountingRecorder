@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"   
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:motan="http://api.weibo.com/schema/motan"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+     http://api.weibo.com/schema/motan
+     http://api.weibo.com/schema/motan.xsd">
+     
+     
+    <!-- 业务实现类 -->
+    <bean id="rpcServiceImpl" class="cn.gxf.spring.quartz.job.service.RpcServiceImpl" />
+     
+    <!-- 协议配置。为防止多个业务配置冲突，推荐使用id表示具体协议。-->
+    <motan:protocol id="keepAccMotan" default="true" name="motan"
+                    maxServerConnection="800" maxContentLength="1048576"
+                    maxWorkerThread="80" minWorkerThread="20"/>
+                    
+    <!-- 通用配置，多个rpc服务使用相同的基础配置. group和module定义具体的服务池。export格式为“protocol id:提供服务的端口”-->
+    <motan:basicService export="keepAccMotan:8002"
+                        group="motan-keepacc-rpc" accessLog="false" shareChannel="true" module="motan-keepacc-rpc"
+                        application="keepAccounts" registry="my_consul" id="serviceBasicConfig"/>
+                        
+    <!-- 使用consul作为注册中心 --> 
+    <motan:registry regProtocol="consul" name="my_consul" address="127.0.0.1:8500"/>
+     
+    <!-- 使用consul为注册中心 -->
+    <!-- <motan:service interface="cn.gxf.spring.quartz.job.service.RpcService" ref="rpcServiceImpl" registry="my_consul" export="8002" /> -->
+    
+    <!-- 具体rpc服务配置，声明实现的接口类。-->
+    <motan:service interface="cn.gxf.spring.quartz.job.service.RpcService"
+                   ref="rpcServiceImpl" export="keepAccMotan:8002" basicService="serviceBasicConfig">
+    </motan:service>
+    
+    <motan:service interface="cn.gxf.spring.quartz.job.service.AccountStatisticsService"
+                   ref="accountStatisticsServiceImpl" export="keepAccMotan:8002" basicService="serviceBasicConfig">
+    </motan:service>
+    
+    <motan:service interface="cn.gxf.spring.quartz.job.service.CreditCardsBillService"
+                   ref="creditCardsBillServiceImpl" export="keepAccMotan:8002" basicService="serviceBasicConfig">
+    </motan:service>
+    
+    <motan:service interface="cn.gxf.spring.quartz.job.service.FinancialProductsNoticeService"
+                   ref="financialProductsNoticeServiceImpl" export="keepAccMotan:8002" basicService="serviceBasicConfig">
+    </motan:service>
+    
+    
+    <!-- 不使用注册中心 -->
+    <!-- <motan:service interface="cn.gxf.spring.quartz.job.service.RpcService" ref="rpcServiceImpl" export="8002" /> -->
+       
+</beans>

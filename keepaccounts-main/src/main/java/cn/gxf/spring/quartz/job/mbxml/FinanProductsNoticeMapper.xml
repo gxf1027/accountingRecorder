@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.gxf.spring.quartz.job.dao.FinanProductsNoticeDao">
+
+	<insert id="saveNotice" parameterType="FinancialProductsNotice">
+		<selectKey keyColumn="uuid" keyProperty="uuid" resultType="string" order="BEFORE">
+			SELECT CONCAT('FPN',UUID_SHORT())
+		</selectKey>
+		
+		INSERT INTO financial_product_notice(uuid, pch, user_id, emailaddr, ssqq, ssqz, mailedrq, lrrq, yxbz)
+										VALUES(#{uuid}, #{pch}, #{user_id}, #{email}, #{ssqq}, #{ssqz}, null, now(), 'Y')
+	</insert>
+	
+	<select id="isSent" resultType="int">
+		SELECT COUNT(1) FROM financial_product_notice 
+			WHERE pch = #{pch} AND user_id = #{user_id}
+			AND yxbz='Y'
+	</select>
+	
+	<update id="setMailed" parameterType="string">
+		UPDATE financial_product_notice
+			SET mailedrq = NOW()
+			WHERE uuid = #{uuid}
+			AND yxbz='Y'
+	</update>
+	
+</mapper>
+

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.gxf.spring.struts.mybatis.dao.AccountVoMBDao">
+ 	<!-- <cache eviction="FIFO"  flushInterval="300000"  size="512"  readOnly="true"/> -->
+ 	
+  	<select id="getPaymentVo" parameterType="Map" resultType="PaymentDetailVO">
+  		SELECT p.accuuid, p.mxuuid, p.user_id,  DATE_FORMAT(p.shijian, '%Y-%m-%d %H:%i:00') fsrq, p.je je, CONCAT(dl.dl_mc, '-',xl.xl_mc) lbmc,
+  				(SELECT outgo_category_mc FROM dm_outgo_category c WHERE p.category_dm = c.outgo_category_dm) category_mc, 
+				 p.seller seller,p.bz,	2 AS type 
+			 FROM account_payment_detail p, dm_dl dl, dm_xl xl 
+			 WHERE p.dl_dm = dl.dl_dm and p.xl_dm = xl.xl_dm
+			 AND p.user_id = #{user_id} 
+			 <if test="date_from !=null and date_to != null">  
+			 	AND p.shijian BETWEEN DATE_FORMAT(#{date_from}, '%Y-%m-%d') AND DATE_FORMAT(#{date_to}, '%Y-%m-%d 23:59:59')
+			 </if> 
+			 AND p.yxbz='Y' 
+  	</select>
+  	
+  	
+  	<select id="getIncomeVo" parameterType="Map" resultType="IncomeDetailVO">
+  		SELECT t.accuuid, t.mxuuid, t.user_id, DATE_FORMAT(t.shijian, '%Y-%m-%d %H:%i:00') fsrq, t.je je, lb.srlb_mc  lbmc, 
+			t.fkfmc seller, t.bz, 1 AS type
+			 FROM	account_income_detail t, dm_srlb lb 
+			 WHERE t.lb_dm = lb.srlb_dm
+			 <if test="date_from != null and date_to != null">
+			 	AND t.shijian BETWEEN DATE_FORMAT(#{date_from}, '%Y-%m-%d') AND DATE_FORMAT(#{date_to}, '%Y-%m-%d 23:59:59')
+			 </if> 
+			 AND t.user_id = #{user_id}
+			 AND t.yxbz='Y' 
+  	</select>
+  	
+  	<select id="getTransferVo" parameterType="Map" resultType="TransferDetailVO">
+  		SELECT t.accuuid, t.mxuuid, t.user_id,  DATE_FORMAT(t.shijian, '%Y-%m-%d %H:%i:00') fsrq, t.je je, 
+			 (select z.zh_mc from zh_detail_info z where z.zh_dm = t.srcZh_dm) srcZhmc, 
+			 (select z.zh_mc from zh_detail_info z where z.zh_dm = t.tgtZh_dm) tgtZhmc, 
+			 (select lx.zzlx_mc from dm_zzlx lx where lx.zzlx_dm = t.zzlx_dm and yxbz='Y') zzlxmc,
+			 (CASE
+				WHEN t.zzlx_dm = '0003' THEN
+					(SELECT CONCAT_WS('-',f.fund_code,f.fund_name,f.unit_net) FROM transfer_fund_detail f WHERE f.transferuuid = t.mxuuid and f.yxbz='Y')
+				ELSE
+					t.bz
+				END
+			 ) bz,	3 AS type 
+			 FROM account_transfer_detail t 
+			 WHERE 1 = 1
+			 <if test="date_from != null and date_to != null">
+			 	AND t.shijian BETWEEN DATE_FORMAT(#{date_from}, '%Y-%m-%d') AND DATE_FORMAT(#{date_to}, '%Y-%m-%d 23:59:59')
+			 </if> 
+			 AND t.user_id = #{user_id} 
+			 AND t.yxbz='Y' 
+  	</select>
+
+    
+</mapper>

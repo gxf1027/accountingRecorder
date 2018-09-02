@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"   
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+     http://www.springframework.org/schema/cache 
+     http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
+    
+    <context:component-scan base-package="cn" />
+     
+	<!-- <context:property-placeholder location="classpath:db.properties" /> -->
+	<!-- 带密码加密的配置文件读取 -->
+	<bean id="propertyConfigurer" class="cn.gxf.spring.struts.integrate.sysctr.KeepAccPropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:db.properties</value>
+				<value>classpath:mq.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	
+	<bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+		<!-- <constructor-arg ref="datasource" /> -->
+		<constructor-arg ref="dynamicDataSource" />
+	</bean>
+	
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">	
+		<!-- <property name="dataSource" ref="datasource" /> -->
+		<property name="dataSource" ref="dynamicDataSource" />
+	</bean>
+	
+	<bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- <property name="dataSource" ref="datasource"></property> -->
+		<property name="dataSource" ref="dynamicDataSource"></property>
+		<qualifier value="dsTransactionManager"></qualifier>
+	</bean>
+	<tx:annotation-driven/>
+	
+	<!-- 分布式事务 -->
+	<bean id="XADataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean">
+        <property name="uniqueResourceName" value="xads11" />
+        <property name="xaDataSourceClassName">
+            <value>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</value>
+        </property>
+        <property name="xaProperties">
+            <props>
+                <prop key="user">${jdbc.username}</prop>
+                <prop key="password">${jdbc.password}</prop>
+                <prop key="URL">${jdbc.url}</prop>
+            </props>
+        </property>     
+        <property name="poolSize" value="10"/>
+        <property name="maxPoolSize" value="15" />
+    </bean>
+	<!-- atomikos事务管理器 -->
+	<!-- 在JMS没有启动的情况下，启动本应用，会报错。  com.atomikos.datasource.ResourceException: Error in getting XA resource -->
+    <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
+        init-method="init" destroy-method="close" lazy-init="true">
+        <description>UserTransactionManager</description>
+        <property name="forceShutdown" value="true" />
+    </bean>
+    
+    <bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp" lazy-init="true">
+        <property name="transactionTimeout" value="3000" />
+    </bean>
+	
+	<!-- spring 事务管理器 -->
+    <bean id="springJtaTxManager"
+        class="org.springframework.transaction.jta.JtaTransactionManager" lazy-init="true">
+        <property name="transactionManager" ref="atomikosTransactionManager" />
+        <property name="userTransaction" ref="atomikosUserTransaction" />
+        <qualifier value="JtaXAManager"></qualifier>
+    </bean>
+
+	<!-- <bean id="loanServiceProxy"
+		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean" lazy-init="true" >
+		<property name="wsdlDocumentUrl" value="http://localhost:9809/services/LoanService?wsdl" />
+		<property name="serviceName" value="LoanService" />
+		<property name="portName" value="LoanServiceImplPort"></property>
+		<property name="serviceInterface" value="cn.loan.ws.service.LoanService" />
+		<property name="namespaceUri" value="http://service.ws.loan.cn/" />
+	</bean> -->
+	
+	
+	<!-- <cache:annotation-driven key-generator="userKeyGenerator" />  
+
+	<bean id="cacheManager" class="org.springframework.cache.support.CompositeCacheManager">
+	     <property name="cacheManagers"> 
+	       <list> 
+	         <ref bean="eHcacheManager" /> 
+	         <ref bean="redisCacheManager"/>
+	       </list> 
+	     </property> 
+	     <property name="fallbackToNoOpCache" value="true" /> 
+   </bean> 
+   
+    spring基于EhCache的缓存配置
+	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  
+        <property name="configLocation" value="classpath:ehcache.xml"></property>  
+    </bean>
+    
+    <bean id="eHcacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">  
+        <property name="cacheManager" ref="ehcache"></property>  
+    </bean>
+    
+    <bean id="userKeyGenerator" class="cn.gxf.spring.struts.integrate.test.SpringCacheKeyGenerator" /> -->
+	
+	<!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- <property name="dataSource" ref="datasource" /> -->
+        <property name="dataSource" ref="dynamicDataSource" />
+        <!-- 自动扫描mapping.xml文件，**表示迭代查找 -->
+        
+        <property name="mapperLocations">
+        	<list>
+                <value>classpath:cn/gxf/spring/struts/mybatis/mapper/*.xml</value>
+            </list>
+        </property>
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+        
+        <property name="plugins">
+	        <array>
+	            <bean class="com.github.pagehelper.PageInterceptor">
+	                <!-- 这里的几个配置主要演示如何使用，如果不理解，一定要去掉下面的配置 -->
+	                <property name="properties">
+	                    <value>
+	                        helperDialect=mysql
+	                    </value>
+	                </property>
+	            </bean>
+	        </array>
+	    </property>
+    </bean>
+    
+    <bean id="sqlSessionFactoryMotan" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="datasource" />
+        
+        <property name="mapperLocations">
+        	<list>
+                <value>classpath:cn/gxf/spring/motan/mbxml/*.xml</value>
+            </list>
+        </property>
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+    </bean>
+    
+    <!-- XA -->
+    <bean id="sqlSessionFactoryXA" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="XADataSource" />
+        <!-- 自动扫描mapping.xml文件，**表示迭代查找 -->
+        
+        <property name="mapperLocations">
+        	<list>
+                <value>classpath:cn/gxf/spring/quartz/job/mbxml/*.xml</value>
+            </list>
+        </property>
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+    </bean>
+    
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 ,包下的类需要使用@MapperScan注解,否则容器注入会失败 -->
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="cn.gxf.spring.struts.mybatis.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+    </bean>
+    
+    <bean id="mapperScannerConfigurerMotan" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="cn.gxf.spring.motan.mbdao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryMotan" />
+    </bean>
+    
+    <bean id="mapperScannerConfigurerXA" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="cn.gxf.spring.quartz.job.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryXA" />
+    </bean>
+    
+    <!-- <bean class="org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter">
+        <property name="baseAddress" value="http://localhost:9809/services/"/>
+    </bean> -->
+    
+    <!-- 系统初始化和关闭有关 -->
+    <bean class="cn.gxf.spring.struts.integrate.sysctr.InstantiationTracingBeanPostProcessor"/>
+    <!-- <bean class="cn.gxf.spring.struts.integrate.sysctr.SpringContextCloseListener" /> -->
+</beans>

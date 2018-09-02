@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.gxf.spring.struts.mybatis.dao.FinancialProductDetailMBDao">
+  	
+  	<select id="getFinancialProductDetailByUuid" parameterType="String" 
+		resultType="FinancialProductDetail">
+		SELECT  uuid,
+				transferuuid AS transferUuid,
+				redeemuuid AS redeemUuid,
+				returnuuid AS returnUuid, 
+				product_name AS productName,
+				product_type AS productType,
+				yh_dm AS yh_dm,
+				date_count AS dateCount,
+				start_date AS startDate,
+				end_date AS endDate,
+				expected_returnrate AS expectedReturnRate,
+				je,
+				real_return AS realReturn,
+				is_redeem AS is_redeem,
+				lrrq, 
+				xgrq
+			  FROM financial_product_detail WHERE uuid = #{uuid} AND yxbz='Y'
+	</select>
+	
+  	<select id="getFinancialProductDetailByTransferUuid" parameterType="String" 
+		resultType="FinancialProductDetail">
+		SELECT  uuid,
+				transferuuid AS transferUuid,
+				redeemuuid AS redeemUuid,
+				returnuuid AS returnUuid, 
+				product_name AS productName,
+				product_type AS productType,
+				yh_dm AS yh_dm,
+				date_count AS dateCount,
+				start_date AS startDate,
+				end_date AS endDate,
+				expected_returnrate AS expectedReturnRate,
+				je,
+				real_return AS realReturn,
+				is_redeem AS is_redeem,
+				lrrq, 
+				xgrq
+			  FROM financial_product_detail WHERE transferuuid = #{uuid} AND yxbz='Y'
+	</select>
+	
+	<select id="getFinancialProductDetailByRedeemUuid" parameterType="String" 
+		resultType="FinancialProductDetail">
+		SELECT  uuid,
+				transferuuid AS transferUuid, 
+				redeemuuid AS redeemUuid,
+				returnuuid AS returnUuid, 
+				product_name AS productName,
+				product_type AS productType,
+				yh_dm AS yh_dm,
+				date_count AS dateCount,
+				start_date AS startDate,
+				end_date AS endDate,
+				expected_returnrate AS expectedReturnRate,
+				je,
+				real_return AS realReturn,
+				is_redeem AS is_redeem,
+				lrrq, 
+				xgrq
+			  FROM financial_product_detail WHERE redeemuuid = #{uuid} AND yxbz='Y'
+	</select>
+	
+	<select id="getFinancialProductDetailByReturnUuid" parameterType="String" 
+		resultType="FinancialProductDetail">
+		SELECT  uuid,
+				transferuuid AS transferUuid, 
+				redeemuuid AS redeemUuid,
+				returnuuid AS returnUuid, 
+				product_name AS productName,
+				product_type AS productType,
+				yh_dm AS yh_dm,
+				date_count AS dateCount,
+				start_date AS startDate,
+				end_date AS endDate,
+				expected_returnrate AS expectedReturnRate,
+				je,
+				real_return AS realReturn,
+				is_redeem AS is_redeem,
+				lrrq, 
+				xgrq
+			  FROM financial_product_detail WHERE returnuuid = #{uuid} AND yxbz='Y'
+	</select>
+	
+	<select id="getFinancialProductDetailByUserId" parameterType="Integer"
+		resultType="FinancialProductDetail">	
+		SELECT a.uuid,
+				a.transferuuid AS transferUuid, 
+				a.redeemuuid AS redeemUuid,
+				a.returnuuid AS returnUuid,
+				a.product_name AS productName,
+				yh_dm AS yh_dm,
+				(SELECT y.yh_mc FROM dm_yh y WHERE y.yh_dm = a.yh_dm) AS yh_mc, 
+				date_count AS dateCount,
+				start_date AS startDate,
+				end_date AS endDate,
+				expected_returnrate AS expectedReturnRate,
+				a.je,
+				a.real_return AS realReturn,
+				a.is_redeem AS is_redeem,
+				a.lrrq, 
+				a.xgrq 
+		FROM financial_product_detail a, account_transfer_detail b
+		WHERE a.transferuuid = b.mxuuid
+		AND b.user_id = #{userId} AND a.yxbz='Y' AND b.yxbz='Y';
+	</select>
+	
+	
+	<select id="getFinancialProductDetailUnreturned" parameterType="Integer" 
+		resultType="FinancialProductDetail">
+		SELECT  a.uuid,
+				a.transferuuid AS transferUuid, 
+				a.redeemuuid AS redeemUuid,
+				a.returnuuid AS returnUuid,
+				a.product_name AS productName,
+				yh_dm AS yh_dm,
+				(SELECT y.yh_mc FROM dm_yh y WHERE y.yh_dm = a.yh_dm) AS yh_mc, 
+				date_count AS dateCount,
+				start_date AS startDate,
+				end_date AS endDate,
+				expected_returnrate AS expectedReturnRate,
+				a.je,
+				a.real_return AS realReturn,
+				a.is_redeem AS is_redeem,
+				a.lrrq, 
+				a.xgrq 
+			  FROM financial_product_detail a, account_transfer_detail b
+			  WHERE a.transferuuid = b.mxuuid
+			  AND b.user_id = #{userId} AND returnuuid IS NULL AND a.yxbz='Y' AND b.yxbz='Y'
+	</select>
+	
+	<select id="queryFinancialProductDetailByEndDate" resultType="FinancialProductDetail">
+		SELECT  a.uuid,
+				a.transferuuid AS transferUuid, 
+				a.redeemuuid AS redeemUuid,
+				a.returnuuid AS returnUuid,
+				b.user_id,
+				a.product_name AS productName,
+				yh_dm AS yh_dm,
+				(SELECT y.yh_mc FROM dm_yh y WHERE y.yh_dm = a.yh_dm) AS yh_mc, 
+				date_count AS dateCount,
+				start_date AS startDate,
+				end_date AS endDate,
+				expected_returnrate AS expectedReturnRate,
+				a.je,
+				a.real_return AS realReturn,
+				a.is_redeem AS is_redeem,
+				a.lrrq, 
+				a.xgrq 
+			  FROM financial_product_detail a, account_transfer_detail b
+		WHERE a.transferuuid = b.mxuuid
+		AND a.product_type = 'FP_A1'
+		AND a.end_date  &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d')
+		AND a.end_date  &lt;= DATE_FORMAT(#{date_to}, '%Y-%m-%d 23:59:59')
+		AND a.redeemuuid IS NULL
+		AND a.yxbz='Y' AND b.yxbz='Y'
+	</select>
+	
+	
+	
+  	<insert id="addOne" parameterType="FinancialProductDetail">
+  		
+  		<selectKey keyColumn="uuid" keyProperty="uuid" resultType="string" order="BEFORE">
+			SELECT CONCAT('FP',UUID_SHORT())
+		</selectKey>
+		
+  		INSERT INTO financial_product_detail(uuid, transferuuid, product_name, product_type, yh_dm, date_count, start_date, end_date, expected_returnrate, je, real_return, is_redeem, lrrq, xgrq, yxbz)
+			VALUES(#{uuid}, #{transferUuid}, #{productName}, #{productType}, #{yh_dm}, #{dateCount}, #{startDate}, #{endDate}, #{expectedReturnRate}, #{je}, #{realReturn}, #{is_redeem}, #{lrrq}, null, 'Y')
+  	</insert>
+  	
+  	<update id="updateOne" parameterType="FinancialProductDetail">
+		UPDATE financial_product_detail SET product_name= #{productName}, product_type= #{productType}, yh_dm = #{yh_dm}, date_count=#{dateCount}, start_date = #{startDate}, end_date = #{endDate}, 
+										expected_returnrate= #{expectedReturnRate}, je=#{je},real_return=#{realReturn}, xgrq= #{xgrq}
+				WHERE transferuuid = #{transferUuid} AND yxbz='Y'
+  	</update>
+  	
+  	<update id="setRedeem">
+		UPDATE financial_product_detail SET redeemuuid= #{redeemUuid}, is_redeem='Y', xgrq= NOW()
+				WHERE uuid = #{uuid} AND yxbz='Y'
+  	</update>
+  	
+  	<update id="cancelRedeem">
+  		UPDATE financial_product_detail SET redeemuuid= NULL, is_redeem='N', xgrq= NOW()
+				WHERE redeemuuid= #{redeemUuid} AND yxbz='Y'
+  	</update>
+  	
+  	<update id="setRealReturn">
+  		UPDATE financial_product_detail SET returnuuid= #{returnUuid}, real_return= #{realReturn}, xgrq= NOW()
+  				WHERE uuid= #{uuid} AND yxbz='Y'
+  	</update>
+  	
+  	<update id="cancelRealReturn">
+  		UPDATE financial_product_detail SET returnuuid = NULL, real_return= 0, xgrq= NOW()
+  				WHERE returnuuid= #{returnUuid} AND yxbz='Y'
+  	</update>
+  	
+  	<update id="deleteOne" parameterType="String">
+  		UPDATE financial_product_detail SET yxbz='N', xgrq = NOW() WHERE transferuuid = #{transferUuid} AND yxbz='Y'
+  	</update>
+  	
+  	
+  	<update id="deletePatch" parameterType="List">
+  		UPDATE financial_product_detail SET yxbz='N', xgrq=NOW() 
+  			WHERE yxbz='Y' 
+  			<choose>
+  				<when test="list == null or list.size() == 0">
+  					AND 1 = 0
+  				</when>
+  				<otherwise>
+  					<choose>
+  						<when test="list.size() == 1">
+  							AND transferuuid = 
+			  				<foreach collection="list" index="index" item="uuid" open="" separator="" close="">  
+			        			#{uuid}  
+			    			</foreach>  
+  						</when>
+  						<otherwise>
+  							AND transferuuid IN 
+				  			<foreach collection="list" index="index" item="uuid" open="(" separator="," close=")">  
+				        		#{uuid}  
+				    		</foreach> 
+  						</otherwise>
+  					</choose>
+  				</otherwise>
+  			</choose>
+  	</update>
+    
+</mapper>

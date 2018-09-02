@@ -1,0 +1,120 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+                     	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	
+	<!-- <http pattern="/*_detial.jsp*" security="none" /> -->
+	
+	<!-- 注册页面不用登陆 -->
+	<!-- <http pattern="/myRegisterWcai.jsp" security="none" /> -->
+	<!-- 注册页面的提交按钮要调用以下的action，也要排除在security外 -->
+	<http pattern="/demo/registerUser.*" security="none" />
+	<http pattern="/demo/checkRegisterName.*" security="none" />
+	<!-- <http pattern="/demo/billsend*" security="none" /> -->
+	<http pattern="/services/**" security="none"></http> <!-- 否则, web service 客户端调用服务时出现异常 -->
+	<!--  
+        注意use-expressions=true.表示开启表达式,否则表达式将不可用. see:http://www.family168.com/tutorial/springsecurity3/html/el-access.html  
+    -->
+	<http auto-config="true" use-expressions="true" >
+		<!-- <intercept-url pattern="/homepage.jsp*" filters="none"/> -->
+		<!-- 这个/demo是struts.xml的namespace, myLogin.jsp在web-inf之外，
+			所以访问myLogin.jsp的url是http://localhost:8080/Struts2Spring4Test2/myLogin.jsp，
+			在下面这个过滤器之外 -->
+		<intercept-url pattern="/demo/**" access="hasRole('ROLE_USER')" requires-channel="https" />
+		<intercept-url pattern="/myLoginWcai.jsp"  requires-channel="https" />
+		<intercept-url pattern="/myRegisterWcai.jsp"  requires-channel="https" />
+		<form-login login-page="/myLoginWcai.jsp" default-target-url="/demo/frontStatistics!inputFront" always-use-default-target="false" />
+		<!-- 使用自定义的logout filter, 将以下注释掉 -->
+		<!-- <logout logout-success-url="/myLoginWcai.jsp" invalidate-session="true" /> -->
+		<!-- 自定退出的logout filter -->
+        <custom-filter before="LOGOUT_FILTER" ref="customLogoutFilter" />
+		<!-- spring security采用数据库方式实现rememb-me -->
+		<!-- <remember-me data-source-ref="datasource" token-validity-seconds="3600"  /> -->
+		<!-- spring security 与 spring-session集成 方式的remember-me -->
+		<remember-me services-ref="rememberMeServices" />
+		<csrf/>
+		<access-denied-handler error-page="/WEB-INF/content/1.jsp"/>
+		
+		<session-management >
+			<concurrency-control max-sessions="1" session-registry-ref="sessionRegistry" />
+		</session-management>
+	</http>
+
+	<!-- <authentication-manager alias="authenticationManager">
+		<authentication-provider>
+
+			<user-service>
+				<user authorities="ROLE_USER" name="user" password="ee11cbb19052e40b07aac0ca060c23ee" />
+				<user authorities="ROLE_ADMIN,ROLE_USER" name="admin" password="21232f297a57a5a743894a0e4a801fc3" />
+			</user-service> 
+			
+			<password-encoder ref="passwordEncoder" />
+
+		</authentication-provider>
+	</authentication-manager> -->
+	
+	<!-- 数据库方式验证 -->
+	<!-- 方法一：使用spring security的DaoAuthenticationProvider -->
+	<!-- <authentication-manager alias="authenticationManager" erase-credentials="false">
+		<authentication-provider user-service-ref="myUserDetailService">
+			<password-encoder ref="passwordEncoder" />
+		</authentication-provider>
+	</authentication-manager> -->
+	
+	<!-- 自定义logout filter -->
+	<beans:bean id="myLogoutSuccessFilter" class="cn.gxf.spring.struts.integrate.security.CustomLogoutSuccessHandler" >
+		<beans:property name="logoutSuccessUrl" value="myLoginWcai.jsp" />
+	</beans:bean>
+	<!-- 指定退出filter的实现类 -->
+    <beans:bean id="customLogoutFilter" class="cn.gxf.spring.struts.integrate.security.CustomLogoutFilter">
+        <!-- 处理退出的虚拟url -->
+        <beans:property name="filterProcessesUrl" value="/j_spring_security_logout" />
+        <!-- 退出处理成功后的默认显示url -->
+        <!-- <beans:constructor-arg index="0" value="/myLoginWcai.jsp" /> -->
+        <beans:constructor-arg index="0" ref="myLogoutSuccessFilter" />
+        <beans:constructor-arg index="1">
+            <!-- 退出成功后的handler列表 -->
+            <beans:array>
+                <beans:bean id="securityContextLogoutHandler" class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
+                <!-- 加入了开发人员自定义的退出成功处理 -->
+                <beans:bean id="customLogoutSuccessHandler" class="cn.gxf.spring.struts.integrate.security.CustomLogoutHandler" />
+            </beans:array>
+        </beans:constructor-arg>
+    </beans:bean>
+	
+	<!-- spring security 与 spring-session集成 方式的remember-me -->
+	<beans:bean id="rememberMeServices"
+		class="org.springframework.session.security.web.authentication.SpringSessionRememberMeServices">
+		<beans:property name="alwaysRemember" value="false"></beans:property>
+		<beans:property name="rememberMeParameterName" value="_spring_security_remember_me"></beans:property>
+		<beans:property name="validitySeconds" value="604800"></beans:property>
+	</beans:bean>
+	
+	<!-- 方法二：使用自定义的DaoAuthenticationProvider -->
+	<authentication-manager alias="authenticationManager" erase-credentials="false">
+		<authentication-provider ref="wcDaoAuthenticationProvider" />
+	</authentication-manager>
+	
+	<beans:bean id="wcDaoAuthenticationProvider" class="cn.gxf.spring.struts.integrate.security.WcDaoAuthenticationProvider">
+		<beans:property name="userDetailsService" ref="myUserDetailService" />
+		<beans:property name="passwordEncoder" ref="passwordEncoder" />
+	</beans:bean>
+
+	<!-- 对密码进行MD5编码 -->
+	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+	
+	<beans:bean id="myUserDetailService" class="cn.gxf.spring.struts.integrate.security.MyUserDetailService" />
+	
+	<beans:bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<beans:property name="basenames">
+			<beans:list>
+				<beans:value>classpath:messages_zh_CN</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+  
+</beans:beans>

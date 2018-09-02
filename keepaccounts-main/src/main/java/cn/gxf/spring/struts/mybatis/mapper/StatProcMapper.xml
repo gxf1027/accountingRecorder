@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.gxf.spring.struts.mybatis.dao.StatProcDao">
+
+
+	<insert id="insertProcTime">
+		INSERT INTO timedtask_acc_stat(userid,proctime) 
+		VALUES(#{user_id}, #{proc_time})
+	</insert>
+	
+	<update id="updateProcTime">
+		UPDATE timedtask_acc_stat SET proctime = #{proc_time}
+		WHERE userid = #{user_id}
+	</update>
+	
+	<select id="getLastProcTime"  parameterType="int" resultType="java.util.Date">
+		SELECT proctime FROM timedtask_acc_stat WHERE userid = #{user_id} 
+	</select>
+	
+	
+	<select id="isNewIncomeDataExists" parameterType="map" resultType="int">
+		SELECT COUNT(1) FROM account_income_detail p 
+			WHERE p.lrrq &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s')
+			<!-- 属于本月内的数据 -->
+			AND p.shijian &gt;= DATE_FORMAT(DATE_ADD(curdate(),interval -day(curdate())+1 day),'%Y-%m-%d %H:%i:%s')
+			AND p.user_id = #{user_id} 
+			AND p.yxbz='Y'
+	</select>
+	
+	
+	<select id="isNewPaymentDataExists" parameterType="map" resultType="int">
+		SELECT COUNT(1) FROM account_payment_detail p
+			WHERE  p.lrrq &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s')
+			<!-- 属于本月内的数据 -->
+			AND p.shijian &gt;= DATE_FORMAT(DATE_ADD(curdate(),interval -day(curdate())+1 day),'%Y-%m-%d %H:%i:%s')
+			AND p.user_id = #{user_id} 
+			AND p.yxbz='Y'
+	</select>
+	
+	
+	<select id="queryMonthsHaveNewIncomeData" parameterType="map" resultType="string">
+		SELECT DATE_FORMAT(p.shijian, '%Y-%m') FROM account_income_detail p 
+			WHERE p.lrrq &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s')
+			AND p.user_id = #{user_id} 
+			AND p.yxbz='Y'
+			GROUP BY DATE_FORMAT(p.shijian, '%Y-%m')
+	</select>
+	
+	<select id="queryMonthsHaveNewPaymentData" parameterType="map" resultType="string">
+		SELECT DATE_FORMAT(p.shijian, '%Y-%m') FROM account_payment_detail p
+			WHERE  p.lrrq &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s')
+			AND p.user_id = #{user_id} 
+			AND p.yxbz='Y'
+			GROUP BY DATE_FORMAT(p.shijian, '%Y-%m')
+	</select>
+
+	<select id="queryMonthsHaveNewData" parameterType="map" resultType="string">
+		SELECT DATE_FORMAT(fsrq, '%Y-%m') FROM (
+			SELECT p.shijian AS fsrq FROM account_payment_detail p
+				WHERE  p.lrrq &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s')
+				AND p.user_id = #{user_id} 
+				AND p.yxbz='Y'
+			UNION
+			SELECT p.shijian AS fsrq FROM account_income_detail p 
+				WHERE p.lrrq &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s')
+				AND p.user_id = #{user_id} 
+				AND p.yxbz='Y') A
+		GROUP BY DATE_FORMAT(fsrq, '%Y-%m')
+	</select>
+</mapper>
+
