@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"   
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	 <!-- 如果使用jdbc持久化quartz, jobDataMap中的属性对象必须可以被序列化。
+	 	所以只能传入 processorDispatcher。
+	 	如果传入的是XXServiceImpl, 其中Dao对象无法被序列化。
+	 -->
+  	<!-- 1. bill job -->
+    <bean id="creditCardJobDetial" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">  
+	    <property name="jobClass" value="cn.gxf.spring.quartz.job.GenericProcessJob" />  
+	    <property name="jobDataMap">  
+	        <map>  
+	            <entry key="size" value="10" />  
+	            <entry key="dispatcher" value-ref="processorDispatcher" /> <!-- processorDispatcher可以被序列化 -->
+	            <entry key="processorName" value="creditCardsBillProcessor" />
+	        </map>  
+	    </property>  
+	    <property name="durability" value="true" /> 
+	</bean>     
+	
+	
+	<!-- <bean id="simpleTrigger1"  class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">  
+	    <property name="jobDetail" ref="creditCardJobDetial" />  
+	    <property name="startDelay" value="100000" /> 100000 
+	    <property name="repeatInterval" value="86400000" />  (ms) one day
+	    <property name="repeatCount" value="-1" />
+	</bean>  -->  
+	
+	<bean id="creditBillTrigger"  
+			class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="group" value="mailInfo" />  
+	    <property name="jobDetail" ref="creditCardJobDetial" />
+	    <!-- <property name="misfireInstruction" value="1" /> --> <!-- MISFIRE_INSTRUCTION_FIRE_ONCE_NOW -->
+	    <property name="cronExpression">
+ 			<!-- 每天某个时段 -->
+            <value>0 27 20 * * ?</value>
+        </property>
+	</bean> 
+	
+	
+	<!-- 2. statistics job -->
+	 <bean id="statJobDetial" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">  
+	    <property name="jobClass" value="cn.gxf.spring.quartz.job.GenericProcessJob" />  
+	    <property name="jobDataMap">  
+	        <map>  
+	            <!-- <entry key="statProcessor" value-ref="accountStatProcessor"></entry> -->
+	            <entry key="dispatcher" value-ref="processorDispatcher" />
+	            <entry key="processorName" value="accountStatProcessor" />
+	        </map>  
+	    </property>  
+	    <property name="durability" value="true" /> 
+	</bean>  
+	
+	<bean id="statTrigger"
+          class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="group" value="mailInfo" />
+        <property name="jobDetail" ref="statJobDetial" />
+        <property name="cronExpression">
+        	<!-- each n minuts -->
+            <!-- <value>0 0/1 * * * ?</value> -->
+            <!-- everyday 23 o'clock -->
+            <value>0 45 22 * * ?</value>
+        </property>
+    </bean>  
+    
+    <!-- 3. financial products notice -->  
+    <bean id="financialProductsNoticeJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">  
+	    <property name="jobClass" value="cn.gxf.spring.quartz.job.GenericProcessJob" />  
+	    <property name="jobDataMap">  
+	        <map>
+	            <!-- <entry key="financialProdProcessor" value-ref="financialProductsNoticeProcessor"></entry> -->
+	            <entry key="dispatcher" value-ref="processorDispatcher" />
+	            <entry key="processorName" value="financialProductsNoticeProcessor" />
+	        </map>  
+	    </property>  
+	    <property name="durability" value="true" /> 
+	</bean>    
+	
+    <bean id="financialProductNoticeTrigger"
+          class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="group" value="mailInfo" />
+        <property name="jobDetail" ref="financialProductsNoticeJobDetail" />
+        <property name="cronExpression">
+        	<!-- 每月第一天执行 -->
+            <value>0 0 20 1 1/1 ? *</value>
+            <!-- <value>0 5 0 * * ?</value> -->
+        </property>
+    </bean>    
+    
+    
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
+	    <property name="jobDetails">  
+	        <list>  
+	            <ref bean="creditCardJobDetial" /> 
+	            <ref bean="statJobDetial" />
+	            <ref bean="financialProductsNoticeJobDetail" />
+	        </list>  
+	    </property>  
+	  
+	    <property name="triggers">  
+	        <list>  
+	            <ref bean="creditBillTrigger" />
+	            <ref bean="statTrigger" />
+	            <ref bean="financialProductNoticeTrigger" />
+	        </list>  
+	    </property>  
+	    
+	    <property name="dataSource" ref="datasource" />
+	    <property name="transactionManager" ref="dataSourceTransactionManager" />
+	    <!-- 注入applicationContext -->
+	    <property name="applicationContextSchedulerContextKey" value="applicationContextKey"/>
+	    <property name="quartzProperties">
+	    	<props>
+	    		<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
+	    		<prop key="org.quartz.threadPool.threadCount">10</prop>
+	    		<prop key="org.quartz.plugin.triggHistory.class">org.quartz.plugins.history.LoggingTriggerHistoryPlugin</prop>
+	    		<prop key="org.quartz.jobListener.NAME.class">cn.gxf.spring.quartz.job.MyQuartzJobListener</prop>
+	    	</props>
+	    </property>
+	</bean>
+</beans>

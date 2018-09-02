@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"   
+	xmlns:motan="http://api.weibo.com/schema/motan"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://api.weibo.com/schema/motan
+     http://api.weibo.com/schema/motan.xsd">
+     
+     
+    <!-- 注册中心配置 -->
+    <motan:registry regProtocol="consul" name="my_consul" address="127.0.0.1:8500"/>
+    <!-- motan协议配置 -->
+    <motan:protocol default="true" name="motan" 
+                     maxClientConnection="10" minClientConnection="2"/>
+    
+    <!-- 通用referer基础配置 -->
+    <motan:basicReferer requestTimeout="5000" accessLog="false"
+                        retries="0" group="motan-keepacc-rpc" module="motan-keepacc-rpc"
+                        application="keepAccounts" protocol="motan" registry="my_consul"
+                        id="motantestClientBasicConfig" throwException="true" check="true"/>
+
+    <!-- 具体referer配置。使用方通过beanid使用服务接口类 -->
+   <motan:referer id="motanTestRpc"
+                   interface="cn.gxf.spring.motan.test.SayHi" filter="attachAuthInfoFilter"
+                   connectTimeout="5000" requestTimeout="5000" basicReferer="motantestClientBasicConfig"/>
+                   
+    <motan:referer id="statService"
+                   interface="cn.gxf.spring.quartz.job.service.AccountStatisticsService"
+                   connectTimeout="5000" requestTimeout="5000" basicReferer="motantestClientBasicConfig"/>
+                   
+    <motan:referer id="creditCardBillService"
+                   interface="cn.gxf.spring.quartz.job.service.CreditCardsBillService"
+                   connectTimeout="5000" requestTimeout="5000" basicReferer="motantestClientBasicConfig"/>
+                   
+    <motan:referer id="productsNoticeService"
+                   interface="cn.gxf.spring.quartz.job.service.FinancialProductsNoticeService"
+                   connectTimeout="5000" requestTimeout="5000" basicReferer="motantestClientBasicConfig"/>
+       
+</beans>
