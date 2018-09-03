@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<constant name="struts.action.excludePattern" value="/services/.*" />
+    <constant name="struts.devMode" value="true" />
+    <!-- 此版本一定要加這個常量，否則不無法開啟DMI -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+<!-- 	<constant name="struts.i18n.encoding" value="UTF-8" /> -->
+    <package name="haha" namespace="/billweb" extends="struts-default" strict-method-invocation="true">
+    	
+    	<interceptors>
+    		
+    		
+    		<interceptor-stack name="myinterceptorStack">
+    			
+    			<interceptor-ref name="paramsPrepareParamsStack" />
+    			
+    		</interceptor-stack>
+    	
+    	</interceptors>
+    	
+    	
+    	
+    	<!-- 必须写在这里，写在后面会报错 -->
+    	<default-action-ref name="default_page" ></default-action-ref>
+    	
+    	
+    	
+        
+        
+        <!-- action name=* 和 default action（default_page）只能存在一个，如果都存在，default action将不起作用 -->
+        
+      <!--   <action name="*" >
+            处理所有页面请求，调整到同名的jsp
+			             必须为  /WEB-INF/content/ ， 不能为 WEB-INF/content/ 
+			             第一个 “/” 不能少
+            
+        	<result>/WEB-INF/content/{1}.jsp</result>
+        </action> -->
+        
+        
+        <action name="default_page">
+        	<result>/1.jsp</result>
+        </action>
+       
+    </package>
+
+   
+
+</struts>
