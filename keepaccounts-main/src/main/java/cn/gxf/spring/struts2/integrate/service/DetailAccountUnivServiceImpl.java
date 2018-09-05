@@ -63,6 +63,9 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	@Autowired
 	private StatDetailKeyGenerator statDetailKeyGenerator;
 	
+	@Autowired
+	private DmService dmService;
+	
 	// 通过accuuid获得具体的明细对象
 	public AccountObject getOneItem(String accuuid){
 		AccountingDetail acc = accountDetailMBDao.getAccountingDetailByUuid(accuuid);
@@ -214,6 +217,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		
 	    // 清除缓存
 		this.accountStatService.EvictDateStatRedis(keys);
+		this.dmService.removeZhInfoCache(detail.getUser_id());
 		
 		return accountingDetail.getAccuuid();
 	}
@@ -324,6 +328,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		}
 		
 		this.accountStatService.EvictDateStatRedis(keys);
+		this.dmService.removeZhInfoCache(detail.getUser_id());
 		
 		return accountingDetail;
 	}
@@ -389,6 +394,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		accountDetailMBDao.deleteOne(paramMap);
 		
 		this.accountStatService.EvictDateStatRedis(keys);
+		this.dmService.removeZhInfoCache(detail.getUser_id());
 	}
 	
 	
@@ -454,6 +460,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		
 		// 清除缓存
 		this.accountStatService.EvictDateStatRedis(keys);
+		this.dmService.removeZhInfoCache(detailObjs.get(0).getUser_id());
 	}
 	
 	//@CacheEvict(value="redisCacheStat", allEntries=true)
@@ -553,6 +560,6 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		
 		// 清除缓存
 		this.accountStatService.EvictDateStatRedis(keys);
-		 
+		this.dmService.removeZhInfoCache(list.get(0).getUser_id());
 	}
 }

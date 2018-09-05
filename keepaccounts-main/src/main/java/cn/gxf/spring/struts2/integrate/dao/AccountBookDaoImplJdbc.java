@@ -59,7 +59,7 @@ public class AccountBookDaoImplJdbc implements AccountBookDao{
 	
 	}
 
-	@CacheEvict(value="dmCache", allEntries=true)
+	//@CacheEvict(value="dmCache", allEntries=true)
 	@Override
 	public void updateYe(String zh_dm, float delt_je) {
 		String sql = "UPDATE zh_detail_info SET ye = ye + ? WHERE zh_dm = ? and yxbz='Y'";

@@ -1,5 +1,6 @@
 package cn.gxf.spring.struts2.integrate.service;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import cn.gxf.spring.struts.integrate.cache.EhCacheUtils;
+import cn.gxf.spring.struts.integrate.cache.SpringCacheKeyGenerator;
 import cn.gxf.spring.struts2.integrate.dao.AccountBookDao;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDao;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDaoImplJdbc;
@@ -25,6 +28,10 @@ public class DmServiceImpl implements DmService {
 	
 	@Autowired
 	private AccountBookDao accountBookDao;
+	
+	
+	@Autowired
+ 	private EhCacheUtils cacheUtils;
 
 	/*@Cacheable(value="dmCache" , key="#root.method.name")*/
 	@Cacheable(value="dmCache")
@@ -51,7 +58,7 @@ public class DmServiceImpl implements DmService {
 
 	// Cacheable不能放到Dao的getZhInfo上，因为在这个Service里对结果做了修改，
 	// 如果放在Dao.getZhInfo上每次属性页面会向books缓存中增加"新增..."的选项，连续刷新几次就增加几个
-	@Cacheable(value="dmCache", key="{#user_id, #root.method.name}")
+	@Cacheable(value="dmCache")
 	@Override
 	public List<AccountBook> getZhInfo(int user_id) {
 		
@@ -94,14 +101,33 @@ public class DmServiceImpl implements DmService {
 		return bookMaps;
 	}
 
-	
-	
-	@Cacheable(value="dmCache", key="{#user_id, #root.method.name}")
+	@Cacheable(value="dmCache")
 	@Override
 	public List<AccountBook> getZhInfoSimple(int user_id) {
 		
 		List<AccountBook> books = accountBookDao.getZhInfo(user_id);		
 		return books;
+	}
+	
+	@Override
+	public void removeZhInfoCache(int user_id){
+		SpringCacheKeyGenerator keyGenerator = new SpringCacheKeyGenerator();
+		
+		try {
+ 			
+ 			for (Method m : this.getClass().getDeclaredMethods()){
+ 				if (!m.getName().startsWith("getZhInfo")){
+ 					continue;
+ 				}
+ 				
+ 				String key = (String) keyGenerator.generate(this, m, user_id);
+ 				this.cacheUtils.remove("dmCache", key);
+ 			}
+ 			
+ 		} catch (SecurityException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}
 	}
 	
 	
