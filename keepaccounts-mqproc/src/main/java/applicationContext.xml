@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:jms="http://www.springframework.org/schema/jms"  
+	xmlns:amq="http://activemq.apache.org/schema/core" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+     http://www.springframework.org/schema/cache 
+     http://www.springframework.org/schema/cache/spring-cache-4.0.xsd
+     http://activemq.apache.org/schema/core
+     http://activemq.apache.org/schema/core/activemq-core-5.13.0.xsd
+     http://www.springframework.org/schema/jms
+     http://www.springframework.org/schema/jms/spring-jms-4.0.xsd">
+    
+    <!-- https://www.atomikos.com/Documentation/TomcatSpringActiveMQMySQLJMXIntegration#Example_Middleware_application -->
+    <context:component-scan base-package="cn" />
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+    
+    <bean id="propertyConfigurer" class="cn.gxf.spring.keepacc.mqproc.sysctr.KeepAccPropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:db.properties</value>
+				<value>classpath:mq.properties</value>
+				<value>classpath:mailsender.properties</value>
+			</list>
+		</property>
+	</bean>
+    
+<!--     <bean id="creditCardBillMsgListener" class="cn.gxf.spring.bill.receiver.CreditCardBillMsgListener">
+    	<property name="mailSenderService" ref="mailSenderServiceImpl"></property>
+    </bean> -->
+    
+    
+    <!-- activeMQ连接信息，XA事务。以下两个配置任选一个 -->
+    <!-- <amq:xaConnectionFactory id="jmsXaConnectionFactory"
+        brokerURL="tcp://localhost:61616?jms.redeliveryPolicy.maximumRedeliveries=2" 
+        userName="admin" 
+        password="admin"/> -->
+        
+    <bean id="jmsXaConnectionFactory" class="org.apache.activemq.ActiveMQXAConnectionFactory">
+        <property name="brokerURL" value="${mq.url}" />
+        <property name="userName" value="${mq.username}"></property>
+		<property name="password" value="${mq.password}"></property>
+        <property name="redeliveryPolicy">
+        	<bean id="redeliveryPolicy" class="org.apache.activemq.RedeliveryPolicy">
+        		<property name="useExponentialBackOff" value="true"></property>
+        		<property name="maximumRedeliveries" value="2"></property>
+        	</bean>
+        </property>
+	</bean>
+        
+    <bean id="amqConnectionFactory"  
+          class="com.atomikos.jms.AtomikosConnectionFactoryBean" init-method="init" destroy-method="close">  
+        <property name="uniqueResourceName" value="XAactiveMQ"/>  
+        <property name="xaConnectionFactory" ref="jmsXaConnectionFactory"/>  
+        <property name="poolSize" value="10"/>
+    </bean>
+        
+    <!-- 配置JMS连接工厂 -->
+	<!-- <bean id="connectionFactory"
+		class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616" />
+	</bean> -->
+    
+    <!-- 接收消息的队列  -->
+	<bean id="mailQueueDest"
+		class="org.apache.activemq.command.ActiveMQQueue">
+		<!-- 设置消息队列的名字 -->
+		<constructor-arg index="0" value="mailQueue" />
+	</bean>
+	
+	<!-- 接收消息的队列：理财产品到期通知 -->
+	<bean id="mailQueueDest_FinaProducts"
+		class="org.apache.activemq.command.ActiveMQQueue">
+		<!-- 设置消息队列的名字 -->
+		<constructor-arg index="0" value="mailQueueFinaProducts" />
+	</bean>
+    
+    <!-- 监听方式一：使用实现MessageListener的类的onMessage()方法进行监听 -->
+    <!-- creditCardBillMsgListener implements MessageListener -->
+    <!-- <bean id="myMsgQueuelistenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="amqConnectionFactory" />
+		<property name="destination" ref="mailQueueDest" />
+		<property name="messageListener" ref="creditCardBillMsgListener" />  
+		<property name="receiveTimeout" value="10000" />
+		<property name="sessionTransacted" value="true"/>
+		当在接收消息时监听器执行失败时，JMS(activemq)就会对接收到的消息进行回滚
+		<property name="transactionManager" ref="springJtaTxManager"/>
+	</bean> -->
+	
+	 <!-- 监听方式二：将POJO作为message处理类，处理消息的方法可以任意设置-->
+	<bean id="msgAdapterCreditCardBill"
+	      class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+	    <constructor-arg>
+	        <bean class="cn.gxf.spring.bill.receiver.MqMsgProcessor"/> <!-- 将POJO作为message处理类 -->
+	    </constructor-arg>
+	    <property name="defaultListenerMethod" value="billProcessing"/> <!-- 处理消息的方法 -->
+	</bean>
+	
+	<bean id="msgAdapterFinanProdNotice"
+	      class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+	    <constructor-arg>
+	        <bean class="cn.gxf.spring.bill.receiver.MqMsgProcessor"/> <!-- 将POJO作为message处理类 -->
+	    </constructor-arg>
+	    <property name="defaultListenerMethod" value="financialProductsNoticeProcessing"/> <!-- 处理消息的方法 -->
+	</bean>
+	
+	<!--
+		org.springframework.jms.listener.AbstractMessageListenerContainer  
+		<p>The listener container offers the following message acknowledgment options:
+	 * <ul>
+	 * <li>"sessionAcknowledgeMode" set to "AUTO_ACKNOWLEDGE" (default):
+	 * Automatic message acknowledgment <i>before</i> listener execution;
+	 * no redelivery in case of exception thrown.
+	 * <li>"sessionAcknowledgeMode" set to "CLIENT_ACKNOWLEDGE":
+	 * Automatic message acknowledgment <i>after</i> successful listener execution;
+	 * no redelivery in case of exception thrown.
+	 * <li>"sessionAcknowledgeMode" set to "DUPS_OK_ACKNOWLEDGE":
+	 * <i>Lazy</i> message acknowledgment during or after listener execution;
+	 * <i>potential redelivery</i> in case of exception thrown.
+	 * <li>"sessionTransacted" set to "true":
+	 * Transactional acknowledgment after successful listener execution;
+	 * <i>guaranteed redelivery</i> in case of exception thrown.
+	 * </ul> -->
+	 
+	 <!-- org.springframework.jms.listener.DefaultMessageListenerContainer
+	  It is strongly recommended to either set {@link #setSessionTransacted
+	 * "sessionTransacted"} to "true" or specify an external {@link #setTransactionManager
+	 * "transactionManager"}. -->
+	<bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	    <property name="connectionFactory" ref="amqConnectionFactory"/>
+	    <property name="destination" ref="mailQueueDest"/>
+	    <property name="messageListener" ref="msgAdapterCreditCardBill" /> <!-- 使用MessageListenerAdapter来作为消息监听器 -->
+	    <property name="sessionTransacted" value="true"/>
+	    <property name="transactionManager" ref="springJtaTxManager"/> <!-- 配置后函数不需要使用@Transactional注解 -->
+	    <!-- <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>  --> <!--使用JTA的情况下，即为客户端确认，这个配置被忽略 -->  
+	</bean>
+	
+	<bean id="jmsContainerFinanProdNotice" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	    <property name="connectionFactory" ref="amqConnectionFactory"/>
+	    <property name="destination" ref="mailQueueDest_FinaProducts"/>
+	    <property name="messageListener" ref="msgAdapterFinanProdNotice" /> <!-- 使用MessageListenerAdapter来作为消息监听器 -->
+	    <property name="sessionTransacted" value="true"/>
+	    <property name="transactionManager" ref="springJtaTxManager"/> <!-- 配置后函数不需要使用@Transactional注解 -->
+	    <!-- <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>  --> <!--使用JTA的情况下，即为客户端确认，这个配置被忽略 -->  
+	</bean>
+	
+	
+	<!-- atomikos事务管理器 -->
+    <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
+        init-method="init" destroy-method="close">
+        <description>UserTransactionManager</description>
+        <property name="forceShutdown" value="true" />
+    </bean>
+    
+    <bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
+        <property name="transactionTimeout" value="300" />
+    </bean>
+    
+    <!-- spring 事务管理器 -->
+    <bean id="springJtaTxManager"
+        class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="transactionManager" ref="atomikosTransactionManager" />
+        <property name="userTransaction" ref="atomikosUserTransaction" />
+    </bean>
+    
+    <tx:annotation-driven transaction-manager="springJtaTxManager"/> 
+    
+    <!-- 配置QueueJms模板  -->
+	<!-- <bean id="jmsQueueTemplate"
+		class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="defaultDestination" ref="mailQueueDest" />
+		<property name="receiveTimeout" value="10000" />
+	</bean> -->
+    
+    
+    <!-- lazy-init="true" -->
+   <!--  <bean id="billServiceProxy"
+		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean"  >
+		<property name="wsdlDocumentUrl" value="http://localhost:8080/Struts2Spring4Test2/services/billService?wsdl" />
+		<property name="serviceName" value="BillServiceEndPointImplService" />
+		<property name="portName" value="BillServiceEndPointImplPort"></property>
+		<property name="serviceInterface" value="cn.gxf.spring.quartz.job.endpoint.BillServiceEndpoint" />
+		<property name="namespaceUri" value="http://endpoint.job.quartz.spring.gxf.cn/" />
+	</bean> -->
+    
+</beans>
