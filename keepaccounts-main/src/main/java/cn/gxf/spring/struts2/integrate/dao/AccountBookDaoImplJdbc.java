@@ -13,6 +13,9 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.gxf.spring.struts2.integrate.model.AccountBook;
 
@@ -58,7 +61,42 @@ public class AccountBookDaoImplJdbc implements AccountBookDao{
 			}});
 	
 	}
+	
+	@Override
+	public AccountBook getZhInfo(String zh_dm) {
+		
+		String sql = "SELECT * from zh_detail_info WHERE zh_dm=? AND yxbz='Y' AND xybz='Y'";
+		
+		PreparedStatementSetter pss = new PreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				// TODO Auto-generated method stub
+				ps.setString(1, zh_dm);
+			}
+		};
+		
+		List<AccountBook> books = jdbcTemplate.query(sql, pss, new RowMapper<AccountBook>(){
 
+			@Override
+			public AccountBook mapRow(ResultSet rs, int rowNum) throws SQLException {
+				// TODO Auto-generated method stub
+				AccountBook adi = new AccountBook();
+				adi.setZh_dm(rs.getString("zh_dm"));
+				adi.setZh_mc(rs.getString("Zh_mc"));
+				adi.setKhrmc(rs.getString("khrmc"));
+				adi.setZhhm(rs.getString("zhhm"));
+				adi.setUser_id(rs.getInt("user_id"));
+				adi.setZhlx_dm(rs.getString("zhlx_dm"));
+				adi.setYe(rs.getFloat("ye"));
+				adi.setYxbz("Y");
+				return adi;
+			}});
+		
+		return books.get(0);
+	}
+
+	@Transactional(value="dsTransactionManager", propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
 	//@CacheEvict(value="dmCache", allEntries=true)
 	@Override
 	public void updateYe(String zh_dm, float delt_je) {

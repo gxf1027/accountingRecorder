@@ -6,6 +6,7 @@ import cn.gxf.spring.struts2.integrate.model.AccountBook;
 
 public interface AccountBookDao {
 	public List<AccountBook> getZhInfo(int user_id);
+	public AccountBook getZhInfo(String zh_dm);
 	/*
 	* delt_je: ÔöÁ¿Öµ
 	*/

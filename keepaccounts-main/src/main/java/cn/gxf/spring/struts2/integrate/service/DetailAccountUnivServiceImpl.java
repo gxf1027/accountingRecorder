@@ -11,6 +11,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator;
@@ -59,6 +60,9 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	
 	@Autowired
 	private AccountStatService accountStatService;
+	
+	@Autowired
+	private AccountSnapshotting accountSnapshotting;
 
 	@Autowired
 	private StatDetailKeyGenerator statDetailKeyGenerator;
@@ -138,7 +142,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	}
 	
 	//@CacheEvict(value="statCache", allEntries=true)
-	@Transactional("dsTransactionManager")
+	@Transactional(value="dsTransactionManager", isolation=Isolation.READ_COMMITTED)
 	public String saveOne(T detail) {
 		
 		AccountingDetail accountingDetail = new AccountingDetail();
@@ -165,10 +169,12 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		
 		Set<String> keys = new HashSet<String>();
 		keys.add(this.statDetailKeyGenerator.detailAllKey(accountingDetail.getUser_id(), accountingDetail.getShijian()));
-		
+	
 		if ( detail instanceof IncomeDetail ){
 			IncomeDetail incomeDetail = (IncomeDetail) detail;
 			incomeDetailMBDao.addOne(incomeDetail);
+			// 账户SNAPSHOT
+			this.accountSnapshotting.shotting(incomeDetail.getZh_dm(), AccountSnapshotting.ADD, accountingDetail);
 			accountBookDao.updateYe(incomeDetail.getZh_dm(), incomeDetail.getJe());
 			if (incomeDetail.getLb_dm().equals(DmService.srlb_fin_prod_dm)){ // 如果类型是“理财收入”，则修改理财信息
 				// mxuuid通过mybatis的主键回写获得
@@ -180,6 +186,8 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		}else if (detail instanceof PaymentDetail){
 			PaymentDetail paymentDetail = (PaymentDetail)detail;
 			paymentDetailMBDao.addOne(paymentDetail);
+			// 账户SNAPSHOT
+			this.accountSnapshotting.shotting(paymentDetail.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.ADD, paymentDetail.getUser_id(), -1.0f*accountingDetail.getJe());
 			accountBookDao.updateYe(paymentDetail.getZh_dm(), -1.0f*paymentDetail.getJe());
 			
 			// 清除“支出明细”的缓存(redis)
@@ -187,6 +195,11 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		}else if (detail instanceof TransferDetail){
 			TransferDetail transferDetail = (TransferDetail)detail; 
 			transferDetailMBDao.addOne(transferDetail);
+			// 账户SNAPSHOT
+			float bdje = accountingDetail.getJe(); // 变动金额
+			this.accountSnapshotting.shotting(transferDetail.getSrcZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.ADD, transferDetail.getUser_id(), -1.0f*bdje); // 转出账户为负
+			this.accountSnapshotting.shotting(transferDetail.getTgtZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.ADD, transferDetail.getUser_id(),       bdje);
+						
 			accountBookDao.updateYe(transferDetail.getSrcZh_dm(), -1.0f*transferDetail.getJe());
 			accountBookDao.updateYe(transferDetail.getTgtZh_dm(), transferDetail.getJe());
 			
@@ -241,6 +254,11 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		if ( detail instanceof IncomeDetail ){
 			IncomeDetail incomeDetail_new = (IncomeDetail) detail;
 			IncomeDetail incomeDetail_old = incomeDetailMBDao.getIncomeDetailByUuid(incomeDetail_new.getMxuuid());
+			
+			// 账户SNAPSHOT
+			this.accountSnapshotting.shotting(incomeDetail_old.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(), -1.0f*incomeDetail_old.getJe());
+			this.accountSnapshotting.shotting(incomeDetail_new.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),       incomeDetail_new.getJe());
+						
 			if (incomeDetail_new.getZh_dm().equals(incomeDetail_old.getZh_dm()) ){
 				accountBookDao.updateYe(incomeDetail_new.getZh_dm(), -1.0f*incomeDetail_old.getJe() + incomeDetail_new.getJe());
 			}else{
@@ -255,13 +273,18 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		}else if (detail instanceof PaymentDetail){
 			PaymentDetail paymentDetail_new = (PaymentDetail) detail;
 			PaymentDetail paymentDetail_old = paymentDetailMBDao.getPaymentDetailByUuid(paymentDetail_new.getMxuuid());
+			
+			// 账户SNAPSHOT
+			this.accountSnapshotting.shotting(paymentDetail_old.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),        paymentDetail_old.getJe());
+			this.accountSnapshotting.shotting(paymentDetail_new.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),  -1.0f*paymentDetail_new.getJe());
+						
 			if(paymentDetail_new.getZh_dm().equals(paymentDetail_old.getZh_dm())){
 				accountBookDao.updateYe(paymentDetail_new.getZh_dm(), paymentDetail_old.getJe() - 1.0f*paymentDetail_new.getJe());
 			}else{
 				accountBookDao.updateYe(paymentDetail_new.getZh_dm(), -1.0f*paymentDetail_new.getJe());
 				accountBookDao.updateYe(paymentDetail_old.getZh_dm(), paymentDetail_old.getJe());
 			}
-			
+						
 			paymentDetailMBDao.updateOne((PaymentDetail)detail);
 			
 			keys.add(this.statDetailKeyGenerator.detailPaymentKey(paymentDetail_new.getUser_id(), paymentDetail_new.getShijian()));
@@ -271,11 +294,19 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			TransferDetail transferDetail_old = this.getTransferDetailByMxuuid(transferDetail_new.getMxuuid()); //transferDetailMBDao.getTransferDetailByUuid(transferDetail_new.getMxuuid());
 			FundDetail fundDetail_old = fundDetailMBdao.getFundDetailByUuid(transferDetail_new.getMxuuid());
 			
+			// 账户SNAPSHOT
+			this.accountSnapshotting.shotting(transferDetail_old.getSrcZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),        transferDetail_old.getJe());
+			this.accountSnapshotting.shotting(transferDetail_old.getTgtZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),  -1.0f*transferDetail_old.getJe());
+						
 			// 考虑到修改前后的转出、转入账户都有不同的可能，先做撤销，再重新发起
 			// 撤销上次交易
 			accountBookDao.updateYe(transferDetail_old.getSrcZh_dm(), transferDetail_old.getJe());
 			accountBookDao.updateYe(transferDetail_old.getTgtZh_dm(), -1.0f*transferDetail_old.getJe());
 			
+			// 账户SNAPSHOT
+			this.accountSnapshotting.shotting(transferDetail_new.getSrcZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),  -1.0f*transferDetail_new.getJe());
+			this.accountSnapshotting.shotting(transferDetail_new.getTgtZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),        transferDetail_new.getJe());
+						
 			// 进行本次交易
 			accountBookDao.updateYe(transferDetail_new.getSrcZh_dm(), -1.0f*transferDetail_new.getJe());
 			accountBookDao.updateYe(transferDetail_new.getTgtZh_dm(), transferDetail_new.getJe());
@@ -346,7 +377,10 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		if ( detail instanceof IncomeDetail ){
 			IncomeDetail incomeDetail = (IncomeDetail) detail;
 			incomeDetailMBDao.deleteOne(paramMap);
+			// Account SNAPSHOT
+			accountSnapshotting.shotting(incomeDetail.getZh_dm(), incomeDetail.getAccuuid(), AccountSnapshotting.DELETE, incomeDetail.getUser_id(), -1.0f*incomeDetail.getJe());
 			accountBookDao.updateYe(incomeDetail.getZh_dm(), -1.0f*incomeDetail.getJe());
+			
 			if (incomeDetail.getLb_dm().equals(DmService.srlb_fin_prod_dm)){
 				// 如果收入类型是“理财收益”,那么关联的理财产品信息被清除
 				this.financialProductDetailMBDao.cancelRealReturn(incomeDetail.getMxuuid());
@@ -359,6 +393,8 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		}else if (detail instanceof PaymentDetail){
 			PaymentDetail paymentDetail = (PaymentDetail) detail;
 			paymentDetailMBDao.deleteOne(paramMap);
+			// Account SNAPSHOT
+			accountSnapshotting.shotting(paymentDetail.getZh_dm(), paymentDetail.getAccuuid(), AccountSnapshotting.DELETE, paymentDetail.getUser_id(), paymentDetail.getJe());
 			accountBookDao.updateYe(paymentDetail.getZh_dm(), paymentDetail.getJe());
 			
 			// 清除“支出明细”的缓存(redis)
@@ -369,7 +405,11 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			TransferDetail transferDetail = (TransferDetail)detail; 
 			transferDetailMBDao.deleteOne(paramMap);
 			
-			accountBookDao.updateYe(transferDetail.getSrcZh_dm(), transferDetail.getJe());
+			// Account SNAPSHOT
+			accountSnapshotting.shotting(transferDetail.getSrcZh_dm(), transferDetail.getAccuuid(), AccountSnapshotting.DELETE, transferDetail.getUser_id(),       transferDetail.getJe());
+			accountSnapshotting.shotting(transferDetail.getTgtZh_dm(), transferDetail.getAccuuid(), AccountSnapshotting.DELETE, transferDetail.getUser_id(), -1.0f*transferDetail.getJe());
+						
+			accountBookDao.updateYe(transferDetail.getSrcZh_dm(),       transferDetail.getJe());
 			accountBookDao.updateYe(transferDetail.getTgtZh_dm(), -1.0f*transferDetail.getJe());
 			
 			if (transferDetail.getZzlx_dm().equals(DmService.zzlx_purchase_fund_dm) && transferDetail.getFundDetail() != null){
@@ -417,7 +457,12 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			incomeDetailMBDao.deletePatch(mxuuidList);
 			for (T item : detailObjs){
 				IncomeDetail incomeItem = (IncomeDetail) item;
+				
+				// Account SNAPSHOT
+				accountSnapshotting.shotting(incomeItem.getZh_dm(), incomeItem.getAccuuid(), AccountSnapshotting.DELETE, incomeItem.getUser_id(), -1.0f*incomeItem.getJe());
+				
 				accountBookDao.updateYe(incomeItem.getZh_dm(), -1.0f*incomeItem.getJe());
+				
 				if (incomeItem.getLb_dm().equals(DmService.srlb_fin_prod_dm)){
 					// 如果收入类型是“理财收益”,那么关联的理财产品信息被清除
 					this.financialProductDetailMBDao.cancelRealReturn(incomeItem.getMxuuid());
@@ -432,7 +477,12 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			paymentDetailMBDao.deletePatch(mxuuidList);
 			for (T item : detailObjs){
 				PaymentDetail paymentItem = (PaymentDetail) item; 
+				
+				// Account SNAPSHOT
+				accountSnapshotting.shotting(paymentItem.getZh_dm(), paymentItem.getAccuuid(), AccountSnapshotting.DELETE, paymentItem.getUser_id(), paymentItem.getJe());
+				
 				accountBookDao.updateYe(paymentItem.getZh_dm(), paymentItem.getJe());
+				
 				// 准备删除缓存
 				keys.add(this.statDetailKeyGenerator.detailAllKey(paymentItem.getUser_id(), paymentItem.getShijian()));
 				keys.add(this.statDetailKeyGenerator.detailPaymentKey(paymentItem.getUser_id(), paymentItem.getShijian()));
@@ -443,7 +493,12 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			financialProductDetailMBDao.deletePatch(mxuuidList);// 如果有则删除，financial product的uuid和transfer的uuid相同
 			for (T item : detailObjs){
 				TransferDetail transferItem = (TransferDetail) item;
-				accountBookDao.updateYe(transferItem.getSrcZh_dm(), transferItem.getJe());
+				
+				// Account SNAPSHOT
+				accountSnapshotting.shotting(transferItem.getSrcZh_dm(), transferItem.getAccuuid(), AccountSnapshotting.DELETE, transferItem.getUser_id(),       transferItem.getJe());
+				accountSnapshotting.shotting(transferItem.getTgtZh_dm(), transferItem.getAccuuid(), AccountSnapshotting.DELETE, transferItem.getUser_id(), -1.0f*transferItem.getJe());
+				
+				accountBookDao.updateYe(transferItem.getSrcZh_dm(),       transferItem.getJe());
 				accountBookDao.updateYe(transferItem.getTgtZh_dm(), -1.0f*transferItem.getJe());
 				
 				if (transferItem.getZzlx_dm().equals(DmService.zzlx_redeem_fin_prod_dm)){
@@ -510,6 +565,9 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			incomeDetailMBDao.deletePatch(mxuuidList);
 			
 			for (IncomeDetail income : incomeDetailList){
+				// Account SNAPSHOT
+				accountSnapshotting.shotting(income.getZh_dm(), income.getAccuuid(), AccountSnapshotting.DELETE, income.getUser_id(), -1.0f*income.getJe());
+				
 				accountBookDao.updateYe(income.getZh_dm(), -1.0f*income.getJe());
 				
 				if (income.getLb_dm().equals(DmService.srlb_fin_prod_dm)){
@@ -531,6 +589,8 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			paymentDetailMBDao.deletePatch(mxuuidList);
 			
 			for (PaymentDetail payment : paymentDetailList){
+				// Account SNAPSHOT
+				accountSnapshotting.shotting(payment.getZh_dm(), payment.getAccuuid(), AccountSnapshotting.DELETE, payment.getUser_id(), payment.getJe());
 				accountBookDao.updateYe(payment.getZh_dm(), payment.getJe());
 			}
 		}
@@ -549,8 +609,13 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			financialProductDetailMBDao.deletePatch(mxuuidList); // 如果有则删除
 			
 			for (TransferDetail transfer : transferDetailList){
-				accountBookDao.updateYe(transfer.getSrcZh_dm(), transfer.getJe());
+				// Account SNAPSHOT
+				accountSnapshotting.shotting(transfer.getSrcZh_dm(), transfer.getAccuuid(), AccountSnapshotting.DELETE, transfer.getUser_id(),       transfer.getJe());
+				accountSnapshotting.shotting(transfer.getTgtZh_dm(), transfer.getAccuuid(), AccountSnapshotting.DELETE, transfer.getUser_id(), -1.0f*transfer.getJe());
+				
+				accountBookDao.updateYe(transfer.getSrcZh_dm(),       transfer.getJe());
 				accountBookDao.updateYe(transfer.getTgtZh_dm(), -1.0f*transfer.getJe());
+				
 				
 				if (transfer.getZzlx_dm().equals(DmService.zzlx_redeem_fin_prod_dm)){
 					financialProductDetailMBDao.cancelRedeem(transfer.getMxuuid());

@@ -160,7 +160,11 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 			// 此时transferDetail还没有mxuuid,所以不能设置理财产品的赎回转账uuid
 			this.transferDetail.getFinancialProductDetail().setUuid(this.productUnredeemed);
 		}
-		detailAccountUnivServiceImpl.saveOne(this.transferDetail);
+		String accuuid = detailAccountUnivServiceImpl.saveOne(this.transferDetail);
+		
+		// 延迟一段时间等待主从同步
+		int count = wait4SyncService.queryWaiting4Save(accuuid);
+				
 		return "saveRecOk";
 	}
 	

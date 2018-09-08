@@ -29,6 +29,8 @@ public class DmServiceImpl implements DmService {
 	@Autowired
 	private AccountBookDao accountBookDao;
 	
+	@Autowired
+	private SpringCacheKeyGenerator keyGenerator;
 	
 	@Autowired
  	private EhCacheUtils cacheUtils;
@@ -111,8 +113,7 @@ public class DmServiceImpl implements DmService {
 	
 	@Override
 	public void removeZhInfoCache(int user_id){
-		SpringCacheKeyGenerator keyGenerator = new SpringCacheKeyGenerator();
-		
+				
 		try {
  			
  			for (Method m : this.getClass().getDeclaredMethods()){
