@@ -1,4 +1,4 @@
-package cn.gxf.spring.struts2.integrate.service;
+ï»¿package cn.gxf.spring.struts2.integrate.service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,7 +80,7 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 		for (FinancialProductDetail d:details){
 			String startDate = d.getStartDateToShow() == null ? "null" : d.getStartDateToShow().replaceAll("-", "");
 			String endDate = d.getEndDateToShow() == null ? "null" : d.getEndDateToShow().replaceAll("-", "");
-			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getJe()+"-"+d.getDateCount()+"Ìì-"+startDate+"-"+endDate);
+			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getJe()+"-"+d.getDateCount()+"å¤©-"+startDate+"-"+endDate);
 		}
 		return deltailMap;
 	}
@@ -90,14 +90,16 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 		if (userId == null){
 			return null;
 		}
-	    // »ñÈ¡»¹Î´±»¡°ÊÕÈë¡±¹ØÁªµÄÀí²Æ²úÆ·
+	    // è·å–è¿˜æœªè¢«â€œæ”¶å…¥â€å…³è”çš„ç†è´¢äº§å“
 		List<FinancialProductDetail> details = this.financialProductDetailMBDao.getFinancialProductDetailUnreturned(userId);
 		if (details == null){
 			return null;
 		}
 		Map<String, String> deltailMap = new HashMap<String, String>();
 		for (FinancialProductDetail d:details){
-			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getDateCount()+"Ìì-"+d.getJe());
+			String startDate = d.getStartDateToShow() == null ? "null" : d.getStartDateToShow().replaceAll("-", "");
+			String endDate = d.getEndDateToShow() == null ? "null" : d.getEndDateToShow().replaceAll("-", "");
+			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getJe()+"-"+d.getDateCount()+"å¤©-"+startDate+"-"+endDate);
 		}
 		return deltailMap;
 	}
