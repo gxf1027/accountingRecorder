@@ -39,7 +39,7 @@ public class WaitingForSyncServiceImpl implements WaitingForSyncService{
 				return -1;
 			}
 			
-			// µÈ´ı100ms
+			// ç­‰å¾…100ms
 			AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 			
 			AccountingDetail detail = accountDetailDao.getAccountingDetailByUuid(accuuid);
@@ -73,7 +73,7 @@ public class WaitingForSyncServiceImpl implements WaitingForSyncService{
 				return -1;
 			}
 			
-			// µÈ´ı100ms
+			// ç­‰å¾…100ms
 			AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 			
 			AccountingDetail detail = accountDetailDao.getAccountingDetailByUuid2(accuuid);
@@ -93,7 +93,7 @@ public class WaitingForSyncServiceImpl implements WaitingForSyncService{
 	@Override
 	public int queryWaiting4Update(String accuuid, Date date) {
 		
-		// ¼õÒ»Ãë
+		// å‡ä¸€ç§’
 		Date date2 = new Date();
 		date2.setTime(date.getTime() - 1000);
 		
@@ -113,7 +113,7 @@ public class WaitingForSyncServiceImpl implements WaitingForSyncService{
 				return -1;
 			}
 			
-			// µÈ´ı100ms
+			// ç­‰å¾…100ms
 			AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 			
 			AccountingDetail detail = accountDetailDao.getAccountingDetailByUuid3(accuuid, date2);
