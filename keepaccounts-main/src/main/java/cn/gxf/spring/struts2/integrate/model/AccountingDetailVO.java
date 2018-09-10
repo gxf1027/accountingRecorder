@@ -31,7 +31,7 @@ public abstract class AccountingDetailVO implements Serializable, Comparable<Acc
 	}
 
 	public String getFsrqToShow() {
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");  // Ð¡Ê±£º·ÖÖÓ
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");  // å°æ—¶ï¼šåˆ†é’Ÿ
 		if (fsrq != null){
 			return sdf.format(fsrq);
 		}
@@ -40,7 +40,7 @@ public abstract class AccountingDetailVO implements Serializable, Comparable<Acc
 	
 	public String getFsrqToShowFull() {
 		if (fsrq != null){
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");  // Ð¡Ê±£º·ÖÖÓ
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");  // å°æ—¶ï¼šåˆ†é’Ÿ
 			return sdf.format(fsrq);
 		}
 		return null;

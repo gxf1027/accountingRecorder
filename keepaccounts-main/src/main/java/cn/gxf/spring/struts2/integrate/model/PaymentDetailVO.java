@@ -5,7 +5,7 @@ import java.util.Date;
 public class PaymentDetailVO extends AccountingDetailVO {
 	private String mxuuid;
 	private String lbmc;
-	private String xlmc; // –°¿‡
+	private String xlmc; // Â∞èÁ±ª
 	private String category_mc;
 	private String seller;
 
