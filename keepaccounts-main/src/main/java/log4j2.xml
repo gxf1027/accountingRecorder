@@ -139,7 +139,13 @@
 	    </Logger>
 	    
 	    <Logger name="cn.gxf.spring.struts.integrate.security.WcDaoAuthenticationProvider" level="DEBUG">
-	        <AppenderRef ref="loginInLogFile" />
+	        <AppenderRef ref="RollingFileDebug" />
 	    </Logger>
+	    
+	    <Logger name="cn.gxf.spring.struts.integrate.cache" level="DEBUG">
+	   		<AppenderRef ref="Console" />
+	        <AppenderRef ref="RollingFileDebug" />
+	    </Logger>
+	    
 	</Loggers>
 </Configuration>  

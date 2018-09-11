@@ -3,6 +3,8 @@ package cn.gxf.spring.struts.integrate.cache;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -17,10 +19,9 @@ import cn.gxf.spring.struts.mybatis.dao.AccountVoMBDao;
 
 public class RedisMessageListener implements MessageListener{
 
+	private Logger logger = LogManager.getLogger();
 	
 	private RedisTemplate<String, Object> redisTemplate;  
-	
-	
 	private RpcRequestLogDao rpcRequestLogDao;
 	
 	@Override
@@ -29,6 +30,8 @@ public class RedisMessageListener implements MessageListener{
 		List<RpcRequestInfo> rpcReqList = new ArrayList<RpcRequestInfo>();
 		byte[] body = message.getBody();//请使用valueSerializer  
 	
+		long start = System.currentTimeMillis();
+		
 		long popnum = (long) redisTemplate.getValueSerializer().deserialize(body); 
 //		try {
 //			Thread.sleep(10000); // 阻塞test
@@ -37,8 +40,8 @@ public class RedisMessageListener implements MessageListener{
 //			e1.printStackTrace();
 //		}
 //		
-		System.out.println("\n\n\n in redis's onMessage..." + this.hashCode());
-		
+		//System.out.println("\n\n\n in redis's onMessage..." + this.hashCode());
+		long commond_num = popnum;
 		while(popnum > 0){
 			
 			if (redisTemplate.opsForList().size(FilterConstants.RPC_REQUEST_LIST) == 0){
@@ -56,10 +59,13 @@ public class RedisMessageListener implements MessageListener{
 			popnum--;
 		}
 		
+		logger.info("RedisMessageListener pop out " + (commond_num - popnum) +" RpcRequestInfo objects. \n Consume " + (System.currentTimeMillis()-start) + " millis");
+		
 		// 持久化到mysql
 		if (rpcReqList.size() > 0){
 			try {
 				rpcRequestLogDao.saveRequestsInfo(rpcReqList);
+				logger.info("RedisMessageListener persistent RpcRequestInfo Objects.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
