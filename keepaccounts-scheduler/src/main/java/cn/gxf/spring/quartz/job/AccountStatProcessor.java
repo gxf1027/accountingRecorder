@@ -10,17 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import cn.gxf.spring.quartz.job.service.AccountStatisticsService;
+import com.weibo.api.motan.rpc.Future;
+import com.weibo.api.motan.rpc.FutureListener;
+import com.weibo.api.motan.rpc.ResponseFuture;
+
 import cn.gxf.spring.quartz.job.service.AccountStatisticsServiceAsync;
 
 
 @Service
 public class AccountStatProcessor implements JobProcessor{
-	
-	
-	@Autowired
-	@Qualifier("statService")
-	private AccountStatisticsService statisticsService;
 	
 	@Autowired
 	@Qualifier("statServiceAsync")
@@ -30,14 +28,26 @@ public class AccountStatProcessor implements JobProcessor{
 	public int process() {
 		
 		// 获得所有用户
-		Map<String, String> users = statisticsService.getUsersIdNames();
+		Map<String, String> users = statisticsServiceAsync.getUsersIdNames();
 		
+		Map<ResponseFuture, String> rvMap = new HashMap<ResponseFuture, String>();
+		// async with listener
+	    FutureListener listener = new FutureListener() {
+	        @Override
+	        public void operationComplete(Future future) throws Exception {
+	            System.out.println("async call, user " +
+	            		rvMap.get(future) + ": "+ (future.isSuccess() ? "sucess! value:" + future.getValue() : "fail! exception:"
+	                            + future.getException().getMessage()));
+	        }
+	    };
+	    
 		for (String userid : users.keySet()){
 			
 			//statisticsService.updateStatThisMonthByUserid(userid, users.get(userid));
 			// 异步方法
-			statisticsServiceAsync.updateStatThisMonthByUserid(userid, users.get(userid));
-			
+			ResponseFuture future =  statisticsServiceAsync.updateStatThisMonthByUseridAsync(userid, users.get(userid));
+			rvMap.put(future, users.get(userid));
+			future.addListener(listener);
 		}
 		
 		return 1;

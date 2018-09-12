@@ -15,18 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.weibo.api.motan.rpc.Future;
+import com.weibo.api.motan.rpc.FutureListener;
+import com.weibo.api.motan.rpc.ResponseFuture;
 
 import cn.gxf.spring.quartz.job.model.CreditCard;
-import cn.gxf.spring.quartz.job.service.CreditCardsBillService;
 import cn.gxf.spring.quartz.job.service.CreditCardsBillServiceAsync;
 
 @Service
 public class CreditCardsBillProcessor implements JobProcessor{
-
-	
-	@Autowired
-	@Qualifier("creditCardBillService")
-	private CreditCardsBillService creditCardBillService;
 	
 	@Autowired
 	@Qualifier("creditCardBillServiceAsync")
@@ -50,7 +47,7 @@ public class CreditCardsBillProcessor implements JobProcessor{
         
 		// 1. 获取需要处理的账户代码
 		//List<String> zzdmList = creditCardBillDao.getCreditCardInZDR(Integer.valueOf(sdf.format(jyqz).split("-")[2]));
-        List<CreditCard> creditCards = creditCardBillService.getCreditCardInZDR(Integer.valueOf(sdf.format(jyqz).split("-")[2]));
+        List<CreditCard> creditCards = creditCardBillServiceAsync.getCreditCardInZDR(Integer.valueOf(sdf.format(jyqz).split("-")[2]));
 
         if (creditCards.size() == 0 ){
         	System.out.println("今天没有信用卡账单需要处理");
@@ -70,7 +67,17 @@ public class CreditCardsBillProcessor implements JobProcessor{
         	}
         }
 
-		
+        Map<ResponseFuture, Integer> rvMap = new HashMap<ResponseFuture, Integer>();
+        // async with listener
+	    FutureListener listener = new FutureListener() {
+	        @Override
+	        public void operationComplete(Future future) throws Exception {
+	            System.out.println("async call, user_id " +
+	            		rvMap.get(future) + ": "+ (future.isSuccess() ? "sucess! value:" + future.getValue() : "fail! exception:"
+	                            + future.getException().getMessage()));
+	        }
+	    };
+	    
         // 分用户进行处理，否则getCreditCardTranscationRecordInZDQ返回数据会太多
         for (String userId : userZzdmMap.keySet()){
         	List<String> zzdmList = userZzdmMap.get(userId);
@@ -81,7 +88,10 @@ public class CreditCardsBillProcessor implements JobProcessor{
         	
         	// 每个循环单独的事务，否则可能事务超时
         	//creditCardBillService.processBill(zzdmList, jyqq, jyqz);
-        	creditCardBillServiceAsync.processBill(zzdmList, jyqq, jyqz);
+        	// 异步
+        	ResponseFuture future = creditCardBillServiceAsync.processBillAsync(zzdmList, jyqq, jyqz);
+        	rvMap.put(future, Integer.valueOf(userId));
+			future.addListener(listener);
         }
         
 		return 1;

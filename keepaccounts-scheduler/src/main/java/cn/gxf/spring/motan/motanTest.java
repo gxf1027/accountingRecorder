@@ -11,11 +11,17 @@ import java.util.Map;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.weibo.api.motan.rpc.Future;
+import com.weibo.api.motan.rpc.FutureListener;
+import com.weibo.api.motan.rpc.ResponseFuture;
+
 import cn.gxf.spring.motan.test.SayHi;
 import cn.gxf.spring.quartz.job.model.CreditCard;
 import cn.gxf.spring.quartz.job.service.AccountStatisticsService;
+import cn.gxf.spring.quartz.job.service.AccountStatisticsServiceAsync;
 import cn.gxf.spring.quartz.job.service.CreditCardsBillService;
 import cn.gxf.spring.quartz.job.service.FinancialProductsNoticeService;
+import cn.gxf.spring.quartz.job.service.FinancialProductsNoticeServiceAsync;
 import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
 
@@ -28,30 +34,46 @@ public class motanTest {
 		//processCreditCardsBill(ctx);
 		processFinProducts(ctx);
 		
-		/*for (int i=1; i<=11; i++){
-			service.say("hi");
-			try {
-				Thread.sleep(520);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}*/
+//		for (int i=1; i<=11; i++){
+//			service.say("hi");
+//			try {
+//				Thread.sleep(520);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 		
 	}
 	
 	
 	public static int processStat(ApplicationContext ctx) {
 		
-		AccountStatisticsService statisticsService = (AccountStatisticsService) ctx.getBean("statService");
+		AccountStatisticsServiceAsync statisticsService = (AccountStatisticsServiceAsync) ctx.getBean("statServiceAsync");
 		
 		// 获得所有用户
+		long start = System.currentTimeMillis();
 		Map<String, String> users = statisticsService.getUsersIdNames();
+		System.out.println("statisticsService.getUsersIdNames:" + (System.currentTimeMillis()-start));
 		
+		Map<ResponseFuture, String> rvMap = new HashMap<ResponseFuture, String>();
+		// async with listener
+	    FutureListener listener = new FutureListener() {
+	        @Override
+	        public void operationComplete(Future future) throws Exception {
+	            System.out.println("async call, user " +
+	            		rvMap.get(future) + ": "+ (future.isSuccess() ? "sucess! value:" + future.getValue() : "fail! exception:"
+	                            + future.getException().getMessage()));
+	        }
+	    };
+	    
+	    
 		for (String userid : users.keySet()){
 			
-			statisticsService.updateStatThisMonthByUserid(userid, users.get(userid));
-			
+			// 异步调用
+			ResponseFuture future =  statisticsService.updateStatThisMonthByUseridAsync(userid, users.get(userid));
+			rvMap.put(future, users.get(userid));
+			future.addListener(listener);
 		}
 		
 		return 1;
@@ -73,8 +95,10 @@ public class motanTest {
         
 		// 1. 获取需要处理的账户代码
 		//List<String> zzdmList = creditCardBillDao.getCreditCardInZDR(Integer.valueOf(sdf.format(jyqz).split("-")[2]));
+        long start = System.currentTimeMillis();
         List<CreditCard> creditCards = creditCardBillService.getCreditCardInZDR(Integer.valueOf(sdf.format(jyqz).split("-")[2]));
-
+        System.out.println("creditCardBillService.getCreditCardInZDR:" + (System.currentTimeMillis()-start));
+        
         if (creditCards.size() == 0 ){
         	System.out.println("今天没有信用卡账单需要处理");
 			return 0;
@@ -112,7 +136,7 @@ public class motanTest {
 	
 	public static int processFinProducts(ApplicationContext ctx){
 		
-		FinancialProductsNoticeService financialProductsNoticeService = (FinancialProductsNoticeService) ctx.getBean("productsNoticeService");
+		FinancialProductsNoticeServiceAsync financialProductsNoticeService = (FinancialProductsNoticeServiceAsync) ctx.getBean("productsNoticeServiceAsync");
 		
 		Date current = new Date();
 		Date date_from = AuxiliaryTools.getMonthFirstDate(current);
@@ -137,10 +161,23 @@ public class motanTest {
 			}
 		}
 		
+		Map<ResponseFuture, Integer> rvMap = new HashMap<ResponseFuture, Integer>();
+		// async with listener
+	    FutureListener listener = new FutureListener() {
+	        @Override
+	        public void operationComplete(Future future) throws Exception {
+	            System.out.println("async call, user_id " +
+	            		rvMap.get(future) + ": "+ (future.isSuccess() ? "sucess! value:" + future.getValue() : "fail! exception:"
+	                            + future.getException().getMessage()));
+	        }
+	    };
+		
 		// 将事务分解为每个用户一个事务
 		for (Integer user_id : userProductMaps.keySet()){
 			// 每个用户分开处理
-			financialProductsNoticeService.processNotice(userProductMaps.get(user_id), date_from, date_to);
+			ResponseFuture future = financialProductsNoticeService.processNoticeAsync(userProductMaps.get(user_id), date_from, date_to);
+			rvMap.put(future, user_id);
+			future.addListener(listener);
 		}
 		
 		return 1;

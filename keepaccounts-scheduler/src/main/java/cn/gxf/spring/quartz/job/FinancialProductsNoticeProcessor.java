@@ -10,19 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.weibo.api.motan.rpc.Future;
+import com.weibo.api.motan.rpc.FutureListener;
+import com.weibo.api.motan.rpc.ResponseFuture;
 
-import cn.gxf.spring.quartz.job.service.FinancialProductsNoticeService;
 import cn.gxf.spring.quartz.job.service.FinancialProductsNoticeServiceAsync;
 import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
 
 @Service
 public class FinancialProductsNoticeProcessor implements JobProcessor{
-	
-	
-	@Autowired
-	@Qualifier("productsNoticeService")
-	private FinancialProductsNoticeService financialProductsNoticeService;
 	
 	@Autowired
 	@Qualifier("productsNoticeServiceAsync")
@@ -37,7 +34,7 @@ public class FinancialProductsNoticeProcessor implements JobProcessor{
 		Date date_from = AuxiliaryTools.getMonthFirstDate(current);
 		Date date_to = AuxiliaryTools.getMonthLastDate(current);
 		// 获取所有用户本月将要到期的理财产品
-		List<FinancialProductDetail> finProducts = financialProductsNoticeService.queryFinancialProductDetailByEndDate(date_from, date_to);
+		List<FinancialProductDetail> finProducts = financialProductsNoticeServiceAsync.queryFinancialProductDetailByEndDate(date_from, date_to);
 		
 		if (finProducts.size() == 0){
 			return 0;
@@ -56,10 +53,23 @@ public class FinancialProductsNoticeProcessor implements JobProcessor{
 			}
 		}
 		
+		Map<ResponseFuture, Integer> rvMap = new HashMap<ResponseFuture, Integer>();
+		// async with listener
+	    FutureListener listener = new FutureListener() {
+	        @Override
+	        public void operationComplete(Future future) throws Exception {
+	            System.out.println("async call, user_id " +
+	            		rvMap.get(future) + ": "+ (future.isSuccess() ? "sucess! value:" + future.getValue() : "fail! exception:"
+	                            + future.getException().getMessage()));
+	        }
+	    };
 		// 将事务分解为每个用户一个事务
 		for (Integer user_id : userProductMaps.keySet()){
 			// 每个用户分开处理
-			financialProductsNoticeServiceAsync.processNotice(userProductMaps.get(user_id), date_from, date_to);
+			// 异步
+			ResponseFuture future = financialProductsNoticeServiceAsync.processNoticeAsync(userProductMaps.get(user_id), date_from, date_to);
+			rvMap.put(future, user_id);
+			future.addListener(listener);
 		}
 		
 		return 1;
