@@ -82,10 +82,12 @@
 
 	<!-- 发布订阅 -->
     <bean id="redisMessageListener" class="cn.gxf.spring.struts.integrate.cache.RedisMessageListener">  
+       <property name="listenerName" value="listener1" />
        <property name="redisTemplate" ref="redisTemplate"></property>  
        <property name="rpcRequestLogDao" ref="rpcRequestLogDao"></property>
 	</bean> 
-	<bean id="redisMessageListener_friend" class="cn.gxf.spring.struts.integrate.cache.RedisMessageListener">  
+	<bean id="redisMessageListener_friend" class="cn.gxf.spring.struts.integrate.cache.RedisMessageListener">
+	   <property name="listenerName" value="listener2" />  
        <property name="redisTemplate" ref="redisTemplate"></property>  
        <property name="rpcRequestLogDao" ref="rpcRequestLogDao"></property>
 	</bean>
