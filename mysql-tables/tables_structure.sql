@@ -78,6 +78,22 @@ CREATE TABLE `account_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
+-- Table structure for account_snapshot
+-- ----------------------------
+DROP TABLE IF EXISTS `account_snapshot`;
+CREATE TABLE `account_snapshot` (
+  `uuid` varchar(255) NOT NULL,
+  `accuuid` varchar(255) NOT NULL,
+  `type` varchar(10) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `zh_dm` varchar(255) NOT NULL,
+  `bdje` float(11,2) NOT NULL,
+  `fshje` float(11,2) NOT NULL,
+  `lrrq` datetime NOT NULL,
+  PRIMARY KEY (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
 -- Table structure for account_payment_detail
 -- ----------------------------
 DROP TABLE IF EXISTS `account_payment_detail`;
@@ -791,7 +807,7 @@ CREATE TABLE `zh_detail_info` (
   `user_id` int(11) NOT NULL,
   `zhlx_dm` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `zhhm` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
-  `ye` float NOT NULL,
+  `ye` float(11,2) NOT NULL,
   `yxbz` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `xybz` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`zh_dm`)
