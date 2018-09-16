@@ -15,14 +15,7 @@ Date: 2018-08-03 21:05:36
 
 SET FOREIGN_KEY_CHECKS=0;
 
--- ----------------------------
--- Table structure for account
--- ----------------------------
-DROP TABLE IF EXISTS `account`;
-CREATE TABLE `account` (
-  `customerid` varchar(255) NOT NULL,
-  `balance` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 -- ----------------------------
 -- Table structure for account_detail
@@ -32,7 +25,7 @@ CREATE TABLE `account_detail` (
   `accuuid` varchar(255) NOT NULL,
   `rec_dm` varchar(10) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `je` float NOT NULL,
+  `je` float(11,2) NOT NULL,
   `shijian` datetime NOT NULL,
   `yxbz` varchar(255) NOT NULL,
   `xgrq` datetime DEFAULT NULL,
@@ -48,7 +41,7 @@ CREATE TABLE `account_income_detail` (
   `mxuuid` varchar(255) NOT NULL,
   `accuuid` varchar(255) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
-  `je` float NOT NULL,
+  `je` float(11,2) NOT NULL,
   `lb_dm` varchar(255) NOT NULL,
   `fkfmc` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `zh_dm` varchar(255) DEFAULT NULL,
@@ -61,21 +54,6 @@ CREATE TABLE `account_income_detail` (
   KEY `index_income_lb` (`lb_dm`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- ----------------------------
--- Table structure for account_info
--- ----------------------------
-DROP TABLE IF EXISTS `account_info`;
-CREATE TABLE `account_info` (
-  `accuuid` varchar(255) NOT NULL,
-  `ssny` varchar(6) DEFAULT NULL,
-  `income` float DEFAULT NULL,
-  `salary` float DEFAULT NULL,
-  `bonus` float DEFAULT NULL,
-  `expenditure` float DEFAULT NULL,
-  `netincome` float DEFAULT NULL,
-  `xgrq` date DEFAULT NULL,
-  PRIMARY KEY (`accuuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Table structure for account_snapshot
@@ -101,8 +79,8 @@ CREATE TABLE `account_payment_detail` (
   `mxuuid` varchar(255) NOT NULL,
   `accuuid` varchar(255) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
-  `yhje` float DEFAULT NULL,
-  `je` float NOT NULL,
+  `yhje` float(11,2) DEFAULT NULL,
+  `je` float(11,2) NOT NULL,
   `dl_dm` varchar(255) NOT NULL,
   `xl_dm` varchar(255) NOT NULL,
   `seller` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
@@ -125,7 +103,7 @@ CREATE TABLE `account_transfer_detail` (
   `mxuuid` varchar(255) NOT NULL,
   `accuuid` varchar(255) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
-  `je` float NOT NULL,
+  `je` float(11,2) NOT NULL,
   `srcZh_dm` varchar(255) NOT NULL,
   `tgtZh_dm` varchar(255) NOT NULL,
   `zzlx_dm` varchar(5) DEFAULT NULL,
@@ -286,21 +264,6 @@ CREATE TABLE `dm_zzlx` (
   PRIMARY KEY (`zzlx_dm`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- ----------------------------
--- Table structure for exp_info
--- ----------------------------
-DROP TABLE IF EXISTS `exp_info`;
-CREATE TABLE `exp_info` (
-  `expuuid` varchar(255) NOT NULL,
-  `accuuid` varchar(255) DEFAULT NULL,
-  `expenditure` float DEFAULT NULL,
-  `shopping` float DEFAULT NULL,
-  `tax` float DEFAULT NULL,
-  `loan` float DEFAULT NULL,
-  `others` float DEFAULT NULL,
-  `xgrq` date DEFAULT NULL,
-  PRIMARY KEY (`expuuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Table structure for financial_product_detail
@@ -317,9 +280,9 @@ CREATE TABLE `financial_product_detail` (
   `date_count` int(11) DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
-  `expected_returnrate` float DEFAULT NULL,
-  `je` float DEFAULT NULL,
-  `real_return` float DEFAULT NULL,
+  `expected_returnrate` float(11,2) DEFAULT NULL,
+  `je` float(11,2) DEFAULT NULL,
+  `real_return` float(11,2) DEFAULT NULL,
   `is_redeem` varchar(2) DEFAULT NULL,
   `lrrq` datetime DEFAULT NULL,
   `xgrq` datetime DEFAULT NULL,
@@ -623,7 +586,7 @@ DROP TABLE IF EXISTS `stat_income_lb`;
 CREATE TABLE `stat_income_lb` (
   `srlb_dm` varchar(255) CHARACTER SET utf8 NOT NULL,
   `srlb_mc` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `je` float DEFAULT NULL,
+  `je` float(11,2) DEFAULT NULL,
   `nd` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `proc_time` datetime DEFAULT NULL
@@ -636,7 +599,7 @@ DROP TABLE IF EXISTS `stat_income_nd`;
 CREATE TABLE `stat_income_nd` (
   `nd` varchar(4) DEFAULT NULL,
   `yf` varchar(2) DEFAULT NULL,
-  `je` float DEFAULT NULL,
+  `je` float(11,2) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `proc_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -648,7 +611,7 @@ DROP TABLE IF EXISTS `stat_payment_dl`;
 CREATE TABLE `stat_payment_dl` (
   `dl_dm` varchar(255) CHARACTER SET utf8 NOT NULL,
   `dl_mc` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `je` float DEFAULT NULL,
+  `je` float(11,2) DEFAULT NULL,
   `nd` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `proc_time` datetime DEFAULT NULL
@@ -661,7 +624,7 @@ DROP TABLE IF EXISTS `stat_payment_nd`;
 CREATE TABLE `stat_payment_nd` (
   `nd` varchar(4) DEFAULT NULL,
   `yf` varchar(2) DEFAULT NULL,
-  `je` float DEFAULT NULL,
+  `je` float(11,2) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `proc_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -695,9 +658,9 @@ CREATE TABLE `transfer_fund_detail` (
   `fund_code` varchar(15) DEFAULT NULL,
   `fund_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `fund_type` varchar(10) DEFAULT NULL,
-  `unit_net` float DEFAULT NULL,
-  `extra_fee` float DEFAULT NULL,
-  `confirmed_sum` float DEFAULT NULL,
+  `unit_net` float(11,2) DEFAULT NULL,
+  `extra_fee` float(11,2) DEFAULT NULL,
+  `confirmed_sum` float(11,2) DEFAULT NULL,
   `lrrq` datetime DEFAULT NULL,
   `xgrq` datetime DEFAULT NULL,
   `yxbz` varchar(2) DEFAULT NULL
@@ -752,7 +715,7 @@ CREATE TABLE `zh_detail_ccbill` (
   `zh_mc` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `ssqq` date DEFAULT NULL,
   `ssqz` date DEFAULT NULL,
-  `yhkje` float DEFAULT NULL,
+  `yhkje` float(11,2) DEFAULT NULL,
   `mailedrq` datetime DEFAULT NULL,
   `lrrq` datetime DEFAULT NULL,
   `yxbz` varchar(2) DEFAULT NULL,
@@ -774,7 +737,7 @@ CREATE TABLE `zh_detail_ccbill_mx` (
   `jysj` datetime NOT NULL,
   `jylx` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `jyf` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
-  `je` float NOT NULL,
+  `je` float(11,2) NOT NULL,
   `bz` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `yxbz` varchar(2) DEFAULT NULL,
   `lrrq` datetime DEFAULT NULL,
@@ -838,7 +801,7 @@ BEGIN
 		create table stat_payment_nd(
 			nd varchar(4),
 			yf varchar(2),
-			je float,
+			je float(11,2),
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
 		);
@@ -874,7 +837,7 @@ BEGIN
 		create table stat_income_nd(
 			nd varchar(4),
 			yf varchar(2),
-			je float,
+			je float(11,2),
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
 		);
@@ -909,7 +872,7 @@ BEGIN
 		CREATE TABLE stat_payment_dl (
 			dl_dm  varchar(255) not null ,
 			dl_mc  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-			je  float NULL DEFAULT NULL ,
+			je  float(11,2) NULL DEFAULT NULL ,
 			nd  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
@@ -938,7 +901,7 @@ BEGIN
 		CREATE TABLE stat_income_lb (
 			srlb_dm  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 			srlb_mc  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-			je  float NULL DEFAULT NULL ,
+			je  float(11,2) NULL DEFAULT NULL ,
 			nd  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
@@ -988,7 +951,7 @@ BEGIN
 		create table stat_payment_nd(
 			nd varchar(4),
 			yf varchar(2),
-			je float,
+			je float(11,2),
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
 		);
@@ -1024,7 +987,7 @@ BEGIN
 		create table stat_income_nd(
 			nd varchar(4),
 			yf varchar(2),
-			je float,
+			je float(11,2),
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
 		);
@@ -1059,7 +1022,7 @@ BEGIN
 		CREATE TABLE stat_payment_dl (
 			dl_dm  varchar(255) not null ,
 			dl_mc  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-			je  float NULL DEFAULT NULL ,
+			je  float(11,2) NULL DEFAULT NULL ,
 			nd  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
@@ -1088,7 +1051,7 @@ BEGIN
 		CREATE TABLE stat_income_lb (
 			srlb_dm  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 			srlb_mc  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-			je  float NULL DEFAULT NULL ,
+			je  float(11,2) NULL DEFAULT NULL ,
 			nd  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
