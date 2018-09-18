@@ -56,5 +56,10 @@
     
     <!-- 不使用注册中心 -->
     <!-- <motan:service interface="cn.gxf.spring.quartz.job.service.RpcService" ref="rpcServiceImpl" export="8002" /> -->
-       
+    <bean id="motanController" class="cn.gxf.spring.motan.control.MotanController" init-method="init">
+    	<property name="rpcInfoPersisted" value="1" /> <!-- 是否持久化rpc调用信息 -->
+    	<property name="blocked" value="0" /> <!-- 是否阻止所有的rpc访问（容器关闭时自动触发设置为1） -->
+    	<property name="requestListenerNum" value="2" /> <!-- 监听redis reqeust list的监听器个数(applicationContext-session-redis.xml中RedisMessageListener个数) -->
+    </bean>
+    	
 </beans>

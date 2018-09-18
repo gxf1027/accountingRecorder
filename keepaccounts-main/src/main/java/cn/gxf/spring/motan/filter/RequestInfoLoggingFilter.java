@@ -64,8 +64,15 @@ public class RequestInfoLoggingFilter implements Filter{
 			redisTemplate.opsForList().leftPush(FilterConstants.RPC_REQUEST_LIST, reqInfo);
 			
 			long size = redisTemplate.opsForList().size(FilterConstants.RPC_REQUEST_LIST);
-			if (size > FilterConstants.REDIS_LOG_LIST_MAX_SIZE){
-				// 向rpc.stat这个topic推送消息
+			if ( false == controller.isReqListenerLocked() ){
+				if (size > FilterConstants.REDIS_LOG_LIST_MAX_SIZE){
+					// 向rpc.stat这个topic推送消息
+					controller.setReqListenerLock(0);
+					PseudoRedisTopic topic =  (PseudoRedisTopic) springCtx.getBean("redisTopic4Motan");
+					redisTemplate.convertAndSend(topic.getTopicName(), size);
+				}
+			}else if (size > 5* FilterConstants.REDIS_LOG_LIST_MAX_SIZE){
+				// 如果积累的数量太多了, 则发起持久化
 				PseudoRedisTopic topic =  (PseudoRedisTopic) springCtx.getBean("redisTopic4Motan");
 				redisTemplate.convertAndSend(topic.getTopicName(), size);
 			}

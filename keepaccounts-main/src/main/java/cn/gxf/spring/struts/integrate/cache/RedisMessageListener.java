@@ -9,6 +9,7 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import cn.gxf.spring.motan.control.MotanController;
 import cn.gxf.spring.motan.filter.FilterConstants;
 import cn.gxf.spring.motan.mbdao.RpcRequestLogDao;
 import cn.gxf.spring.motan.model.RpcRequestInfo;
@@ -21,6 +22,7 @@ public class RedisMessageListener implements MessageListener{
 	private String listenerName;
 	private RedisTemplate<String, Object> redisTemplate;  
 	private RpcRequestLogDao rpcRequestLogDao;
+	private MotanController motanController;
 	
 	@Override
 	public void onMessage(Message message, byte[] pattern) {
@@ -77,6 +79,8 @@ public class RedisMessageListener implements MessageListener{
 			}
 		}
 		
+		motanController.increReqListenerLock();
+		
 	}
 	
 	public String getListenerName() {
@@ -103,6 +107,8 @@ public class RedisMessageListener implements MessageListener{
 		this.rpcRequestLogDao = rpcRequestLogDao;
 	}
 	
-	
+	public void setMotanController(MotanController motanController) {
+		this.motanController = motanController;
+	}
 	
 }

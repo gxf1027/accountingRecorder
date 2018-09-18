@@ -85,11 +85,13 @@
        <property name="listenerName" value="listener1" />
        <property name="redisTemplate" ref="redisTemplate"></property>  
        <property name="rpcRequestLogDao" ref="rpcRequestLogDao"></property>
+       <property name="motanController" ref="motanController"></property>
 	</bean> 
 	<bean id="redisMessageListener_friend" class="cn.gxf.spring.struts.integrate.cache.RedisMessageListener">
 	   <property name="listenerName" value="listener2" />  
        <property name="redisTemplate" ref="redisTemplate"></property>  
        <property name="rpcRequestLogDao" ref="rpcRequestLogDao"></property>
+       <property name="motanController" ref="motanController"></property>
 	</bean>
 	  
 	<bean id="topicContainer" class="org.springframework.data.redis.listener.RedisMessageListenerContainer" destroy-method="destroy">
