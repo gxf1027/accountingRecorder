@@ -22,6 +22,15 @@ public class EhCacheUtils{
 	
 	private Map<String, EhCacheCache> cacheMap = new HashMap<String, EhCacheCache>();
 	
+	public void remove(String cacheName){
+		
+		EhCacheCache cache = getCache(cacheName);
+		if (null == cache){
+			throw new IllegalArgumentException("cache: " + cacheName + " is null.");
+		}
+		
+		cache.clear();
+	}
 	
 	public void remove(String cacheName, String key) {
 		

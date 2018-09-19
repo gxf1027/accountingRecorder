@@ -16,7 +16,8 @@
     <bean id="mbeanExporter" class="org.springframework.jmx.export.MBeanExporter">
         <property name="beans">
             <map>
-                <entry key="SpringBeans:name=ehCacheManagerMBean" value-ref="ehcache" />
+                <!-- <entry key="SpringBeans:name=ehCacheManagerMBean" value-ref="ehcache" /> -->
+                <entry key="SpringBeans:name=ehCacheMBean" value-ref="ehCacheUtils" />
                 <entry key="SpringBeans:name=motanMBean" value-ref="motanController" />
             </map>
         </property>
