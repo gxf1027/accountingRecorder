@@ -25,6 +25,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.util.Assert;
 
+import cn.gxf.spring.struts2.integrate.dao.UserDao;
+
 public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider{
 	//~ Static fields/initializers =====================================================================================
 
@@ -39,6 +41,8 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
     
     
     private PasswordEncoder passwordEncoder;
+    
+    private UserDao userDao;
 
     /**
      * The password used to perform {@link PasswordEncoder#isPasswordValid(String, String, Object)} on when the user is
@@ -94,6 +98,18 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         	this.getPreAuthenticationChecks().check(user);
             additionalAuthenticationChecks(user, (UsernamePasswordAuthenticationToken) authentication);
         } catch (AuthenticationException exception) {
+        	////
+        	if (exception instanceof BadCredentialsException){
+        		userDao.decreaseUserAttempts(username);
+        		int attempts = userDao.getUserAttempts(username); // 目前还剩余登录次数
+        		if (attempts > 0){
+        			throw new MyUserAuthorityException("密码错误, 还可以尝试"+attempts+"次");
+        		}else{
+        			throw new MyUserAuthorityException("用户被锁定, 无法登陆");
+        		}
+        	}
+        	////
+        	
             if (cacheWasUsed) {
                 // There was a problem, so try again after checking
                 // we're using latest data (i.e. not from the cache)
@@ -124,6 +140,10 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
 
         WebAuthenticationDetails wauth = (WebAuthenticationDetails) authentication.getDetails();
         logger.debug("LoginUsername: " +authentication.getPrincipal() + ", LoginAddr: " + wauth.getRemoteAddress());
+        
+        // 验证成功, 尝试次数恢复
+        userDao.resetUserAttemptLimit(username);
+        
         return createSuccessAuthentication(principalToReturn, authentication, user);
     }
     
@@ -256,8 +276,16 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
     public void setUserDetailsService(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
+    
+    public UserDao getUserDao() {
+		return userDao;
+	}
 
-    protected UserDetailsService getUserDetailsService() {
+	public void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
+	}
+
+	protected UserDetailsService getUserDetailsService() {
         return userDetailsService;
     }
     

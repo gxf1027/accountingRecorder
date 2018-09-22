@@ -699,8 +699,10 @@ CREATE TABLE `user_ss` (
   `email` varchar(255) DEFAULT NULL,
   `enabled` varchar(1024) NOT NULL COMMENT 'enabled',
   `description` varchar(1024) DEFAULT NULL COMMENT 'description',
+  `attempt_limit` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='用户表';
+
 
 -- ----------------------------
 -- Table structure for zh_detail_ccbill

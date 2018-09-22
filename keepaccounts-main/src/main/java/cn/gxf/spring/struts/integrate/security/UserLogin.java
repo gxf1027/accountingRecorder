@@ -18,6 +18,7 @@ public class UserLogin implements UserDetails {
 	private String enabled;
 	private String description;
 	private String emailAddr;
+	private Integer attemptLimit;
 	private Collection<? extends GrantedAuthority> authorities;
 	
 	
@@ -64,6 +65,14 @@ public class UserLogin implements UserDetails {
 	
 	public void setEmailAddr(String emailAddr) {
 		this.emailAddr = emailAddr;
+	}
+	
+	public Integer getAttemptLimit() {
+		return attemptLimit;
+	}
+	
+	public void setAttemptLimit(Integer attemptLimit) {
+		this.attemptLimit = attemptLimit;
 	}
 
 	@Override
