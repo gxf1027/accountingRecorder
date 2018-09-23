@@ -29,6 +29,9 @@ public class MyUserDetailService implements UserDetailsService{
 //	@Autowired
 //	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 	
+	public static final int attemptsLimit = 3;
+
+	
 	@Autowired
 	private UserDao userDao;
 	

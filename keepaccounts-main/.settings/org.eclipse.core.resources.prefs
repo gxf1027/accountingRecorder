@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//src/main/java/cn/gxf/spring/quartz/job/FinancialProductsNoticeProcessor.java=UTF-8
 encoding//src/main/java/cn/gxf/spring/struts2/integrate/model/AccountingDetailVO.java=UTF-8
 encoding//src/main/java/cn/gxf/spring/struts2/integrate/model/PaymentDetailVO.java=UTF-8
 encoding//src/main/java/cn/gxf/spring/struts2/integrate/service/WaitingForSyncServiceImpl.java=UTF-8

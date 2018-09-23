@@ -8,6 +8,9 @@ package cn.gxf.spring.struts.integrate.security;
 
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.authentication.dao.SaltSource;
+
+import java.util.Date;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -143,6 +146,8 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         
         // 验证成功, 尝试次数恢复
         userDao.resetUserAttemptLimit(username);
+        // 记录登录信息
+        userDao.recordUserLoginInfo(user.getUsername(), new Date(), wauth.getRemoteAddress());
         
         return createSuccessAuthentication(principalToReturn, authentication, user);
     }

@@ -2,6 +2,7 @@ package cn.gxf.spring.struts2.integrate.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
+import cn.gxf.spring.struts.integrate.security.MyUserDetailService;
 import cn.gxf.spring.struts.integrate.security.UserLogin;
 
 @Repository
@@ -131,11 +133,12 @@ public class UserDaoImplJdbc implements UserDao{
 			return 0;
 		}
 		
-		String sql = "UPDATE user_ss SET attempt_limit = 3 "
+		String sql = "UPDATE user_ss SET attempt_limit = :attemptsLimit "
 					+ "WHERE username = :name";
 		
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("name", userName);
+		paramMap.put("attemptsLimit", MyUserDetailService.attemptsLimit);
 		
 		int rv = namedTemplate.update(sql, paramMap);
 		return rv;
@@ -173,4 +176,33 @@ public class UserDaoImplJdbc implements UserDao{
 		return attempts.intValue();
 	}
 
+	@Override
+	public void recordUserLoginInfo(String userName, Date lastLoginTime, String lastLoginIp){
+		if (null == userName){
+			return;
+		}
+		
+		if (null == lastLoginTime && null == lastLoginIp){
+			return;
+		}
+		
+		String sql = "UPDATE user_login_info info "
+				+ "SET last_login_time = :lastLoginTime , last_login_ip = :lastLoginIp "
+				+ "WHERE EXISTS (SELECT 1 FROM user_ss u WHERE u.id = info.user_id AND u.username = :userName)";
+		
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("userName", userName);
+		paramMap.put("lastLoginTime", lastLoginTime);
+		paramMap.put("lastLoginIp", lastLoginIp);
+		int rv = namedTemplate.update(sql, paramMap);
+		
+		if (0 == rv){
+			// 表中不存在，因此插入
+			sql = "INSERT INTO user_login_info "
+					+ "SELECT id, :lastLoginTime, :lastLoginIp "
+					+ "FROM user_ss "
+					+ "WHERE username = :userName";
+			namedTemplate.update(sql, paramMap);
+		}
+	}
 }

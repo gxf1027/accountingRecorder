@@ -700,9 +700,21 @@ CREATE TABLE `user_ss` (
   `enabled` varchar(1024) NOT NULL COMMENT 'enabled',
   `description` varchar(1024) DEFAULT NULL COMMENT 'description',
   `attempt_limit` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='用户表';
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index_uname` (`username`) USING HASH
+) ENGINE=InnoDB AUTO_INCREMENT=101001 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
+
+-- ----------------------------
+-- Table structure for user_login_info
+-- ----------------------------
+DROP TABLE IF EXISTS `user_login_info`;
+CREATE TABLE `user_login_info` (
+  `user_id` int(11) NOT NULL,
+  `last_login_time` datetime DEFAULT NULL,
+  `last_login_ip` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Table structure for zh_detail_ccbill

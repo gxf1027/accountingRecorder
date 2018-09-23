@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2018-07-30 20:57:45
+Date: 2018-09-22 10:00:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,3 +32,10 @@ CREATE TABLE `rpc_interface_control` (
 -- ----------------------------
 INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '25715822378876928', '2018-07-29 07:15:13', 'Y');
 INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '25715822378876929', '2018-07-29 07:15:47', 'Y');
+INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '25715822378876930', '2018-08-21 21:32:42', 'Y');
+INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '7303563979324915715', '2018-08-21 21:32:42', 'Y');
+INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '7303563979324915716', '2018-08-21 21:32:42', 'Y');
+INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '7303563979324915717', '2018-08-21 21:32:42', 'Y');
+INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '7303563979324915718', '2018-08-21 21:32:42', 'Y');
+INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '7303563979324915719', '2018-08-21 21:32:42', 'Y');
+INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '7303606667692736521', '2018-09-22 09:55:00', 'Y');

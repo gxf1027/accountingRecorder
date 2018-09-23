@@ -1,5 +1,6 @@
 package cn.gxf.spring.struts2.integrate.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,4 +18,6 @@ public interface UserDao {
 	public int getUserAttempts(String userName);
 	public int resetUserAttemptLimit(String userName);
 	public int decreaseUserAttempts(String userName);
+	
+	public void recordUserLoginInfo(String userName, Date lastLoginTime, String lastLoginIp);
 }

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2018-07-30 20:57:41
+Date: 2018-09-22 09:59:58
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -34,3 +34,10 @@ CREATE TABLE `rpc_interface` (
 -- ----------------------------
 INSERT INTO `rpc_interface` VALUES ('25715822378876928', 'cn.gxf.spring.motan.test.SayHi', 'say', 'Y', null, 'Y');
 INSERT INTO `rpc_interface` VALUES ('25715822378876929', 'cn.gxf.spring.quartz.job.service.RpcService', 'setFinanProductsNoticeMailed', 'N', null, 'Y');
+INSERT INTO `rpc_interface` VALUES ('25715822378876930', 'cn.gxf.spring.quartz.job.service.AccountStatisticsService', 'updateStatThisMonthByUserid', 'N', null, 'Y');
+INSERT INTO `rpc_interface` VALUES ('7303563979324915715', 'cn.gxf.spring.quartz.job.service.AccountStatisticsService', 'getUsersIdNames', 'Y', null, 'Y');
+INSERT INTO `rpc_interface` VALUES ('7303563979324915716', 'cn.gxf.spring.quartz.job.service.CreditCardsBillService', 'processBill', 'N', null, 'Y');
+INSERT INTO `rpc_interface` VALUES ('7303563979324915717', 'cn.gxf.spring.quartz.job.service.CreditCardsBillService', 'getCreditCardInZDR', 'Y', null, 'Y');
+INSERT INTO `rpc_interface` VALUES ('7303563979324915718', 'cn.gxf.spring.quartz.job.service.FinancialProductsNoticeService', 'processNotice', 'N', null, 'Y');
+INSERT INTO `rpc_interface` VALUES ('7303563979324915719', 'cn.gxf.spring.quartz.job.service.FinancialProductsNoticeService', 'queryFinancialProductDetailByEndDate', 'Y', null, 'Y');
+INSERT INTO `rpc_interface` VALUES ('7303606667692736521', 'cn.gxf.spring.quartz.job.service.UserRecoveryService', 'recoverUsers', 'N', null, 'Y');
