@@ -30,7 +30,9 @@ CREATE TABLE `account_detail` (
   `yxbz` varchar(255) NOT NULL,
   `xgrq` datetime DEFAULT NULL,
   `lrrq` datetime NOT NULL,
-  PRIMARY KEY (`accuuid`)
+  PRIMARY KEY (`accuuid`),
+  UNIQUE KEY `uuid_index` (`accuuid`) USING HASH,
+  KEY `userid_index` (`user_id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
