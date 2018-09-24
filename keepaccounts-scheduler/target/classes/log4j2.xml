@@ -10,6 +10,17 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %l %msg%n" />
 		</Console>
+		
+		<RollingFile name="RollingFileDebug" fileName="${web:rootDir}/WEB-INF/log/debug.log"
+			filePattern="${web:rootDir}/WEB-INF/log/$${date:yyyy-MM}/debug-%d{yyyy-MM-dd}-%i.log">
+			<!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+			<ThresholdFilter level="Debug" onMatch="ACCEPT"	onMismatch="DENY" />
+			<PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="5 MB" />
+			</Policies>
+		</RollingFile>
 
 	</Appenders>
 
@@ -21,6 +32,11 @@
 		
 		<Logger name="org.springframework" level="INFO">
 			<AppenderRef ref="Console" />
+		</Logger>
+		
+		<Logger name="cn.gxf.spring.quartz.job" level="DEBUG">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="RollingFileDebug" />
 		</Logger>
 		
 	</Loggers>

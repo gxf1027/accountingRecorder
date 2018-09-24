@@ -22,6 +22,7 @@ import cn.gxf.spring.quartz.job.service.AccountStatisticsServiceAsync;
 import cn.gxf.spring.quartz.job.service.CreditCardsBillService;
 import cn.gxf.spring.quartz.job.service.FinancialProductsNoticeService;
 import cn.gxf.spring.quartz.job.service.FinancialProductsNoticeServiceAsync;
+import cn.gxf.spring.quartz.job.service.UserRecoveryService;
 import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
 
@@ -30,9 +31,10 @@ public class motanTest {
 		ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:applicationContext-motan.xml");
 		SayHi  service = (SayHi) ctx.getBean("motanTestRpc");
 		
-		//processStat(ctx);
+		//processUserRecovery(ctx);
+		processStat(ctx);
 		//processCreditCardsBill(ctx);
-		processFinProducts(ctx);
+		//processFinProducts(ctx);
 		
 //		for (int i=1; i<=11; i++){
 //			service.say("hi");
@@ -51,29 +53,57 @@ public class motanTest {
 		
 		AccountStatisticsServiceAsync statisticsService = (AccountStatisticsServiceAsync) ctx.getBean("statServiceAsync");
 		
-		// 获得所有用户
-		long start = System.currentTimeMillis();
-		Map<String, String> users = statisticsService.getUsersIdNames();
-		System.out.println("statisticsService.getUsersIdNames:" + (System.currentTimeMillis()-start));
+		long tm_start = System.currentTimeMillis();
+		int usersToProcessNum = statisticsService.getUsersNumToProcessing();
+		System.out.println("time cost statisticsService.getUsersNumToProcessing:" + (System.currentTimeMillis()-tm_start));
+		System.out.println("usersToProcessNum: " + usersToProcessNum);
 		
-		Map<ResponseFuture, String> rvMap = new HashMap<ResponseFuture, String>();
-		// async with listener
-	    FutureListener listener = new FutureListener() {
-	        @Override
-	        public void operationComplete(Future future) throws Exception {
-	            System.out.println("async call, user " +
-	            		rvMap.get(future) + ": "+ (future.isSuccess() ? "sucess! value:" + future.getValue() : "fail! exception:"
-	                            + future.getException().getMessage()));
-	        }
-	    };
-	    
-	    
-		for (String userid : users.keySet()){
+		if (0 == usersToProcessNum){
+			return 0;
+		}
+		
+		int patchSize = 200;
+		int start = 0;
+		while (true){
 			
-			// 异步调用
-			ResponseFuture future =  statisticsService.updateStatThisMonthByUseridAsync(userid, users.get(userid));
-			rvMap.put(future, users.get(userid));
-			future.addListener(listener);
+			// 获取待处理的用户（并非全部用户）
+			Map<String, String> users = statisticsService.getUsersIdNamePairToProcessByLimit(start, patchSize);
+			if (users.size() == 0){
+				break;
+			}
+			
+			Map<ResponseFuture, String> rvMap = new HashMap<ResponseFuture, String>();
+			// async with listener
+		    FutureListener listener = new FutureListener() {
+		        @Override
+		        public void operationComplete(Future future) throws Exception {
+		            System.out.println("async call, user " +
+		            		rvMap.get(future) + ": "+ (future.isSuccess() ? "sucess! value:" + future.getValue() : "fail! exception:"
+		                            + future.getException().getMessage()));
+		        }
+		    };
+		    
+			for (String userid : users.keySet()){
+				
+				//statisticsService.updateStatThisMonthByUserid(userid, users.get(userid));
+				// 异步方法
+				ResponseFuture future =  statisticsService.updateStatThisMonthByUseridAsync(userid, users.get(userid));
+				rvMap.put(future, users.get(userid));
+				future.addListener(listener);
+				
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			start += patchSize;
+			
+			if (start >= usersToProcessNum){
+				break;
+			}
+			
 		}
 		
 		return 1;
@@ -180,6 +210,13 @@ public class motanTest {
 			future.addListener(listener);
 		}
 		
+		return 1;
+	}
+	
+	public static int processUserRecovery(ApplicationContext ctx){
+		
+		UserRecoveryService userRecoveryService = (UserRecoveryService) ctx.getBean("userRecoveryService");
+		userRecoveryService.recoverUsers(3);
 		return 1;
 	}
 }

@@ -24,8 +24,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/SayHi.jar"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/keepacc-core-0.8.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.0"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/keepacc-async-0.8.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/keepacc-core-0.8.02.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

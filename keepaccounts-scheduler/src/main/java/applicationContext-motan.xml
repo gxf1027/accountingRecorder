@@ -39,6 +39,10 @@
                    interface="cn.gxf.spring.quartz.job.service.FinancialProductsNoticeService"
                    connectTimeout="10000" requestTimeout="5000" basicReferer="motantestClientBasicConfig"/>
                    
+    <motan:referer id="userRecoveryService"
+                   interface="cn.gxf.spring.quartz.job.service.UserRecoveryService"
+                   connectTimeout="10000" requestTimeout="10000" basicReferer="motantestClientBasicConfig"/>
+                   
     <!-- 异步调用 -->
     <motan:referer id="statServiceAsync"
                    interface="cn.gxf.spring.quartz.job.service.AccountStatisticsServiceAsync"

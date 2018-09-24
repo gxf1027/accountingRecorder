@@ -98,8 +98,29 @@
             <value>0 0 20 1 1/1 ? *</value>
             <!-- <value>0 5 0 * * ?</value> -->
         </property>
-    </bean>    
+    </bean>  
     
+    <!-- 4.UserRecovery -->  
+    <bean id="userRecoveryJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">  
+	    <property name="jobClass" value="cn.gxf.spring.quartz.job.GenericProcessJob" />  
+	    <property name="jobDataMap">  
+	        <map>
+	            <!-- <entry key="financialProdProcessor" value-ref="financialProductsNoticeProcessor"></entry> -->
+	            <entry key="dispatcher" value-ref="processorDispatcher" />
+	            <entry key="processorName" value="userRecoveryProcessor" />
+	        </map>  
+	    </property>  
+	    <property name="durability" value="true" /> 
+	</bean>  
+	
+	<bean id="userRecoveryTrigger"
+          class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="group" value="mailInfo" />
+        <property name="jobDetail" ref="userRecoveryJobDetail" />
+        <property name="cronExpression">
+           <value>0 01 00 * * ?</value>
+        </property>
+    </bean>  
     
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
 	    <property name="jobDetails">  
@@ -107,6 +128,7 @@
 	            <ref bean="creditCardJobDetial" /> 
 	            <ref bean="statJobDetial" />
 	            <ref bean="financialProductsNoticeJobDetail" />
+	            <ref bean="userRecoveryJobDetail" />
 	        </list>  
 	    </property>  
 	  
@@ -115,6 +137,7 @@
 	            <ref bean="creditBillTrigger" />
 	            <ref bean="statTrigger" />
 	            <ref bean="financialProductNoticeTrigger" />
+	            <ref bean="userRecoveryTrigger" />
 	        </list>  
 	    </property>  
 	    
