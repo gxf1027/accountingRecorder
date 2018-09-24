@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2018-09-22 10:00:05
+Date: 2018-09-24 09:05:56
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -39,3 +39,5 @@ INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '73035639793249157
 INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '7303563979324915718', '2018-08-21 21:32:42', 'Y');
 INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '7303563979324915719', '2018-08-21 21:32:42', 'Y');
 INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '7303606667692736521', '2018-09-22 09:55:00', 'Y');
+INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '7303606667692849594', '2018-09-24 09:05:19', 'Y');
+INSERT INTO `rpc_interface_control` VALUES ('keepacc_client', '7303606667692849595', '2018-09-24 09:05:41', 'Y');

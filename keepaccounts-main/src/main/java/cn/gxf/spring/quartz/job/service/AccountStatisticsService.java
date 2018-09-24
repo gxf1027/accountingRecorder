@@ -8,5 +8,7 @@ import com.weibo.api.motan.transport.async.MotanAsync;
 public interface AccountStatisticsService {
 	public void updateStatThisMonthByUserid(String userid, String username);
 	public void updateStatThisMonthForAllUsers();
-	public Map<String, String> getUsersIdNames();
+	public Map<String, String> getAllUsersIdNamePairToProcess();
+	public Map<String, String> getUsersIdNamePairToProcessByLimit(Integer start, Integer limit);
+	public int getUsersNumToProcessing();
 }

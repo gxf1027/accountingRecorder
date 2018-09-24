@@ -4,8 +4,10 @@ package cn.gxf.spring.quartz.job.service;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import cn.gxf.spring.quartz.job.dao.AccountStatisticDao;
 import cn.gxf.spring.struts2.integrate.dao.UserDao;
 import cn.gxf.spring.struts2.integrate.service.FrontStatisticsService;
 
@@ -14,7 +16,8 @@ import cn.gxf.spring.struts2.integrate.service.FrontStatisticsService;
 public class AccountStatisticsServiceImpl implements AccountStatisticsService {
 
 	@Autowired
-	private UserDao userDao;
+	@Qualifier("accountStatisticDaoJdbcImpl")
+	private AccountStatisticDao statDao;
 	
 	@Autowired
 	private FrontStatisticsService statisticsService;
@@ -29,7 +32,7 @@ public class AccountStatisticsServiceImpl implements AccountStatisticsService {
 	public void updateStatThisMonthForAllUsers()
 	{
 		// 获得所有用户
-		Map<String, String> users = userDao.getUsersIdNames();
+		Map<String, String> users = statDao.getUsersIdNames(null, null);
 		
 		for (String userid : users.keySet()){
 			
@@ -39,8 +42,27 @@ public class AccountStatisticsServiceImpl implements AccountStatisticsService {
 	}
 	
 	@Override
-	public Map<String, String> getUsersIdNames() {
+	public Map<String, String> getAllUsersIdNamePairToProcess() {
 		
-		return userDao.getUsersIdNames();
+		return statDao.getUsersIdNames(null, null);
+	}
+
+	@Override
+	public Map<String, String> getUsersIdNamePairToProcessByLimit(Integer start, Integer limit) {
+		if (null == start){
+			start = 0;
+		}
+		
+		if (null == limit){
+			limit = Integer.MAX_VALUE;
+		}
+		
+		return statDao.getUsersIdNames(start, limit);
+	}
+
+	@Override
+	public int getUsersNumToProcessing() {
+		
+		return statDao.getUsersNumHavingData();
 	}
 }

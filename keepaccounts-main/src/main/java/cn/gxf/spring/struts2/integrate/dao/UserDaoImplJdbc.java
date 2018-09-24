@@ -58,23 +58,60 @@ public class UserDaoImplJdbc implements UserDao{
 		
 	}
 
-	@Override
-	public Map<String, String> getUsersIdNames() {
-		
-		String sql = "SELECT id, username FROM  user_ss";
-		Map<String, String> paramMap = new HashMap<>();
-		return namedTemplate.query(sql, paramMap, new ResultSetExtractor<Map<String, String>>() {
-
-			@Override
-			public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
-				Map<String, String> map = new TreeMap<String, String>();
-				while(rs.next()){
-					map.put(rs.getString("id"), rs.getString("username"));
-				}
-				return map;
-			}
-		});
-	}
+//	@Override
+//	public Map<String, String> getUsersIdNamesAll() {
+//		
+//		// 当users数量非常大时，无法一次读取！！！
+//		String sql = "SELECT id, username FROM  user_ss WHERE enabled='1'";
+//		
+//		Map<String, String> paramMap = new HashMap<>();
+//		return namedTemplate.query(sql, paramMap, new ResultSetExtractor<Map<String, String>>() {
+//
+//			@Override
+//			public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
+//				Map<String, String> map = new TreeMap<String, String>();
+//				while(rs.next()){
+//					map.put(rs.getString("id"), rs.getString("username"));
+//				}
+//				return map;
+//			}
+//		});
+//	}
+	
+//	@Override
+//	public Map<String, String> getUsersIdNames() {
+//		
+//		// 当users数量非常大时，无法一次读取
+//		//String sql = "SELECT id, username FROM  user_ss WHERE enabled='1'";
+//		
+//		// 只读取发生业务数据的users
+//		String sql = "SELECT id, username FROM  user_ss u, timedtask_acc_stat s " +
+//					"WHERE u.enabled='1' AND u.id = s.userid " +
+//					"AND EXISTS (SELECT 1 FROM test.account_detail d WHERE d.user_id = u.id AND (d.rec_dm = '1' or d.rec_dm = '2') AND d.lrrq > s.proctime AND d.yxbz='Y') " +
+//					"UNION ALL " +
+//					"SELECT id, username FROM user_ss u " +
+//					"WHERE u.enabled='1' " +
+//					"AND NOT EXISTS (SELECT 1 FROM timedtask_acc_stat s WHERE u.id = s.userid) " + 
+//					"AND EXISTS (SELECT 1 FROM  account_detail d WHERE d.user_id = u.id AND (d.rec_dm = '1' or d.rec_dm = '2') AND d.yxbz='Y')";
+//		
+//		Map<String, String> paramMap = new HashMap<>();
+//		return namedTemplate.query(sql, paramMap, new ResultSetExtractor<Map<String, String>>() {
+//
+//			@Override
+//			public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
+//				Map<String, String> map = new TreeMap<String, String>();
+//				while(rs.next()){
+//					map.put(rs.getString("id"), rs.getString("username"));
+//				}
+//				return map;
+//			}
+//		});
+//	}
+	
+//	@Override
+//	public Map<String, String> getUsersIdNamesByLimit(int limit){
+//		return null;
+//	}
 
 	@Override
 	public List<UserLogin> getUserLoginByName(String userName) {

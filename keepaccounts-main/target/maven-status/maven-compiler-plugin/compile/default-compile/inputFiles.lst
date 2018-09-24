@@ -10,8 +10,9 @@ D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\model\AccountBook.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\model\DmPaymentXl.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\model\StatByMonth.java
-D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\dao\AccountDao.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\model\FinancialProductDetail.java
+D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\service\UserRecoveryServiceImpl.java
+D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\dao\UserRecoveryDao.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\JMSSenderImpl.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\service\DetailAccountUnivServiceImpl.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\dao\CreditCardBillDao.java
@@ -34,6 +35,7 @@ D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrat
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate\security\CustomLogoutHandler.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate\security\WcDaoAuthenticationProvider.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\mybatis\dao\TransferDetailMBDao.java
+D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\service\AccountSnapshottingImpl.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate\actions\AccountDetailAction.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\dao\IncomeDetailDaoImplJdbc.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate\actions\TransferDetailAction.java
@@ -45,11 +47,14 @@ D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrat
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate\actions\CustomTailoredQueryAction.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\dao\AccDetailVoDaoImplJdbc.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\service\BillServiceImpl.java
+D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate\security\MyUserAuthorityException.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\service\AccountStatServiceImpl.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\dao\RegisterUserDaoImpl.java
+D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\UserRecoveryProcessor.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\service\FrontStatisticsServiceImpl.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\dao\DmUtilDao.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\service\FinanicalProductService.java
+D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\service\UserRecoveryService.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\service\WaitingForSyncService.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\dao\TransferDetailDaoImplJdbc.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\service\AccountStatisticsServiceImpl.java
@@ -59,6 +64,7 @@ D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\Finan
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\dao\AccountBookDaoImplJdbc.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\model\StatByCategory.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\service\UserServiceImpl.java
+D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\model\AccountSnapshot.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\service\DmServiceImpl.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate\test\RedisCacheOperation.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\motan\control\MotanController.java
@@ -126,6 +132,7 @@ D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\mybatis\dao\AccountStatMBDao.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\model\FundDetail.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\dao\TransferDetailDao.java
+D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\dao\AccountStatisticDao.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\model\CreditCardTransRecord.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\model\FinancialProductsNotice.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate\security\CustomLogoutSuccessHandler.java
@@ -133,15 +140,13 @@ D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\mybatis\dao\StatNdYfMBDao.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\dao\AccountBookDao.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\dao\AccUtil.java
-D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\model\AccountInfo.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\service\FrontStatisticsService.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate\sysctr\KeepAccPropertyPlaceholderConfigurer.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\mybatis\dao\StatProcDao.java
-D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\model\ExpInfo.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\GenericProcessJob.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\cxf\AuthorizingInterceptor.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate\security\UserLogin.java
-D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\dao\AccountDaoImplJdbc.java
+D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\mybatis\dao\AccountSnapshotMBDao.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\dao\FinanProductsNoticeDao.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\mybatis\dao\BaseAccountRepository.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\model\IncomeDetailVO.java
@@ -154,5 +159,7 @@ D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\integrate
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\mybatis\dao\FinancialProductDetailMBDao.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts\mybatis\dao\AccountVoMBDao.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\dao\AccountStatDao.java
+D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\service\AccountSnapshotting.java
+D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\quartz\job\dao\AccountStatisticDaoJdbcImpl.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\service\CustomTailorQueryServiceImpl.java
 D:\java_workspace\keepaccounts-main\src\main\java\cn\gxf\spring\struts2\integrate\model\IncomeDetail.java

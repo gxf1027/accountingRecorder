@@ -19,7 +19,7 @@ public class AccountStatProcessor implements JobProcessor{
 	public int process() {
 		
 		// 获得所有用户
-		Map<String, String> users = statisticsService.getUsersIdNames();
+		Map<String, String> users = statisticsService.getAllUsersIdNamePairToProcess();
 		
 		for (String userid : users.keySet()){
 			

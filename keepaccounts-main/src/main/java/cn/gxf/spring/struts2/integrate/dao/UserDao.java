@@ -10,7 +10,6 @@ import cn.gxf.spring.struts.integrate.security.UserLogin;
 
 public interface UserDao {
 	public Map<String, String> getUserEmail(List<String> useridList);
-	public Map<String, String> getUsersIdNames();
 	
 	// for UserDetailService
 	public List<UserLogin> getUserLoginByName(String userName);
