@@ -644,7 +644,7 @@
 					<tr>
 						<th>理财产品名称</th>
 						<td>
-							<s:textfield name="financialProductDetail.productName" id="productName"  maxlength="16" class="recordInput" theme="simple"/>
+							<s:textfield name="financialProductDetail.productName" id="productName"  maxlength="26" class="recordInput" theme="simple"/>
 						</td>
 					</tr>
 					<tr>
