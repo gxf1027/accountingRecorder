@@ -1,10 +1,14 @@
-ï»¿package cn.gxf.spring.struts2.integrate.service;
+package cn.gxf.spring.struts2.integrate.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,12 +80,31 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 		if (details == null){
 			return null;
 		}
-		Map<String, String> deltailMap = new HashMap<String, String>();
+		Map<String, String> deltailMap = new LinkedHashMap<String, String>(); // ÓÃHashMapÎŞ·¨Ê¹½á¹û°´valueÅÅĞò
 		for (FinancialProductDetail d:details){
 			String startDate = d.getStartDateToShow() == null ? "null" : d.getStartDateToShow().replaceAll("-", "");
 			String endDate = d.getEndDateToShow() == null ? "null" : d.getEndDateToShow().replaceAll("-", "");
-			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getJe()+"-"+d.getDateCount()+"å¤©-"+startDate+"-"+endDate);
+			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getJe()+"-"+d.getDateCount()+"Ìì-"+startDate+"-"+endDate);
 		}
+		
+		
+		//ÕâÀï½«map.entrySet()×ª»»³Élist
+        List<Map.Entry<String,String>> list = new ArrayList<Map.Entry<String,String>>(deltailMap.entrySet());
+        //È»ºóÍ¨¹ı±È½ÏÆ÷À´ÊµÏÖÅÅĞò
+        Collections.sort(list,new Comparator<Map.Entry<String,String>>() {
+            //ÉıĞòÅÅĞò
+            public int compare(Entry<String, String> o1, Entry<String, String> o2) {
+                return -1*o1.getValue().compareTo(o2.getValue());
+            }
+            
+        });
+        
+        deltailMap.clear();
+        for(Map.Entry<String,String> mapping:list){ 
+        	System.out.println(mapping.getKey()+":"+mapping.getValue());
+        	deltailMap.put(mapping.getKey(), mapping.getValue());
+        } 
+        
 		return deltailMap;
 	}
 	
@@ -90,17 +113,36 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
 		if (userId == null){
 			return null;
 		}
-	    // è·å–è¿˜æœªè¢«â€œæ”¶å…¥â€å…³è”çš„ç†è´¢äº§å“
+	    // »ñÈ¡»¹Î´±»¡°ÊÕÈë¡±¹ØÁªµÄÀí²Æ²úÆ·
 		List<FinancialProductDetail> details = this.financialProductDetailMBDao.getFinancialProductDetailUnreturned(userId);
 		if (details == null){
 			return null;
 		}
-		Map<String, String> deltailMap = new HashMap<String, String>();
+		Map<String, String> deltailMap = new LinkedHashMap<String, String>();
 		for (FinancialProductDetail d:details){
 			String startDate = d.getStartDateToShow() == null ? "null" : d.getStartDateToShow().replaceAll("-", "");
 			String endDate = d.getEndDateToShow() == null ? "null" : d.getEndDateToShow().replaceAll("-", "");
-			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getJe()+"-"+d.getDateCount()+"å¤©-"+startDate+"-"+endDate);
+			deltailMap.put(d.getUuid(), d.getYh_mc()+"-"+d.getProductName()+"-"+d.getJe()+"-"+d.getDateCount()+"Ìì-"+startDate+"-"+endDate);
 		}
+		
+		
+		//ÕâÀï½«map.entrySet()×ª»»³Élist
+        List<Map.Entry<String,String>> list = new ArrayList<Map.Entry<String,String>>(deltailMap.entrySet());
+        //È»ºóÍ¨¹ı±È½ÏÆ÷À´ÊµÏÖÅÅĞò
+        Collections.sort(list,new Comparator<Map.Entry<String,String>>() {
+            //ÉıĞòÅÅĞò
+            public int compare(Entry<String, String> o1, Entry<String, String> o2) {
+                return -1*o1.getValue().compareTo(o2.getValue());
+            }
+            
+        });
+        
+        deltailMap.clear();
+        for(Map.Entry<String,String> mapping:list){ 
+        	System.out.println(mapping.getKey()+":"+mapping.getValue());
+        	deltailMap.put(mapping.getKey(), mapping.getValue());
+        }
+        
 		return deltailMap;
 	}
 

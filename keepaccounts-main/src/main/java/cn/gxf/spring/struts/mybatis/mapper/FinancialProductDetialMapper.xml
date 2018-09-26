@@ -108,7 +108,8 @@
 				a.xgrq 
 		FROM financial_product_detail a, account_transfer_detail b
 		WHERE a.transferuuid = b.mxuuid
-		AND b.user_id = #{userId} AND a.yxbz='Y' AND b.yxbz='Y';
+		AND b.user_id = #{userId} AND a.yxbz='Y' AND b.yxbz='Y'
+		ORDER BY a.yh_dm, a.product_name
 	</select>
 	
 	
@@ -133,6 +134,7 @@
 			  FROM financial_product_detail a, account_transfer_detail b
 			  WHERE a.transferuuid = b.mxuuid
 			  AND b.user_id = #{userId} AND returnuuid IS NULL AND a.yxbz='Y' AND b.yxbz='Y'
+			  ORDER BY a.yh_dm, a.product_name
 	</select>
 	
 	<select id="queryFinancialProductDetailByEndDate" resultType="FinancialProductDetail">
