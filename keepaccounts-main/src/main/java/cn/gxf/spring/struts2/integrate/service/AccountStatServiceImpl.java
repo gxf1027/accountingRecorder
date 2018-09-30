@@ -717,7 +717,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 		}
 		
 		try {
-			this.stringRedisTemplate.delete(keys);
+			this.stringRedisTemplate.delete(keys); // 从源码看使用了pipeline
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

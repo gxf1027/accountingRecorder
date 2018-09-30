@@ -29,6 +29,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.util.Assert;
 
 import cn.gxf.spring.struts2.integrate.dao.UserDao;
+import cn.gxf.spring.struts2.integrate.service.SimpleRateLimitService;
 
 public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider{
 	//~ Static fields/initializers =====================================================================================
@@ -57,6 +58,10 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
     private SaltSource saltSource;
 
     private UserDetailsService userDetailsService;
+    
+    private SimpleRateLimitService rateLimitService;
+    private int period; // seconds
+    private int maxCount; // max tries in period no matter success or failure
 
     public WcDaoAuthenticationProvider() {
         setPasswordEncoder(new PlaintextPasswordEncoder());
@@ -72,6 +77,17 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
 
         // Determine username
         String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName();
+        
+        // limiter
+        boolean allowedFlag = rateLimitService.isActionAllowed(username, "login", 30/*second*/, 3/*maxCount*/);
+        if (!allowedFlag){
+        	throw new MyUserAuthorityException("µ±Ç°ÓÃ»§ÇëÎðÆµ·±²Ù×÷");
+        }
+        String remoteAddr = ((WebAuthenticationDetails) authentication.getDetails()).getRemoteAddress();
+        allowedFlag = rateLimitService.isActionAllowed(remoteAddr, "login", 30/*second*/, 3/*maxCount*/);
+        if (!allowedFlag){
+        	throw new MyUserAuthorityException("ÇëÎðÆµ·±²Ù×÷");
+        }
 
         boolean cacheWasUsed = true;
         //UserDetails user = this.userCache.getUserFromCache(username);
@@ -281,6 +297,18 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
     public void setUserDetailsService(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
+    
+    public void setRateLimitService(SimpleRateLimitService rateLimitService) {
+		this.rateLimitService = rateLimitService;
+	}
+    
+    public void setPeriod(int period) {
+		this.period = period;
+	}
+    
+    public void setMaxCount(int maxCount) {
+		this.maxCount = maxCount;
+	}
     
     public UserDao getUserDao() {
 		return userDao;

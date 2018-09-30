@@ -29,7 +29,7 @@ public class MyUserDetailService implements UserDetailsService{
 //	@Autowired
 //	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 	
-	public static final int attemptsLimit = 3;
+	public static final int attemptsLimit = 5;
 
 	
 	@Autowired

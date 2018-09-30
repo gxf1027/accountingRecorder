@@ -100,6 +100,7 @@
 	
 	<beans:bean id="wcDaoAuthenticationProvider" class="cn.gxf.spring.struts.integrate.security.WcDaoAuthenticationProvider">
 		<beans:property name="userDetailsService" ref="myUserDetailService" />
+		<beans:property name="rateLimitService" ref="simpleRateLimitServiceImpl"></beans:property>
 		<beans:property name="passwordEncoder" ref="passwordEncoder" />
 		<beans:property name="userDao" ref="userDaoImplJdbc"></beans:property>
 	</beans:bean>

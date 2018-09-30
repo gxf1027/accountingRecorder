@@ -19,7 +19,6 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
-import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.dao.AccDetailVoDao;
 import cn.gxf.spring.struts2.integrate.model.AccountingDetail;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
@@ -48,12 +47,12 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 	@Autowired
 	private DmService dmService;
 	
-	@Autowired
-	private AccDetailVoDao accDetailVoDao;
-	
-	@Autowired
-	@Qualifier("DetailAccountService")
-	private DetailAccountService detailAccountService;
+//	@Autowired
+//	private AccDetailVoDao accDetailVoDao;
+//	
+//	@Autowired
+//	@Qualifier("DetailAccountService")
+//	private DetailAccountService detailAccountService;
 	 
 	@Autowired
 	private DetailAccountUnivServiceImpl<IncomeDetail> detailAccountUnivServiceImpl;
