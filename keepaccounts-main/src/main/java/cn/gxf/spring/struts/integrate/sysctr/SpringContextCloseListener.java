@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.weibo.api.motan.common.MotanConstants;
 import com.weibo.api.motan.util.MotanSwitcherUtil;
 
+import cn.gxf.spring.cxf.CXFWebServiceController;
 import cn.gxf.spring.motan.control.MotanController;
 import cn.gxf.spring.motan.filter.FilterConstants;
 import cn.gxf.spring.motan.mbdao.RpcRequestLogDao;
@@ -29,6 +30,9 @@ public class SpringContextCloseListener implements ApplicationListener<ContextCl
 	private MotanController motanController;
 	
 	@Autowired
+	private CXFWebServiceController cxfController;
+	
+	@Autowired
 	private RedisTemplate redisTemplate;
 	
 	@Autowired
@@ -39,6 +43,8 @@ public class SpringContextCloseListener implements ApplicationListener<ContextCl
 	public void onApplicationEvent(ContextClosedEvent event) {
 		
         if (event.getApplicationContext().getParent() == null) {
+        	
+        	cxfController.setBlocked(1); // 禁止cxf WS调用
         	
         	motanController.setBlocked(1); // 禁止motan接口的调用
         	AuxiliaryTools.delay(500);
@@ -81,6 +87,9 @@ public class SpringContextCloseListener implements ApplicationListener<ContextCl
     			}
     			
     		}
+    		
+    		// persist cxf blocked ip to db
+    		//cxfController.persistBlockedIp();
         }
 	}
 	

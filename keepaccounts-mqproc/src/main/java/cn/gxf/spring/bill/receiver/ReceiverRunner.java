@@ -17,7 +17,7 @@ public class ReceiverRunner {
 		/*MailSenderService mailSenderService = (MailSenderService) appContext.getBean("mailSenderService");
 		mailSenderService.sendTest();*/
 		
-		/*BillServiceEndpoint billService = (BillServiceEndpoint) appContext.getBean("billServiceProxy");
-		billService.setBillMailed(null);*/
+		BillServiceEndpoint billService = (BillServiceEndpoint) appContext.getBean("billService");
+		billService.SetBillMailed(null);
 	}
 }

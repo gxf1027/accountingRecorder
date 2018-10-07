@@ -101,7 +101,7 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
         
         deltailMap.clear();
         for(Map.Entry<String,String> mapping:list){ 
-        	System.out.println(mapping.getKey()+":"+mapping.getValue());
+        	//System.out.println(mapping.getKey()+":"+mapping.getValue());
         	deltailMap.put(mapping.getKey(), mapping.getValue());
         } 
         
@@ -139,7 +139,7 @@ public class FinanicalProductServiceImpl implements FinanicalProductService {
         
         deltailMap.clear();
         for(Map.Entry<String,String> mapping:list){ 
-        	System.out.println(mapping.getKey()+":"+mapping.getValue());
+        	//System.out.println(mapping.getKey()+":"+mapping.getValue());
         	deltailMap.put(mapping.getKey(), mapping.getValue());
         }
         

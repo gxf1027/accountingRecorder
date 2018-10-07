@@ -19,6 +19,7 @@
                 <!-- <entry key="SpringBeans:name=ehCacheManagerMBean" value-ref="ehcache" /> -->
                 <entry key="SpringBeans:name=ehCacheMBean" value-ref="ehCacheUtils" />
                 <entry key="SpringBeans:name=motanMBean" value-ref="motanController" />
+                <entry key="SpringBeans:name=cxfWsMBean" value-ref="cxfcontroller" />
             </map>
         </property>
         <property name="server" ref="mbeanServer"/>

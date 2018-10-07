@@ -56,6 +56,7 @@
 							<authorizationEntry queue="GUEST.>" read="guests" write="guests,users" admin="guests,users"/>
 							<authorizationEntry queue="mailQueue" read="guests" write="users" admin="admins"/>
 							<authorizationEntry queue="mailQueueFinaProducts" read="guests" write="users" admin="admins"/>
+							<authorizationEntry queue="cxf.queue" read="users" write="users" admin="admins"/>
 							<authorizationEntry topic=">" read="admins" write="admins" admin="admins"/>
 							<authorizationEntry topic="USERS.>" read="users" write="users" admin="users"/>
 							<authorizationEntry topic="GUEST.>" read="guests" write="guests,users" admin="guests,users"/>
@@ -65,7 +66,7 @@
 					 let's assign roles to temporary destinations. comment this entry if we don't want any roles assigned to temp destinations  
 					-->
 					<tempDestinationAuthorizationEntry>
-						<tempDestinationAuthorizationEntry read="tempDestinationAdmins" write="tempDestinationAdmins" admin="tempDestinationAdmins"/>
+						<tempDestinationAuthorizationEntry read="admins" write="admins" admin="admins"/>
 					</tempDestinationAuthorizationEntry>
 					</authorizationMap>
 				</map>

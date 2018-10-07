@@ -13,17 +13,45 @@
      http://cxf.apache.org/jaxws 
      http://cxf.apache.org/schemas/jaxws.xsd">
     
-   
+     <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">  
+        <property name="brokerURL" value="tcp://localhost:61616" /> 
+        <property name="userName" value="admin"></property>
+		<property name="password" value="admin"></property> 
+    </bean>  
+  
+    <bean id="jmsConfig" class="org.apache.cxf.transport.jms.JMSConfiguration">  
+        <property name="connectionFactory" ref="connectionFactory" />  
+        <property name="targetDestination" value="cxf.queue" />  
+    </bean>
     
-    <!--  Cxf WebService 客户端  -->
     <jaxws:client id="billService" serviceClass="cn.gxf.spring.quartz.job.endpoint.BillServiceEndpoint"
-                  address="http://localhost:8080/keepaccounts-main/services/billService">
+                  address="jms://">
+         <jaxws:features>  
+            <bean class="org.apache.cxf.transport.jms.JMSConfigFeature">  
+                <property name="jmsConfig" ref="jmsConfig" />  
+           </bean>  
+        </jaxws:features>
         <jaxws:outInterceptors>
+        	<ref bean="authInterceptor"/>
             <ref bean="wss4jOutInterceptor"/>
         </jaxws:outInterceptors>
-    </jaxws:client> 
-                  
+	
+    </jaxws:client>
     
+    <!--  Cxf WebService 客户端  -->
+    <!-- <jaxws:client id="billService" serviceClass="cn.gxf.spring.quartz.job.endpoint.BillServiceEndpoint"
+                  address="http://localhost:8080/keepaccounts-main/services/billService">
+        <jaxws:outInterceptors>
+        	<ref bean="authInterceptor"/>
+            <ref bean="wss4jOutInterceptor"/>
+        </jaxws:outInterceptors>
+	
+    </jaxws:client> --> 
+                  
+    <bean id="authInterceptor" class="cn.gxf.spring.cxf.AuthorizingInterceptor">
+    	<property name="userName" value="${cxf_client.user}" />
+    	<property name="password" value="${cxf_client.password}" />
+    </bean>
     
     <!--客户端发送请求拦截器-->
     <bean id="wss4jOutInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">

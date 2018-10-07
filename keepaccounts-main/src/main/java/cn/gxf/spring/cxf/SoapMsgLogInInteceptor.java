@@ -43,6 +43,7 @@ public class SoapMsgLogInInteceptor extends AbstractPhaseInterceptor<Message> {
         logging(message);  
     }  
   
+    @SuppressWarnings("all")
     private void logging(Message message) throws Fault {  
         if (message.containsKey(LoggingMessage.ID_KEY)) {  
             return;  
@@ -122,6 +123,11 @@ public class SoapMsgLogInInteceptor extends AbstractPhaseInterceptor<Message> {
     }  
   
     private String xmlFormat(String str) throws IOException, DocumentException{
+    	
+    	if (null == str || str.equals("")){
+    		return null;
+    	}
+    	
     	SAXReader reader = new SAXReader();
     	// System.out.println(reader);
         // 注释：创建一个串的字符输入流

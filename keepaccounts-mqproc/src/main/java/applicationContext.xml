@@ -32,6 +32,7 @@
 				<value>classpath:db.properties</value>
 				<value>classpath:mq.properties</value>
 				<value>classpath:mailsender.properties</value>
+				<value>classpath:cxf_client_user.properties</value>
 			</list>
 		</property>
 	</bean>

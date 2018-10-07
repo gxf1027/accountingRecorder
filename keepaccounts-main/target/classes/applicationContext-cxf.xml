@@ -16,18 +16,83 @@
     <import resource="classpath:META-INF/cxf/cxf.xml" />
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
     
-    <!--  Cxf WebService 服务端示例 -->
-    <jaxws:endpoint id="billService" implementor="cn.gxf.spring.quartz.job.endpoint.BillServiceEndPointImpl" 
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">  
+        <property name="brokerURL" value="tcp://localhost:61616" /> 
+        <property name="userName" value="admin"></property>
+		<property name="password" value="admin"></property> 
+    </bean>  
+  
+    <bean id="jmsConfig" class="org.apache.cxf.transport.jms.JMSConfiguration">  
+        <property name="connectionFactory" ref="connectionFactory" />  
+        <property name="targetDestination" value="cxf.queue" />  
+    </bean>
+    
+    <!--  Cxf WebService 服务端 （JMS通信方式）-->
+    <jaxws:endpoint id="billService" 
+    		implementor="cn.gxf.spring.quartz.job.endpoint.BillServiceEndPointImpl" 
+    		address="jms://">
+    	<jaxws:features>
+	        <bean class="org.apache.cxf.transport.jms.JMSConfigFeature">
+	        	<property name="jmsConfig" ref="jmsConfig" /> 
+	        </bean>  
+    	</jaxws:features>
+    	<jaxws:inInterceptors>
+   			<ref bean="authInterceptorJms"/>
+   			<ref bean="logInInterceptorJms"/>
+   			<ref bean="wss4jInInterceptor"/>
+    	</jaxws:inInterceptors>	
+    </jaxws:endpoint>
+    
+    <!--  Cxf WebService 服务端 -->
+    <!-- <jaxws:endpoint id="billService" implementor="cn.gxf.spring.quartz.job.endpoint.BillServiceEndPointImpl" 
     		address="/billService">
     	<jaxws:inInterceptors>
    			<ref bean="authInterceptor"/>
    			<ref bean="logInInterceptor"/>
    			<ref bean="wss4jInInterceptor"/>
     	</jaxws:inInterceptors>	
+    </jaxws:endpoint> -->
+    
+    <jaxws:endpoint id="incomeDetailService" implementor="cn.gxf.spring.cxf.service.IncomeDetailServiceImpl"
+    		address="/incomeService">
+    	<jaxws:inInterceptors>
+    		<ref bean="accessRateLimitInterceptor" />
+   			<ref bean="authInterceptor"/>
+   			<ref bean="logInInterceptor"/>
+   			<ref bean="wss4jInInterceptor"/>
+    	</jaxws:inInterceptors>	
     </jaxws:endpoint>
     
-    <bean id="authInterceptor" class="cn.gxf.spring.cxf.AuthorizingInterceptor" />
+    <jaxws:endpoint id="queryDetailService" implementor="cn.gxf.spring.cxf.service.QueryDetailServiceImpl"
+    		address="/queryDetailService">
+    	<jaxws:inInterceptors>
+    		<ref bean="accessRateLimitInterceptor" />
+   			<ref bean="authInterceptor"/>
+   			<ref bean="logInInterceptor"/>
+   			<ref bean="wss4jInInterceptor"/>
+    	</jaxws:inInterceptors>	
+    </jaxws:endpoint>
+    
+    <bean id="authInterceptor" class="cn.gxf.spring.cxf.AuthorizingInterceptor">
+    	<property name="controller" ref="cxfcontroller" />
+    	<property name="cxfAuthenInfoDao" ref="cxfAuthenInfoDaoImplJdbc" />
+    	<property name="blockedIpDao" ref="blockedIpDaoImpl" />
+    </bean>
+   
+   <bean id="authInterceptorJms" class="cn.gxf.spring.cxf.AuthorizingInterceptorJMSTransport">
+   		<property name="controller" ref="cxfcontroller" />
+   </bean>
+   
+    <bean id="accessRateLimitInterceptor" class="cn.gxf.spring.cxf.AccessRateLimitInterceptor">
+    	<property name="rateLimitService" ref="simpleRateLimitServiceImpl" />
+    </bean>
     <bean id="logInInterceptor" class="cn.gxf.spring.cxf.SoapMsgLogInInteceptor" />
+    <bean id="logInInterceptorJms" class="cn.gxf.spring.cxf.SoapMsgLogInInteceptorJMSTransport" />
+    
+    <bean id="cxfcontroller" class="cn.gxf.spring.cxf.CXFWebServiceController" >
+    	<property name="redisTemplate" ref="stringRedisTemplate" />
+    	<property name="blockedIpDao" ref="blockedIpDaoImpl"></property>
+    </bean>
     
     
     <bean id="wss4jInInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
