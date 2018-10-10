@@ -51,24 +51,33 @@ public class AuthorizingInterceptorJMSTransport extends AbstractPhaseInterceptor
 		// 获取调用的函数
 		Exchange exchange = message.getExchange();
 		BindingOperationInfo bop = exchange.get(BindingOperationInfo.class);
+		Service service = exchange.getService();
+//		for (String key : service.keySet()){
+//			System.out.println("key: " + key+ " | " + service.get(key));
+//		}
+		String serviceInfaceName = service.get("endpoint.class").toString().substring(10);
+//		System.out.println("serviceInfaceName: " + serviceInfaceName);
+//		for(QName key : service.getEndpoints().keySet()){
+//			System.out.println("QName: " + key.toString() + " " + service.getEndpoints().get(key).toString());
+//		}
+		
 		MethodDispatcher md = (MethodDispatcher) exchange.get(Service.class).get(MethodDispatcher.class.getName());
 		String methodName = md.getMethod(bop).getName(); 
 		
-		
 		//
-		JMSMessageHeadersType headerstype = (JMSMessageHeadersType) message.get("org.apache.cxf.jms.server.request.headers");
-		ActiveMQTextMessage mqMessage = (ActiveMQTextMessage) message.get("org.apache.cxf.jms.request.message");
-		BindingMessageInfo bmi = (BindingMessageInfo) message.get("org.apache.cxf.service.model.BindingMessageInfo");
-		Destination dest = (Destination) message.get("org.apache.cxf.transport.Destination");
-		try {
-			String mqtext = mqMessage.getText();
-		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for(String key : message.keySet()){
-			System.out.println("key: " + key +" value: " + message.get(key));
-		}
+//		JMSMessageHeadersType headerstype = (JMSMessageHeadersType) message.get("org.apache.cxf.jms.server.request.headers");
+//		ActiveMQTextMessage mqMessage = (ActiveMQTextMessage) message.get("org.apache.cxf.jms.request.message");
+//		BindingMessageInfo bmi = (BindingMessageInfo) message.get("org.apache.cxf.service.model.BindingMessageInfo");
+//		Destination dest = (Destination) message.get("org.apache.cxf.transport.Destination");
+//		try {
+//			String mqtext = mqMessage.getText();
+//		} catch (JMSException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		for(String key : message.keySet()){
+//			System.out.println("key: " + key +" value: " + message.get(key));
+//		}
 		
 	
 		
@@ -98,19 +107,6 @@ public class AuthorizingInterceptorJMSTransport extends AbstractPhaseInterceptor
         System.out.println("userName reterived from SOAP Header is "  + userName);
         System.out.println("password reterived from SOAP Header is " + password);
         
-        /*if ("John".equalsIgnoreCase(userName) && "password".
-	      equalsIgnoreCase(password)) {
-	         System.out.println("Authentication successful for John");
-	      } else {
-	         throw new RuntimeException("Invalid user");
-	      }*/
-        
-        
-        // 根据methodName和servicePath验证是否有access权限
-//        int isAccessible = cxfAuthenInfoDao.accessValidating(userName, servicePath, methodName);
-//        if (0 == isAccessible){
-//        	throw new Fault(new SOAPException("无法访问"));  
-//        }
 	}
 	
 	public CXFWebServiceController getController() {
