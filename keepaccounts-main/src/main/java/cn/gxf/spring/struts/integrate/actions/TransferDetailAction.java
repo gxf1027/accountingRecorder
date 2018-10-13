@@ -177,6 +177,7 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		if (user.getId() != transferFromDb.getUser_id() && !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
 			return "have-no-authority";
 		}
+		this.transferDetail.setUser_id(user.getId());
 		this.transferDetail.setXgrq(new Date());
 		
 		// 特殊转账方式

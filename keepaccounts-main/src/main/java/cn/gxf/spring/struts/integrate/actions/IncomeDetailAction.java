@@ -154,6 +154,7 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 			return "have-no-authority";
 		}
 		this.incomeDetail.setXgrq(new Date());
+		this.incomeDetail.setUser_id(user.getId());
 		AccountingDetail detailUpdated = detailAccountUnivServiceImpl.updateOne(this.incomeDetail);
 		
 		// 延迟一段时间等待主从同步

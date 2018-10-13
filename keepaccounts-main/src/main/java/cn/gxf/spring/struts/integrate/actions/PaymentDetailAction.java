@@ -130,6 +130,7 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		if (user.getId() != paymentFromDb.getUser_id() && !user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
 			return "have-no-authority";
 		}
+		this.paymentDetail.setUser_id(user.getId());
 		this.paymentDetail.setXgrq(new Date());
 		AccountingDetail detailUpdated = detailAccountUnivServiceImpl.updateOne(this.paymentDetail);
 		
