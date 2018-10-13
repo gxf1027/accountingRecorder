@@ -311,7 +311,7 @@ em{
                   </em>
             </p>
             <p>
-            	<a href="/Struts2Spring4Test2/myLoginWcai.jsp">用已有账号登录</a>
+            	<a href="${pageContext.request.contextPath }/myLoginWcai.jsp">用已有账号登录</a>
             </p>
 
 			<div class="row btnRow">
