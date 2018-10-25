@@ -752,7 +752,8 @@
 					<div class="left" style="height:23px;line-height:23px;width:15px;padding: 0 0px;">&nbsp;</div>
 					<ul> 
 						<li class="left" style="padding-left:70px;"><span>${dateToShow }</span></li> 
-						<li class="left" style="padding-left:20px;"><span>支出:￥${paymentsum } &nbsp; &nbsp; &nbsp;收入:￥${incomesum }</span></li> 
+						<li class="left" style="padding-left:20px;"><span>支出:<s:number name="paymentsum"  type="currency" maximumFractionDigits="2" />  &nbsp; &nbsp; &nbsp;收入:<s:number name="incomesum"  type="currency" maximumFractionDigits="2" /></span></li>
+						
 					</ul>
 				</div>
 				
