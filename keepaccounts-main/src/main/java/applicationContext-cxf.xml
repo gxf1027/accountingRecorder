@@ -71,6 +71,26 @@
     	</jaxws:inInterceptors>	
     </jaxws:endpoint>
     
+    <jaxws:endpoint id="paymentDetailService" implementor="cn.gxf.spring.cxf.service.PaymentDetailServiceImpl"
+    		address="/paymentService">
+    	<jaxws:inInterceptors>
+    		<ref bean="accessRateLimitInterceptor" />
+   			<ref bean="authInterceptor"/>
+   			<ref bean="logInInterceptor"/>
+   			<ref bean="wss4jInInterceptor"/>
+    	</jaxws:inInterceptors>	
+    </jaxws:endpoint>
+    
+    <jaxws:endpoint id="transferDetailService" implementor="cn.gxf.spring.cxf.service.TransferDetailServiceImpl"
+    		address="/transferService">
+    	<jaxws:inInterceptors>
+    		<ref bean="accessRateLimitInterceptor" />
+   			<ref bean="authInterceptor"/>
+   			<ref bean="logInInterceptor"/>
+   			<ref bean="wss4jInInterceptor"/>
+    	</jaxws:inInterceptors>	
+    </jaxws:endpoint>
+    
     <jaxws:endpoint id="queryDetailService" implementor="cn.gxf.spring.cxf.service.QueryDetailServiceImpl"
     		address="/queryDetailService">
     	<jaxws:inInterceptors>
@@ -84,7 +104,6 @@
     <bean id="authInterceptor" class="cn.gxf.spring.cxf.AuthorizingInterceptor">
     	<property name="controller" ref="cxfcontroller" />
     	<property name="cxfAuthenInfoDao" ref="cxfAuthenInfoDaoImplJdbc" />
-    	<property name="blockedIpDao" ref="blockedIpDaoImpl" />
     </bean>
    
    <bean id="authInterceptorJms" class="cn.gxf.spring.cxf.AuthorizingInterceptorJMSTransport">
@@ -98,8 +117,7 @@
     <bean id="logInInterceptorJms" class="cn.gxf.spring.cxf.SoapMsgLogInInteceptorJMSTransport" />
     
     <bean id="cxfcontroller" class="cn.gxf.spring.cxf.CXFWebServiceController" >
-    	<property name="redisTemplate" ref="stringRedisTemplate" />
-    	<property name="blockedIpDao" ref="blockedIpDaoImpl"></property>
+    	<property name="ipController" ref="ipControlServiceImpl" />
     </bean>
     
     
