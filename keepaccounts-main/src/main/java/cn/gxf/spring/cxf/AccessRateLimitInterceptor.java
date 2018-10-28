@@ -16,14 +16,17 @@ import org.apache.cxf.service.Service;
 import org.apache.cxf.service.invoker.MethodDispatcher;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import cn.gxf.spring.cxf.util.CxfUtil;
 import cn.gxf.spring.struts2.integrate.service.SimpleRateLimitService;
 
 public class AccessRateLimitInterceptor extends AbstractPhaseInterceptor<SoapMessage> {
 
-	private static final Logger logger = Logger.getLogger(AccessRateLimitInterceptor.class);
+	//private static final Logger logger = Logger.getLogger(AccessRateLimitInterceptor.class);
+	private Logger logger = LogManager.getLogger();
 	private SimpleRateLimitService rateLimitService;
 	
 	public AccessRateLimitInterceptor(){

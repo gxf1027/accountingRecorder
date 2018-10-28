@@ -46,6 +46,7 @@
      	<property name="cacheNames">
      		<list>
      			<value>redisCacheStat</value>
+     			<value>redisCacheCxfIpBlocked</value>
      		</list>
      	</property>
      </bean>

@@ -6,12 +6,14 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 
 public class CxfUtil {
 	
-	private static final Logger logger = Logger.getLogger(CxfUtil.class);
+	private static final Logger logger = LogManager.getLogger();
+	//private static final Logger logger = Logger.getLogger(CxfUtil.class);
 	
 	public static String getUsrIPAddr(HttpServletRequest request) {        
 		String ip = "";        

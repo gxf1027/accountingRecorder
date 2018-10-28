@@ -22,14 +22,17 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.transport.Destination;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
 import org.apache.cxf.transport.jms.JMSMessageHeadersType;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 
 public class AuthorizingInterceptorJMSTransport extends AbstractPhaseInterceptor<SoapMessage> {
 
-	private static final Logger logger = Logger.getLogger(AuthorizingInterceptorJMSTransport.class);
+	private Logger logger = LogManager.getLogger();
+	//private static final Logger logger = Logger.getLogger(AuthorizingInterceptorJMSTransport.class);
 	private CXFWebServiceController controller;
 	private static final String AUTHORIZING_NAME="OrderCredentials";
 	private String userName;

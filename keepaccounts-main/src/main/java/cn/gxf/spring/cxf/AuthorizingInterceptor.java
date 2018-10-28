@@ -19,7 +19,9 @@ import org.apache.cxf.service.Service;
 import org.apache.cxf.service.invoker.MethodDispatcher;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -28,10 +30,10 @@ import cn.gxf.spring.cxf.util.CxfUtil;
 
 public class AuthorizingInterceptor extends AbstractPhaseInterceptor<SoapMessage> {
 
-	private static final Logger logger = Logger.getLogger(AuthorizingInterceptor.class);
+	//private static final Logger logger = Logger.getLogger(AuthorizingInterceptor.class);
+	private Logger logger = LogManager.getLogger();
 	private CXFWebServiceController controller;
 	private CxfAuthenInfoDao cxfAuthenInfoDao;
-	private BlockedIpDao blockedIpDao;
 	private static final String AUTHORIZING_NAME="OrderCredentials";
 	private String userName;
 	private String password;
@@ -73,6 +75,7 @@ public class AuthorizingInterceptor extends AbstractPhaseInterceptor<SoapMessage
         System.out.println("==================SoapHeaders =" + headers);
         
         if (null == headers || headers.size() < 1) {  
+        	logger.error(String.format("Request from %s with wrong headers.", ipAddress));
             throw new Fault(new SOAPException("SOAP消息头格式不正确！"));  
         }  
         
@@ -103,6 +106,7 @@ public class AuthorizingInterceptor extends AbstractPhaseInterceptor<SoapMessage
         // 根据methodName和servicePath验证是否有access权限
         int isAccessible = cxfAuthenInfoDao.accessValidating(userName, servicePath, methodName);
         if (0 == isAccessible){
+        	logger.error(String.format("user %s cann't access to %s %s", userName, servicePath, methodName));
         	throw new Fault(new SOAPException("无法访问"));  
         }
 	}
@@ -122,12 +126,5 @@ public class AuthorizingInterceptor extends AbstractPhaseInterceptor<SoapMessage
 	public void setCxfAuthenInfoDao(CxfAuthenInfoDao cxfAuthenInfoDao) {
 		this.cxfAuthenInfoDao = cxfAuthenInfoDao;
 	}
-	
-	public BlockedIpDao getBlockedIpDao() {
-		return blockedIpDao;
-	}
-	
-	public void setBlockedIpDao(BlockedIpDao blockedIpDao) {
-		this.blockedIpDao = blockedIpDao;
-	}
+
 }
