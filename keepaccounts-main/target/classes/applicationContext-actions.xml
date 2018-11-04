@@ -68,4 +68,14 @@
 		class="cn.gxf.spring.struts.integrate.actions.BillSendAction"
 		scope="prototype" />
 		
+	<bean id="fundInfoAction" class="cn.gxf.spring.struts.integrate.actions.FundInfoAction"	scope="prototype">
+		<property name="apiRequest" ref="showApiRequest" />
+	</bean>
+	
+	<bean id="showApiRequest" class="com.show.api.ShowApiRequest">
+		<constructor-arg index="0" value="http://route.showapi.com/902-1" />
+		<constructor-arg index="1" value="79115" />
+		<constructor-arg index="2" value="cff25d777bea4ca1b414b510c2cc4b5d" />
+	</bean>
+		
 </beans>

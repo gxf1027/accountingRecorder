@@ -7,6 +7,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<meta name="_csrf" content="${_csrf.token}"/>
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" type="text/css" href="../css/header.css" />
 	<link rel="stylesheet" type="text/css" href="../css/header-account.css" />
@@ -335,6 +338,56 @@
 	    	var expectedReturn = je*1.0*dateCount/365*returnRate;
 			$("#expectedReturn").val( parseFloat(expectedReturn.toFixed(2)) );
 		});
+	    
+	    
+	    $(":input[name='fundDetail.fundCode']").blur(function(){
+	    	
+	    	var existsName = $("#fundName").val(); // if fundname already exists,do nothing
+	    	if (existsName != ""){
+        		return;
+        	}		
+	    	
+			var fundCode = $(this).val();
+			console.log(fundCode);
+			fundCode = $.trim(fundCode);
+			
+			if (fundCode != "" && fundCode.length >= 6){
+				
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				var headers = {};
+				headers['__RequestVerificationToken'] = token;
+				var url ="${pageContext.request.contextPath }/demo/fundInfo.action";
+				var args={"fundCode":fundCode};
+				console.log(url);
+				
+				 $.ajax({
+				        type: "GET", /*不能用POST?*/
+				        headers: headers,
+				        cache: false,
+				        url: url,
+				        data: args,
+				        dataType:"text",
+				        async: true,
+				        error: function(data, error) {},
+				        success: function(data)
+				        {
+				        	console.log("rv:"+data);
+				        	if (data == "error"){
+				        		toastr.info("获取基金信息失败");
+				        	}else{
+				        		toastr.info("获取基金信息成功");
+					        	var existsName = $("#fundName").val();
+					        	console.log("exists: " + existsName);
+					        	$(":input[name='fundDetail.fundName']").val(data);	
+				        	}
+				        }
+				    });
+			}else
+				{
+					console.log("error");
+				}
+		});	
 	})
 	
 	
