@@ -677,7 +677,7 @@
 				</li>
 				<li class="left fontRight sep" style="width:60px;">时间</li>
 				<li class="left sep" style="width:100px;">金额</li>
-				<li class="left sep" style="width:80px;">类别</li>
+				<li class="left sep" style="width:100px;">类别</li>
 				<s:if test="#request.listType=='listAll'">
 					<li class="left sep" style="width:90px;">商家/付款方</li>
 				</s:if>
@@ -787,11 +787,11 @@
 							</s:else>
 							
 							<s:if test="#accoutVo.type == 1 or #accoutVo.type == 2">
-								<li class="left cutlong" style="width:80px;">${lbmc }</li>
+								<li class="left cutlong" style="width:100px;">${lbmc }</li>
 								<li class="left cutlong" style="width:90px;">${seller }&nbsp;</li>
 							</s:if>
 							<s:elseif test="#accoutVo.type == 3">
-								<li class="left cutlong" style="width:80px;">转账</li>
+								<li class="left cutlong" style="width:100px;">转账-${zzlxmc }</li>
 								<li class="left cutlong" style="width:90px;">无</li>
 							</s:elseif>
 							
