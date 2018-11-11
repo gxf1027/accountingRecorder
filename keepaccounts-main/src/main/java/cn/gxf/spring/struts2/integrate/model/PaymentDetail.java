@@ -5,6 +5,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "PaymentDetail")
+@XmlType
 public class PaymentDetail extends AccountObject implements Serializable {
 
 	
@@ -192,9 +200,10 @@ public class PaymentDetail extends AccountObject implements Serializable {
 
 	@Override
 	public String toString() {
-		return "PaymentDetail [mxuuid=" + mxuuid + ", user_name=" + user_name + ", user_id=" + user_id + ", je=" + je
-				+ ", dl_dm=" + dl_dm + ", xl_dm=" + xl_dm + ", seller=" + seller + ", zh_dm=" + zh_dm + ", shijian="
-				+ shijian + ", bz=" + bz + ", yxbz=" + yxbz + ", xgrq=" + xgrq + "]";
+		return "PaymentDetail [mxuuid=" + mxuuid + ", accuuid=" + accuuid + ", user_name=" + user_name + ", user_id="
+				+ user_id + ", je=" + je + ", yhje=" + yhje + ", dl_dm=" + dl_dm + ", xl_dm=" + xl_dm + ", seller="
+				+ seller + ", zh_dm=" + zh_dm + ", category_dm=" + category_dm + ", shijian=" + shijian + ", bz=" + bz
+				+ ", yxbz=" + yxbz + ", xgrq=" + xgrq + "]";
 	}
 
 }

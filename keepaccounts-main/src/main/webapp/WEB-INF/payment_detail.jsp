@@ -501,14 +501,17 @@
 					<th>项目</th>
 					<td>
 						<%-- <s:select list="#request.outgo_category" listKey="key" listValue="value" name="category_dm" theme="simple" class="selectInput" /> --%>
-						<select id="cat-select" name="category_dm" class="selectInput">
+						<%-- <select id="cat-select" name="category_dm" class="selectInput">
 							<s:iterator value="#request.outgo_cat_common" >
 								<option value="${key }">${value }</option>
 							</s:iterator>
 							<s:iterator value="#request.outgo_category" >
 								<option value="${key }">${value }</option>
 							</s:iterator>
-						</select>
+						</select> --%>
+						
+						<s:select name="category_dm" list="#request.outgo_cat_all" theme="simple" class="selectInput">
+						</s:select> 
 					</td>
 				</tr>
 	  			

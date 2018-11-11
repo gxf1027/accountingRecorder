@@ -73,6 +73,10 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		this.myrequest.put("outgo_category", map_cat);
 		Map<String, String> map_cat_com = dmService.getOutgoCategoryCommon();
 		this.myrequest.put("outgo_cat_common", map_cat_com);
+		Map<String, String> map_cat_all = new HashMap<>();
+		map_cat_all.putAll(map_cat_com);
+		map_cat_all.putAll(map_cat);
+		this.myrequest.put("outgo_cat_all", map_cat_all);
 		
 		
 		return "PaymentInputOk";
@@ -92,6 +96,10 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		this.myrequest.put("outgo_category", map_cat);
 		Map<String, String> map_cat_com = dmService.getOutgoCategoryCommon();
 		this.myrequest.put("outgo_cat_common", map_cat_com);
+		Map<String, String> map_cat_all = new HashMap<>();
+		map_cat_all.putAll(map_cat_com);
+		map_cat_all.putAll(map_cat);
+		this.myrequest.put("outgo_cat_all", map_cat_all);
 	}
 	
 	public String editShow(){
