@@ -3,6 +3,7 @@ package cn.gxf.spring.struts.integrate.cache;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -20,7 +21,7 @@ public class EhCacheUtils{
 	@Autowired
 	private EhCacheCacheManager cacheManager;
 	
-	private Map<String, EhCacheCache> cacheMap = new HashMap<String, EhCacheCache>();
+	private Map<String, EhCacheCache> cacheMap = new ConcurrentHashMap<String, EhCacheCache>();
 	
 	public void remove(String cacheName){
 		
