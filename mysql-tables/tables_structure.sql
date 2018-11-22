@@ -10,12 +10,10 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2018-08-03 21:05:36
+Date: 2018-11-22 22:09:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
-
-
 
 -- ----------------------------
 -- Table structure for account_detail
@@ -32,7 +30,9 @@ CREATE TABLE `account_detail` (
   `lrrq` datetime NOT NULL,
   PRIMARY KEY (`accuuid`),
   UNIQUE KEY `uuid_index` (`accuuid`) USING HASH,
-  KEY `userid_index` (`user_id`) USING HASH
+  KEY `userid_index` (`user_id`) USING HASH,
+  KEY `acc_recdm_index` (`rec_dm`) USING HASH,
+  KEY `acc_userid_recdm_index` (`user_id`,`rec_dm`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -53,9 +53,57 @@ CREATE TABLE `account_income_detail` (
   `xgrq` datetime DEFAULT NULL,
   `lrrq` datetime NOT NULL,
   PRIMARY KEY (`mxuuid`),
-  KEY `index_income_lb` (`lb_dm`) USING BTREE
+  KEY `index_income_lb` (`lb_dm`) USING BTREE,
+  KEY `index_income_zhdm` (`zh_dm`) USING BTREE,
+  KEY `index_income_zhdm_userid` (`user_id`,`zh_dm`) USING HASH,
+  KEY `index_income_lb_userid` (`user_id`,`lb_dm`) USING BTREE,
+  KEY `index_income_userid` (`user_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- ----------------------------
+-- Table structure for account_info
+-- ----------------------------
+DROP TABLE IF EXISTS `account_info`;
+CREATE TABLE `account_info` (
+  `accuuid` varchar(255) NOT NULL,
+  `ssny` varchar(6) DEFAULT NULL,
+  `income` float DEFAULT NULL,
+  `salary` float DEFAULT NULL,
+  `bonus` float DEFAULT NULL,
+  `expenditure` float DEFAULT NULL,
+  `netincome` float DEFAULT NULL,
+  `xgrq` date DEFAULT NULL,
+  PRIMARY KEY (`accuuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for account_payment_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `account_payment_detail`;
+CREATE TABLE `account_payment_detail` (
+  `mxuuid` varchar(255) NOT NULL,
+  `accuuid` varchar(255) DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
+  `yhje` float DEFAULT NULL,
+  `je` float(11,2) NOT NULL,
+  `dl_dm` varchar(255) NOT NULL,
+  `xl_dm` varchar(255) NOT NULL,
+  `seller` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `zh_dm` varchar(255) DEFAULT NULL,
+  `shijian` datetime NOT NULL,
+  `category_dm` varchar(5) DEFAULT NULL,
+  `bz` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `yxbz` varchar(255) DEFAULT NULL,
+  `xgrq` datetime DEFAULT NULL,
+  `lrrq` datetime NOT NULL,
+  PRIMARY KEY (`mxuuid`),
+  KEY `index_zhdm_userid` (`user_id`,`zh_dm`) USING HASH,
+  KEY `index_pay_dl` (`dl_dm`) USING BTREE,
+  KEY `index_pay_xl` (`xl_dm`) USING BTREE,
+  KEY `indes_pay_zhdm` (`zh_dm`) USING BTREE,
+  KEY `index_pay_dl_xl_userid` (`user_id`,`dl_dm`,`xl_dm`) USING BTREE,
+  KEY `index_pay_userid` (`user_id`) USING HASH
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Table structure for account_snapshot
@@ -70,31 +118,8 @@ CREATE TABLE `account_snapshot` (
   `bdje` float(11,2) NOT NULL,
   `fshje` float(11,2) NOT NULL,
   `lrrq` datetime NOT NULL,
-  PRIMARY KEY (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Table structure for account_payment_detail
--- ----------------------------
-DROP TABLE IF EXISTS `account_payment_detail`;
-CREATE TABLE `account_payment_detail` (
-  `mxuuid` varchar(255) NOT NULL,
-  `accuuid` varchar(255) DEFAULT NULL,
-  `user_id` int(11) NOT NULL,
-  `yhje` float(11,2) DEFAULT NULL,
-  `je` float(11,2) NOT NULL,
-  `dl_dm` varchar(255) NOT NULL,
-  `xl_dm` varchar(255) NOT NULL,
-  `seller` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `zh_dm` varchar(255) DEFAULT NULL,
-  `shijian` datetime NOT NULL,
-  `category_dm` varchar(5) DEFAULT NULL,
-  `bz` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `yxbz` varchar(255) DEFAULT NULL,
-  `xgrq` datetime DEFAULT NULL,
-  `lrrq` datetime NOT NULL,
-  PRIMARY KEY (`mxuuid`),
-  KEY `index_paydetail_dl` (`dl_dm`) USING BTREE
+  PRIMARY KEY (`uuid`),
+  KEY `index_snap_userid` (`user_id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -114,7 +139,10 @@ CREATE TABLE `account_transfer_detail` (
   `yxbz` varchar(255) DEFAULT NULL,
   `xgrq` datetime DEFAULT NULL,
   `lrrq` datetime NOT NULL,
-  PRIMARY KEY (`mxuuid`)
+  PRIMARY KEY (`mxuuid`),
+  KEY `index_transfer_zzlx` (`zzlx_dm`) USING BTREE,
+  KEY `index_trans_userid` (`user_id`) USING BTREE,
+  KEY `index_trans_userid_zzlx` (`user_id`,`zzlx_dm`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -125,6 +153,60 @@ CREATE TABLE `customers` (
   `customerid` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `age` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for cxf_authentication
+-- ----------------------------
+DROP TABLE IF EXISTS `cxf_authentication`;
+CREATE TABLE `cxf_authentication` (
+  `username` varchar(128) NOT NULL,
+  `confidential_code` varchar(256) NOT NULL,
+  `lrrq` datetime DEFAULT NULL,
+  `yxbz` varchar(2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for cxf_interface
+-- ----------------------------
+DROP TABLE IF EXISTS `cxf_interface`;
+CREATE TABLE `cxf_interface` (
+  `uuid` varchar(128) NOT NULL,
+  `cxf_interface_name` varchar(255) NOT NULL,
+  `cxf_method_name` varchar(255) NOT NULL,
+  `readyonly` varchar(2) NOT NULL,
+  `comments` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `yxbz` varchar(2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for cxf_interface_control
+-- ----------------------------
+DROP TABLE IF EXISTS `cxf_interface_control`;
+CREATE TABLE `cxf_interface_control` (
+  `cxf_username` varchar(128) NOT NULL,
+  `cxf_interface_uuid` varchar(255) NOT NULL,
+  `lrrq` datetime DEFAULT NULL,
+  `yxbz` varchar(2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for cxf_ip_blocked
+-- ----------------------------
+DROP TABLE IF EXISTS `cxf_ip_blocked`;
+CREATE TABLE `cxf_ip_blocked` (
+  `ip` varchar(20) NOT NULL,
+  `lrrq` datetime DEFAULT NULL,
+  PRIMARY KEY (`ip`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for cxf_ip_blocked_tmp
+-- ----------------------------
+DROP TABLE IF EXISTS `cxf_ip_blocked_tmp`;
+CREATE TABLE `cxf_ip_blocked_tmp` (
+  `ip` varchar(20) NOT NULL,
+  `lrrq` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -172,7 +254,8 @@ CREATE TABLE `dm_outgo_category` (
   `outgo_category_mc` varchar(100) CHARACTER SET utf8 NOT NULL,
   `user_id` int(11) DEFAULT NULL,
   `yxbz` varchar(2) DEFAULT NULL,
-  `xybz` varchar(2) DEFAULT NULL
+  `xybz` varchar(2) DEFAULT NULL,
+  PRIMARY KEY (`outgo_category_dm`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -265,7 +348,6 @@ CREATE TABLE `dm_zzlx` (
   `xybz` varchar(2) NOT NULL,
   PRIMARY KEY (`zzlx_dm`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 -- ----------------------------
 -- Table structure for financial_product_detail
@@ -555,6 +637,24 @@ CREATE TABLE `rpc_interface_control` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
+-- Table structure for rpc_requests_log
+-- ----------------------------
+DROP TABLE IF EXISTS `rpc_requests_log`;
+CREATE TABLE `rpc_requests_log` (
+  `uuid` varchar(128) NOT NULL,
+  `req_host` varchar(32) NOT NULL,
+  `req_user` varchar(255) DEFAULT NULL,
+  `rpc_interface_name` varchar(128) NOT NULL,
+  `rpc_method` varchar(255) DEFAULT NULL,
+  `rpc_params` varchar(512) CHARACTER SET utf8 DEFAULT NULL,
+  `req_time` datetime(3) DEFAULT NULL,
+  `ret_time` datetime(3) DEFAULT NULL,
+  `denied` varchar(2) DEFAULT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `uuid_index` (`uuid`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
 -- Table structure for spring_session
 -- ----------------------------
 DROP TABLE IF EXISTS `spring_session`;
@@ -591,7 +691,8 @@ CREATE TABLE `stat_income_lb` (
   `je` float(11,2) DEFAULT NULL,
   `nd` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `proc_time` datetime DEFAULT NULL
+  `proc_time` datetime DEFAULT NULL,
+  KEY `statincome_lbnduser_index` (`user_id`,`nd`,`srlb_dm`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -603,7 +704,8 @@ CREATE TABLE `stat_income_nd` (
   `yf` varchar(2) DEFAULT NULL,
   `je` float(11,2) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `proc_time` datetime DEFAULT NULL
+  `proc_time` datetime DEFAULT NULL,
+  KEY `statincome_ndyfuser_index` (`user_id`,`nd`,`yf`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -616,7 +718,8 @@ CREATE TABLE `stat_payment_dl` (
   `je` float(11,2) DEFAULT NULL,
   `nd` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `proc_time` datetime DEFAULT NULL
+  `proc_time` datetime DEFAULT NULL,
+  KEY `statpay_usernddl_index` (`user_id`,`nd`,`dl_dm`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -628,7 +731,8 @@ CREATE TABLE `stat_payment_nd` (
   `yf` varchar(2) DEFAULT NULL,
   `je` float(11,2) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `proc_time` datetime DEFAULT NULL
+  `proc_time` datetime DEFAULT NULL,
+  KEY `statpay_userndyf_index` (`user_id`,`nd`,`yf`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -637,6 +741,15 @@ CREATE TABLE `stat_payment_nd` (
 DROP TABLE IF EXISTS `testmqxa`;
 CREATE TABLE `testmqxa` (
   `uuid` varchar(255) DEFAULT NULL,
+  `lrrq` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for test_tab_1
+-- ----------------------------
+DROP TABLE IF EXISTS `test_tab_1`;
+CREATE TABLE `test_tab_1` (
+  `price` float DEFAULT NULL,
   `lrrq` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -665,7 +778,9 @@ CREATE TABLE `transfer_fund_detail` (
   `confirmed_sum` float(11,2) DEFAULT NULL,
   `lrrq` datetime DEFAULT NULL,
   `xgrq` datetime DEFAULT NULL,
-  `yxbz` varchar(2) DEFAULT NULL
+  `yxbz` varchar(2) DEFAULT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `fund_transuuid_index` (`transferuuid`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -679,6 +794,17 @@ CREATE TABLE `user_info` (
   `age` int(11) DEFAULT NULL,
   `birthdate` date DEFAULT NULL,
   `province_dm` varchar(4) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for user_login_info
+-- ----------------------------
+DROP TABLE IF EXISTS `user_login_info`;
+CREATE TABLE `user_login_info` (
+  `user_id` int(11) NOT NULL,
+  `last_login_time` datetime DEFAULT NULL,
+  `last_login_ip` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -706,16 +832,18 @@ CREATE TABLE `user_ss` (
   UNIQUE KEY `index_uname` (`username`) USING HASH
 ) ENGINE=InnoDB AUTO_INCREMENT=101001 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
-
 -- ----------------------------
--- Table structure for user_login_info
+-- Table structure for user_ss_backup
 -- ----------------------------
-DROP TABLE IF EXISTS `user_login_info`;
-CREATE TABLE `user_login_info` (
-  `user_id` int(11) NOT NULL,
-  `last_login_time` datetime DEFAULT NULL,
-  `last_login_ip` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`user_id`)
+DROP TABLE IF EXISTS `user_ss_backup`;
+CREATE TABLE `user_ss_backup` (
+  `id` int(11) NOT NULL DEFAULT '0' COMMENT 'id',
+  `username` varchar(50) CHARACTER SET utf8 NOT NULL COMMENT 'username',
+  `password` varchar(200) CHARACTER SET utf8 NOT NULL COMMENT 'password',
+  `email` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `enabled` varchar(1024) CHARACTER SET utf8 NOT NULL COMMENT 'enabled',
+  `description` varchar(1024) CHARACTER SET utf8 DEFAULT NULL COMMENT 'description',
+  `attempt_limit` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -780,7 +908,7 @@ CREATE TABLE `zh_detail_creditcard` (
 -- ----------------------------
 DROP TABLE IF EXISTS `zh_detail_info`;
 CREATE TABLE `zh_detail_info` (
-  `zh_dm` varchar(10) CHARACTER SET utf8 NOT NULL,
+  `zh_dm` varchar(20) CHARACTER SET utf8 NOT NULL,
   `zh_mc` varchar(100) CHARACTER SET utf8 NOT NULL,
   `khrmc` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
   `user_id` int(11) NOT NULL,
@@ -789,8 +917,26 @@ CREATE TABLE `zh_detail_info` (
   `ye` float(11,2) NOT NULL,
   `yxbz` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `xybz` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`zh_dm`)
+  PRIMARY KEY (`zh_dm`),
+  KEY `zhinfo_userid_index` (`user_id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Procedure structure for generate_test_data
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `generate_test_data`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `generate_test_data`(loop_times INT)
+BEGIN  
+    DECLARE iter INT DEFAULT 0;    
+    WHILE iter<loop_times DO    
+    SET iter=iter+1;    
+    INSERT INTO test.user_ss (id,username,password,email,enabled,description,attempt_limit)   
+    VALUES (iter+1000, CONCAT('test',UUID_SHORT()),'21232f297a57a5a743894a0e4a801fc3',null,'1',null,3);    
+    END WHILE; 
+END
+;;
+DELIMITER ;
 
 -- ----------------------------
 -- Procedure structure for proc_acc_stat_by_month
@@ -817,7 +963,7 @@ BEGIN
 		create table stat_payment_nd(
 			nd varchar(4),
 			yf varchar(2),
-			je float(11,2),
+			je float,
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
 		);
@@ -853,7 +999,7 @@ BEGIN
 		create table stat_income_nd(
 			nd varchar(4),
 			yf varchar(2),
-			je float(11,2),
+			je float,
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
 		);
@@ -888,7 +1034,7 @@ BEGIN
 		CREATE TABLE stat_payment_dl (
 			dl_dm  varchar(255) not null ,
 			dl_mc  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-			je  float(11,2) NULL DEFAULT NULL ,
+			je  float NULL DEFAULT NULL ,
 			nd  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
@@ -917,7 +1063,7 @@ BEGIN
 		CREATE TABLE stat_income_lb (
 			srlb_dm  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 			srlb_mc  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-			je  float(11,2) NULL DEFAULT NULL ,
+			je  float NULL DEFAULT NULL ,
 			nd  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
@@ -967,7 +1113,7 @@ BEGIN
 		create table stat_payment_nd(
 			nd varchar(4),
 			yf varchar(2),
-			je float(11,2),
+			je float,
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
 		);
@@ -1003,7 +1149,7 @@ BEGIN
 		create table stat_income_nd(
 			nd varchar(4),
 			yf varchar(2),
-			je float(11,2),
+			je float,
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
 		);
@@ -1038,7 +1184,7 @@ BEGIN
 		CREATE TABLE stat_payment_dl (
 			dl_dm  varchar(255) not null ,
 			dl_mc  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-			je  float(11,2) NULL DEFAULT NULL ,
+			je  float NULL DEFAULT NULL ,
 			nd  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
@@ -1067,7 +1213,7 @@ BEGIN
 		CREATE TABLE stat_income_lb (
 			srlb_dm  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 			srlb_mc  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-			je  float(11,2) NULL DEFAULT NULL ,
+			je  float NULL DEFAULT NULL ,
 			nd  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 			user_id  int(11) NULL DEFAULT NULL ,
 			proc_time  datetime NULL DEFAULT NULL 
