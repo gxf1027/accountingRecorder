@@ -42,12 +42,12 @@ public class AccountStatisticDaoJdbcImpl implements AccountStatisticDao{
 		// 只读取发生业务数据的users
 		String sql = "SELECT id, username FROM  user_ss u, timedtask_acc_stat s " +
 					"WHERE u.enabled='1' AND u.id = s.userid " +
-					"AND EXISTS (SELECT 1 FROM test.account_detail d WHERE d.user_id = u.id AND (d.rec_dm = '1' or d.rec_dm = '2') AND (d.lrrq > s.proctime or d.xgrq > s.proctime) AND d.yxbz='Y') " +
+					"AND EXISTS (SELECT 1 FROM test.account_detail d WHERE d.user_id = u.id AND d.rec_dm IN ('1','2') AND (d.lrrq > s.proctime or d.xgrq > s.proctime) AND d.yxbz='Y') " +
 					"UNION ALL " +
 					"SELECT id, username FROM user_ss u " +
 					"WHERE u.enabled='1' " +
 					"AND NOT EXISTS (SELECT 1 FROM timedtask_acc_stat s WHERE u.id = s.userid) " + 
-					"AND EXISTS (SELECT 1 FROM  account_detail d WHERE d.user_id = u.id AND (d.rec_dm = '1' or d.rec_dm = '2') AND d.yxbz='Y') " +
+					"AND EXISTS (SELECT 1 FROM  account_detail d WHERE d.user_id = u.id AND d.rec_dm IN ('1','2') AND d.yxbz='Y') " +
 					"LIMIT :start, :limit";
 		
 		Map<String, Object> paramMap = new HashMap<>();
