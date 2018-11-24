@@ -34,5 +34,9 @@
     	<typeAlias type="cn.gxf.spring.motan.model.RpcRequestInfo" alias="RpcRequestInfo"/>
     </typeAliases>
     
+    <plugins>
+    	<!-- 拦截器配置 -->
+    	<plugin interceptor="cn.gxf.spring.struts.mybatis.config.interceptors.SqlCostInterceptor" />
+    </plugins>
     
 </configuration>
