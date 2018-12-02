@@ -39,6 +39,9 @@ public class AccountStatServiceImpl implements AccountStatService{
 	private AccountVoMBDao accountVoMBDao;
 	
 	@Autowired
+	private DetailVoService detailVoService;
+	
+	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
 	
 	@Autowired
@@ -199,20 +202,17 @@ public class AccountStatServiceImpl implements AccountStatService{
 //					+ "#user_id+'_'"
 //					+ "+T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_from)+'_'+"
 //					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_to)")
-	@Cacheable(value="redisCacheStat",
-				key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailAllPrefix, #user_id, #date_from, #date_to)")
+	// 不再这里使用缓存，改为在detailVoService中使用
+//	@Cacheable(value="redisCacheStat",
+//				key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailAllPrefix, #user_id, #date_from, #date_to)")
 	@Override
 	public List<AccDateStat> getDateStatMB(int user_id, Date date_from , Date date_to){
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("date_from", date_from == null ? null : sdf.format(date_from));
-		paramMap.put("date_to", date_to == null ? null : sdf.format(date_to));
-		paramMap.put("user_id", user_id);
 		
-		List<PaymentDetailVO> listPayment = accountVoMBDao.getPaymentVo(paramMap);
-		List<IncomeDetailVO> listIncome = accountVoMBDao.getIncomeVo(paramMap);
-		List<TransferDetailVO> listTransfer = accountVoMBDao.getTransferVo(paramMap);
+		List<PaymentDetailVO> listPayment = detailVoService.getPaymentVo(user_id, date_from, date_to);
+		List<IncomeDetailVO> listIncome = detailVoService.getIncomeVo(user_id, date_from, date_to);
+		List<TransferDetailVO> listTransfer = detailVoService.getTransferVo(user_id, date_from, date_to);
 		
 		List<AccountingDetailVO> list = new ArrayList<>();
 		
@@ -287,20 +287,21 @@ public class AccountStatServiceImpl implements AccountStatService{
 		return stat_list;
 	}
 	
-	
-	@CachePut(value="redisCacheStat",
-			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailAllPrefix, #user_id, #date_from, #date_to)")
+	// 不再这里使用缓存，改为在detailVoService中使用
+//	@CachePut(value="redisCacheStat",
+//			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailAllPrefix, #user_id, #date_from, #date_to)")
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<AccDateStat> getDateStatMBRefresh(int user_id, Date date_from , Date date_to){
 		
-//		String key = StatDetailKeyGenerator.generateKey(StatDetailKeyGenerator.detailAllPrefix, user_id, date_from, date_to);
-//		this.stringRedisTemplate.delete(key);
+		// 删除缓存
+		Set<String> keys = new HashSet<String>();
+		keys.add(StatDetailKeyGenerator.generateKey(StatDetailKeyGenerator.detailIncomeVoPrefix, user_id, date_from , date_to));
+		keys.add(StatDetailKeyGenerator.generateKey(StatDetailKeyGenerator.detailPaymentVoPrefix, user_id, date_from , date_to));
+		keys.add(StatDetailKeyGenerator.generateKey(StatDetailKeyGenerator.detailTransferVoPrefix, user_id, date_from , date_to));
+		EvictDateStatRedis(keys);
 		
-		// 自调用不会使用缓存，符合refresh要求
 		List<AccDateStat> list = this.getDateStatMB(user_id, date_from, date_to);
-		
-//		this.redisTemplate.opsForValue().set(key, list);
 		
 		return list;
 	}
@@ -375,16 +376,13 @@ public class AccountStatServiceImpl implements AccountStatService{
 //					+ "#user_id+'_'+"
 //					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_from)+'_'+"
 //					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_to)")
-	@Cacheable(value="redisCacheStat",
-			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailIncomePrefix, #user_id, #date_from, #date_to)")
+	// 不再这里使用缓存，改为在detailVoService中使用
+//	@Cacheable(value="redisCacheStat",
+//			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailIncomePrefix, #user_id, #date_from, #date_to)")
 	@Override
 	public List<AccDateStat> getDateStatIncome(int user_id, Date date_from , Date date_to) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Map<String, Object> mapParam = new HashMap<>();
-		mapParam.put("date_from", date_from == null ? null : sdf.format(date_from));
-		mapParam.put("date_to", date_to == null ? null : sdf.format(date_to));
-		mapParam.put("user_id", user_id);
-		List<IncomeDetailVO> list = accountVoMBDao.getIncomeVo(mapParam);
+		List<IncomeDetailVO> list = detailVoService.getIncomeVo(user_id, date_from, date_to);
 		
 		Map<String, List<IncomeDetailVO>> map = new HashMap<>();
 		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -502,18 +500,14 @@ public class AccountStatServiceImpl implements AccountStatService{
 //					+ "#user_id+'_'+"
 //					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_from)+'_'+"
 //					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_to)")
-	@Cacheable(value="redisCacheStat",
-			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailPaymentPrefix, #user_id, #date_from, #date_to)")
+	// 不再这里使用缓存，改为在detailVoService中使用
+//	@Cacheable(value="redisCacheStat",
+//			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailPaymentPrefix, #user_id, #date_from, #date_to)")
 	@Override
 	public List<AccDateStat> getDateStatPayment(int user_id, Date date_from, Date date_to){
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Map<String, Object> mapParam = new HashMap<>();
-		mapParam.put("date_from", date_from == null ? null : sdf.format(date_from));
-		mapParam.put("date_to", date_to == null ? null : sdf.format(date_to));
-		mapParam.put("user_id", user_id);
-		List<PaymentDetailVO> list = accountVoMBDao.getPaymentVo(mapParam);
-		
+		List<PaymentDetailVO> list = detailVoService.getPaymentVo(user_id, date_from, date_to);
 		
 		Map<String, List<PaymentDetailVO>> map = new HashMap<>();
 		for (PaymentDetailVO e : list){
@@ -628,16 +622,14 @@ public class AccountStatServiceImpl implements AccountStatService{
 //					+ "#user_id+'_'+"
 //					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_from)+'_'+"
 //					+ "T(cn.gxf.spring.struts.integrate.util.DateFomatTransfer).date2CompactString(#date_to)")
-	@Cacheable(value="redisCacheStat",
-			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailTransferPrefix, #user_id, #date_from, #date_to)")
+	// 不再这里使用缓存，改为在detailVoService中使用
+//	@Cacheable(value="redisCacheStat",
+//			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailTransferPrefix, #user_id, #date_from, #date_to)")
 	@Override
 	public List<AccDateStat> getDateStatTransfer(int user_id, Date date_from, Date date_to) {
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Map<String, Object> mapParam = new HashMap<>();
-		mapParam.put("date_from", date_from == null ? null : sdf.format(date_from));
-		mapParam.put("date_to", date_to == null ? null : sdf.format(date_to));
-		mapParam.put("user_id", user_id);
-		List<TransferDetailVO> list = accountVoMBDao.getTransferVo(mapParam);
+		List<TransferDetailVO> list = detailVoService.getTransferVo(user_id, date_from, date_to);
 		
 		Map<String, List<TransferDetailVO>> map = new HashMap<>();
 		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
