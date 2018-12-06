@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2018-11-22 22:09:05
+Date: 2018-12-07 07:28:28
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -53,6 +53,7 @@ CREATE TABLE `account_income_detail` (
   `xgrq` datetime DEFAULT NULL,
   `lrrq` datetime NOT NULL,
   PRIMARY KEY (`mxuuid`),
+  UNIQUE KEY `index_income_accuuid` (`accuuid`) USING BTREE,
   KEY `index_income_lb` (`lb_dm`) USING BTREE,
   KEY `index_income_zhdm` (`zh_dm`) USING BTREE,
   KEY `index_income_zhdm_userid` (`user_id`,`zh_dm`) USING HASH,
@@ -97,6 +98,7 @@ CREATE TABLE `account_payment_detail` (
   `xgrq` datetime DEFAULT NULL,
   `lrrq` datetime NOT NULL,
   PRIMARY KEY (`mxuuid`),
+  UNIQUE KEY `index_pay_accuuid` (`accuuid`) USING BTREE,
   KEY `index_zhdm_userid` (`user_id`,`zh_dm`) USING HASH,
   KEY `index_pay_dl` (`dl_dm`) USING BTREE,
   KEY `index_pay_xl` (`xl_dm`) USING BTREE,
@@ -118,7 +120,7 @@ CREATE TABLE `account_snapshot` (
   `bdje` float(11,2) NOT NULL,
   `fshje` float(11,2) NOT NULL,
   `lrrq` datetime NOT NULL,
-  PRIMARY KEY (`uuid`),
+  PRIMARY KEY (`uuid`,`user_id`),
   KEY `index_snap_userid` (`user_id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -140,6 +142,7 @@ CREATE TABLE `account_transfer_detail` (
   `xgrq` datetime DEFAULT NULL,
   `lrrq` datetime NOT NULL,
   PRIMARY KEY (`mxuuid`),
+  UNIQUE KEY `index_trans_accuuid` (`accuuid`) USING BTREE,
   KEY `index_transfer_zzlx` (`zzlx_dm`) USING BTREE,
   KEY `index_trans_userid` (`user_id`) USING BTREE,
   KEY `index_trans_userid_zzlx` (`user_id`,`zzlx_dm`) USING BTREE
@@ -804,6 +807,16 @@ CREATE TABLE `user_login_info` (
   `user_id` int(11) NOT NULL,
   `last_login_time` datetime DEFAULT NULL,
   `last_login_ip` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for user_prepared_stat
+-- ----------------------------
+DROP TABLE IF EXISTS `user_prepared_stat`;
+CREATE TABLE `user_prepared_stat` (
+  `user_id` int(11) NOT NULL,
+  `user_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
