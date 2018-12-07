@@ -22,7 +22,7 @@ public class AccountStatisticDaoJdbcImpl implements AccountStatisticDao{
 	
 	@Transactional(value="dsTransactionManager", isolation=Isolation.READ_COMMITTED)
 	@Override
-	public int getUsersNumHavingData() {
+	public int updateUsersToProcess() {
 		
 //		String sql = "SELECT COUNT(1) FROM  user_ss u, timedtask_acc_stat s " +
 //				"WHERE u.enabled='1' AND u.id = s.userid " +

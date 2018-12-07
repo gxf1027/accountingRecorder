@@ -31,7 +31,7 @@ public class AccountStatisticsServiceImpl implements AccountStatisticsService {
 	@Override
 	public void updateStatThisMonthForAllUsers()
 	{
-		int userToStat = statDao.getUsersNumHavingData(); // 要统计的用户(id,name)写到临时表中
+		int userToStat = statDao.updateUsersToProcess(); // 要统计的用户(id,name)写到临时表中
 		// 获得所有用户
 		Map<String, String> users = statDao.getUsersIdNames(null, null); // 从临时表中获取所有用户
 		
@@ -65,6 +65,6 @@ public class AccountStatisticsServiceImpl implements AccountStatisticsService {
 	@Override
 	public int getUsersNumToProcessing() {
 		
-		return statDao.getUsersNumHavingData();
+		return statDao.updateUsersToProcess();
 	}
 }
