@@ -32,7 +32,8 @@ public class motanTest {
 		SayHi  service = (SayHi) ctx.getBean("motanTestRpc");
 		
 		//processUserRecovery(ctx);
-		processStat(ctx);
+		//processStat(ctx);
+		processStatSync(ctx);
 		//processCreditCardsBill(ctx);
 		//processFinProducts(ctx);
 		
@@ -80,6 +81,9 @@ public class motanTest {
 		            System.out.println("async call, user " +
 		            		rvMap.get(future) + ": "+ (future.isSuccess() ? "sucess! value:" + future.getValue() : "fail! exception:"
 		                            + future.getException().getMessage()));
+		            if (future.isSuccess() == false){
+		            	future.getException().printStackTrace();
+		            }
 		        }
 		    };
 		    
@@ -101,6 +105,52 @@ public class motanTest {
 			start += patchSize;
 			
 			if (start >= usersToProcessNum){
+				break;
+			}
+			
+		}
+		
+		return 1;
+	}
+	
+	// Í¬²½
+	public static int processStatSync(ApplicationContext ctx) {
+		
+		AccountStatisticsServiceAsync statisticsService = (AccountStatisticsServiceAsync) ctx.getBean("statServiceAsync");
+		
+		long tm_start = System.currentTimeMillis();
+		int usersToProcessNum = statisticsService.getUsersNumToProcessing();
+		System.out.println("time cost statisticsService.getUsersNumToProcessing:" + (System.currentTimeMillis()-tm_start));
+		System.out.println("usersToProcessNum: " + usersToProcessNum);
+		
+		if (0 == usersToProcessNum){
+			return 0;
+		}
+		
+		int patchSize = 200;
+		int start = 0;
+		while (true){
+			
+			
+			Map<String, String> users = statisticsService.getUsersIdNamePairToProcessByLimit(start, patchSize);
+			if (users.size() == 0){
+				break;
+			}
+		    
+			for (String userid : users.keySet()){
+				
+				statisticsService.updateStatThisMonthByUserid(userid, users.get(userid));
+				
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			start += patchSize;
+			
+			if (start >= 200/*usersToProcessNum*/){
 				break;
 			}
 			

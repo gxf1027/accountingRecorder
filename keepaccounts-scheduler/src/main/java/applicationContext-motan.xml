@@ -29,7 +29,7 @@
                    
     <motan:referer id="statService"
                    interface="cn.gxf.spring.quartz.job.service.AccountStatisticsService"
-                   connectTimeout="10000" requestTimeout="5000" basicReferer="motantestClientBasicConfig"/>
+                   connectTimeout="10000" requestTimeout="50000" basicReferer="motantestClientBasicConfig"/>
                    
     <motan:referer id="creditCardBillService"
                    interface="cn.gxf.spring.quartz.job.service.CreditCardsBillService"
@@ -46,7 +46,7 @@
     <!-- 异步调用 -->
     <motan:referer id="statServiceAsync"
                    interface="cn.gxf.spring.quartz.job.service.AccountStatisticsServiceAsync"
-                   connectTimeout="5000" requestTimeout="5000" basicReferer="motantestClientBasicConfig"/>
+                   connectTimeout="5000" requestTimeout="50000" basicReferer="motantestClientBasicConfig"/>
                    
     <motan:referer id="creditCardBillServiceAsync"
                    interface="cn.gxf.spring.quartz.job.service.CreditCardsBillServiceAsync"
