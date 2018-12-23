@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2018-12-07 07:28:28
+Date: 2018-12-23 21:29:21
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -706,6 +706,8 @@ CREATE TABLE `stat_income_nd` (
   `nd` varchar(4) DEFAULT NULL,
   `yf` varchar(2) DEFAULT NULL,
   `je` float(11,2) DEFAULT NULL,
+  `je_salary` float(11,2) DEFAULT NULL,
+  `je_finproduct` float(11,2) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `proc_time` datetime DEFAULT NULL,
   KEY `statincome_ndyfuser_index` (`user_id`,`nd`,`yf`) USING BTREE
@@ -1026,6 +1028,15 @@ BEGIN
 			DATE_FORMAT(t.shijian, '%Y') nd,
 			DATE_FORMAT(t.shijian, '%m') yf,
 			ROUND(sum(t.je), 2) je,
+     ROUND(sum(CASE t.lb_dm 
+				WHEN  '2002' 	THEN t.je
+				WHEN '2003' 	THEN t.je
+				WHEN '2004' 	THEN t.je
+			ELSE 0 END), 2) je_salary,
+		ROUND(sum(CASE t.lb_dm 
+				WHEN  '2001' 	THEN t.je
+				WHEN '2009' 	THEN t.je
+			ELSE 0 END), 2) je_finproduct,
 			t.user_id as user_id,
 			NOW() as proc_time
 		FROM
@@ -1101,6 +1112,7 @@ BEGIN
 END
 ;;
 DELIMITER ;
+
 
 -- ----------------------------
 -- Procedure structure for proc_acc_stat_nd
