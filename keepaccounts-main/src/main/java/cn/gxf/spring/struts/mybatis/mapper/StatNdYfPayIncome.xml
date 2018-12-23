@@ -24,13 +24,15 @@
 	</select>
 	
 	<select id="getNdYfStat" resultType="cn.gxf.spring.struts2.integrate.model.StatByMonth" >
-		SELECT	* FROM
+		SELECT	nd,yf,paysum,incomesum,incomesalary,incomefinproduct FROM
 			(
 				SELECT
 					a.nd AS nd,
 					a.yf AS yf,
 					IFNULL(a.je, 0) AS paysum,
 					IFNULL(b.je, 0) AS incomesum,
+					IFNULL(b.je_salary,0) AS incomesalary,
+					IFNULL(b.je_finproduct,0) AS incomefinproduct,
 					a.user_id  AS user_id
 				FROM
 					stat_payment_nd AS a
@@ -44,6 +46,8 @@
 					b.yf AS yf,
 					IFNULL(a.je, 0) AS paysum,
 					IFNULL(b.je, 0) AS incomesum,
+					IFNULL(b.je_salary,0) AS incomesalary,
+					IFNULL(b.je_finproduct,0) AS incomefinproduct,
 					b.user_id AS user_id
 				FROM
 					stat_payment_nd AS a

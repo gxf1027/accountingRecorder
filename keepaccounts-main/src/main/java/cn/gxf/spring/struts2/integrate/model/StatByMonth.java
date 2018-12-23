@@ -24,6 +24,8 @@ public class StatByMonth implements Serializable {
 	private String yf;
 	private float paysum;
 	private float incomesum;
+	private float incomesalary;
+	private float incomefinproduct;
 	
 	
 	public String getNdyf() {
@@ -67,6 +69,24 @@ public class StatByMonth implements Serializable {
 	public void setIncomesum(float incomesum) {
 		this.incomesum = incomesum;
 	}
+	public float getIncomesalary() {
+		return incomesalary;
+	}
+	public String getIncomesalary2() {
+		return String.format("%.2f", incomesalary);
+	}
+	public void setIncomesalary(float incomesalary) {
+		this.incomesalary = incomesalary;
+	}
+	public float getIncomefinproduct() {
+		return incomefinproduct;
+	}
+	public String getIncomefinproduct2() {
+		return String.format("%.2f", incomefinproduct);
+	}
+	public void setIncomefinproduct(float incomefinproduct) {
+		this.incomefinproduct = incomefinproduct;
+	}
 	
 	public String getNd(){
 		return this.nd;
@@ -97,10 +117,10 @@ public class StatByMonth implements Serializable {
 		calendar.set(Calendar.DAY_OF_MONTH, 0);
 		return dateFormat.format(calendar.getTime());
 	}
-	
 	@Override
 	public String toString() {
-		return "StatByMonth [nd=" + nd + ", yf=" + yf + ", paysum=" + paysum + ", incomesum=" + incomesum + "]";
-	}	
+		return "StatByMonth [nd=" + nd + ", yf=" + yf + ", paysum=" + paysum + ", incomesum=" + incomesum
+				+ ", incomesalary=" + incomesalary + ", incomefinproduct=" + incomefinproduct + "]";
+	}
 	
 }

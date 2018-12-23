@@ -234,7 +234,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	}
 
 	//@CacheEvict(value="redisCacheStat", allEntries=true)
-	@Transactional("dsTransactionManager")
+	@Transactional(value="dsTransactionManager", isolation=Isolation.READ_COMMITTED)
 	public AccountingDetail updateOne(T detail) {
 		
 		AccountingDetail accountingDetail = accountDetailMBDao.getAccountingDetailByUuid(detail.getAccuuid());
@@ -359,7 +359,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	}
 	
 	//@CacheEvict(value="redisCacheStat",  allEntries=true)
-	@Transactional("dsTransactionManager")
+	@Transactional(value="dsTransactionManager", isolation=Isolation.READ_COMMITTED)
 	public void deleteOne(T detail){
 		
 		Date xgrq = new Date();
@@ -428,7 +428,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	
 	
 	//@CacheEvict(value="redisCacheStat", allEntries=true)
-	@Transactional("dsTransactionManager")
+	@Transactional(value="dsTransactionManager", isolation=Isolation.READ_COMMITTED)
 	public void deletePatch(List<T> detailObjs){
 		if (detailObjs.size() == 0){
 			System.out.println("deletePatch size==0");
@@ -505,7 +505,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	}
 	
 	//@CacheEvict(value="redisCacheStat", allEntries=true)
-	@Transactional("dsTransactionManager")
+	@Transactional(value="dsTransactionManager", isolation=Isolation.READ_COMMITTED)
 	public void deletePatchByAccuuid(List<AccountingDetail> list){
 		if (list.size() == 0){
 			System.out.println("deletePatch size==0");
