@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2018-12-23 21:29:21
+Date: 2018-12-29 22:18:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -1188,6 +1188,15 @@ BEGIN
 			DATE_FORMAT(t.shijian, '%Y') nd,
 			DATE_FORMAT(t.shijian, '%m') yf,
 			ROUND(sum(t.je), 2) je,
+		ROUND(sum(CASE t.lb_dm 
+				WHEN  '2002' 	THEN t.je
+				WHEN '2003' 	THEN t.je
+				WHEN '2004' 	THEN t.je
+			ELSE 0 END), 2) je_salary,
+		ROUND(sum(CASE t.lb_dm 
+				WHEN  '2001' 	THEN t.je
+				WHEN '2009' 	THEN t.je
+			ELSE 0 END), 2) je_finproduct,
 			t.user_id as user_id,
 			NOW() as proc_time
 		FROM
@@ -1198,7 +1207,7 @@ BEGIN
 		AND d.yxbz = 'Y'
 		AND t.yxbz = 'Y'
 		AND t.shijian >= first_date_of_year
-		AND t.shijain <= last_date_of_year
+		AND t.shijian <= last_date_of_year
 		AND t.user_id = user_id
 		GROUP BY
 			DATE_FORMAT(t.shijian, '%Y-%m');
