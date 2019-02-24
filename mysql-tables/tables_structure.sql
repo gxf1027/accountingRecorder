@@ -368,6 +368,8 @@ CREATE TABLE `financial_product_detail` (
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
   `expected_returnrate` float(11,6) DEFAULT NULL,
+  `netv_purchase` float(11,6) DEFAULT NULL,
+  `netv_selling` float(11,6) DEFAULT NULL,
   `je` float(11,2) DEFAULT NULL,
   `real_return` float(11,2) DEFAULT NULL,
   `is_redeem` varchar(2) DEFAULT NULL,
@@ -376,6 +378,7 @@ CREATE TABLE `financial_product_detail` (
   `yxbz` varchar(2) DEFAULT NULL,
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 -- ----------------------------
 -- Table structure for financial_product_notice
