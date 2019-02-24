@@ -34,13 +34,19 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 		// ºÏ¼ÆÊý
 		StatByMonth statSum = new StatByMonth();
 		float incomesum = 0.f;
+		float salarysum = 0.f;
+		float finproductsum = 0.f;
 		float paysum = 0.f;
 		for (StatByMonth stat : list){
 			incomesum += stat.getIncomesum();
+			salarysum += stat.getIncomesalary();
+			finproductsum += stat.getIncomefinproduct();
 			paysum += stat.getPaysum();
 		}
 		
 		statSum.setIncomesum(incomesum);
+		statSum.setIncomesalary(salarysum);
+		statSum.setIncomefinproduct(finproductsum);
 		statSum.setPaysum(paysum);
 		return statSum;
 	}

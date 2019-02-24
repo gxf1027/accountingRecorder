@@ -45,6 +45,9 @@ public class StatByMonth implements Serializable {
 	public String getJeNetSumStr2(){
 		return String.format("%.2f", this.incomesum - this.paysum);
 	}
+	public String getJeNetSalaryMinusPay(){
+		return String.format("%.2f", this.incomesalary - this.paysum);
+	}
 	public float getJesum() {
 		return 0;//jesum;
 	}

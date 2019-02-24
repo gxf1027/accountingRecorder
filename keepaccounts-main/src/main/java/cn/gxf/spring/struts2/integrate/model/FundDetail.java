@@ -3,6 +3,14 @@ package cn.gxf.spring.struts2.integrate.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "FundDetail")
+@XmlType
 public class FundDetail implements Serializable{
 
 	private static final long serialVersionUID = 4429213054083358932L;

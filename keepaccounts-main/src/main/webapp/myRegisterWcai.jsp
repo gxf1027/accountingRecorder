@@ -159,6 +159,7 @@ em{
 		$(":input[name='username']").blur(function(){
 			var uname = $(this).val();
 			console.log(uname);
+			
 			uname = $.trim(uname);
 			
 			if (uname != "" && uname.length >= 6){

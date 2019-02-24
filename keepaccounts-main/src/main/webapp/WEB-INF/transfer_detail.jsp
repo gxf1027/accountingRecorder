@@ -282,6 +282,7 @@
 	    	$('#fund-redeem').hide();
 	    }
 	    
+	    // 转账类型选择后页面自动变化
 	    $('#zzlxDm').change(function(){
 	    	var selectVal = $(this).find('option:selected').val();
 	    	console.log('select_val: ' + selectVal);
@@ -304,6 +305,41 @@
 	    		$('#fund-redeem').hide();
 	    	}
 	    });
+	    
+	    var finprodType = $("input[name='financialProductDetail.productType'][checked]").val();
+	    if (finprodType == 'FP_A3'){
+	    	$('#netv_purchase').removeAttr("disabled");
+    		$('#netv_selling').removeAttr("disabled");
+	    }else{
+    		$('#netv_purchase').attr("disabled","disabled");
+    		$('#netv_selling').attr("disabled","disabled");
+    	}
+	    
+	    $("input:radio[name='financialProductDetail.productType']").on('ifChecked', function(event){
+	        //alert($(this).val());
+	        if (this.value == 'FP_A3'){
+	    		$('#netv_purchase').removeAttr("disabled");
+	    		$('#netv_selling').removeAttr("disabled");
+	    	}else{
+	    		$('#netv_purchase').attr("disabled","disabled");
+	    		$('#netv_selling').attr("disabled","disabled");
+	    		$('#netv_purchase').val("0.0");
+	    		$('#netv_selling').val("0.0");
+	    	}
+	 	});
+	    
+	    // 使用icheck控件以后，以下失效？要用$("input:radio[name='financialProductDetail.productType']").on('ifChecked', function(event){
+	    /* $("input[type=radio][name='financialProductDetail.productType']").change(function(){
+	    	console.log(this.value);
+	    	if (this.value == 'FP_A3'){
+	    		$('#netv_purchase').removeAttr("disabled");
+	    		$('#netv_selling').removeAttr("disabled");
+	    	}else{
+	    		$('#netv_purchase').attr("disabled","disabled");
+	    		$('#netv_selling').attr("disabled","disabled");
+	    	}
+	    }); */
+	    
 	    
 	    // 理财预期收益随动变化
 	    $("input[name='je']").change(function() {
@@ -712,6 +748,18 @@
 						 		</s:iterator>
 			              	</ul>
 		              	</td>
+		             </tr>
+		             <tr>
+		             	<th>买入净值</th>
+		             	<td>
+		             		<s:textfield name="financialProductDetail.netvPurchase" id="netv_purchase"  maxlength="16" class="recordInput" theme="simple"/>
+		             	</td>
+		             </tr>
+		             <tr>
+		             	<th>卖出净值</th>
+		             	<td>
+		             		<s:textfield name="financialProductDetail.netvSelling" id="netv_selling"  maxlength="16" class="recordInput" theme="simple"/>
+		             	</td>
 		             </tr>
 					<tr>
 						<th>银行</th>

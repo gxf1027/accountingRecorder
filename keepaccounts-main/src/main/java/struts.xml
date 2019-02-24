@@ -183,7 +183,7 @@
         	<interceptor-ref name="myinterceptorStack" />
         </action>
         
-        <action name="fundInfo" class="fundInfoAction" method="query"></action>
+        <action name="fundInfo" class="fundInfoAction" method="queryBasicInfo"></action>
                 
         <action name="login_*" class="login_action" method="login{1}">
         	<result name="{1}_OK">/WEB-INF/content/1.jsp</result>

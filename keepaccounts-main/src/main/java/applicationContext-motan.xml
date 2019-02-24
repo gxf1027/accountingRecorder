@@ -23,7 +23,7 @@
     <!-- 协议配置。为防止多个业务配置冲突，推荐使用id表示具体协议。-->
     <motan:protocol id="keepAccMotan" default="true" name="motan"
                     maxServerConnection="800" maxContentLength="1048576"
-                    maxWorkerThread="80" minWorkerThread="20"/>
+                    maxWorkerThread="200" minWorkerThread="20"/>
                     
     <!-- 通用配置，多个rpc服务使用相同的基础配置. group和module定义具体的服务池。export格式为“protocol id:提供服务的端口”-->
     <motan:basicService export="keepAccMotan:8002"

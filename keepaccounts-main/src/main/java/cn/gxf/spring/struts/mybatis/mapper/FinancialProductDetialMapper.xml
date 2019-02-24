@@ -17,6 +17,8 @@
 				start_date AS startDate,
 				end_date AS endDate,
 				expected_returnrate AS expectedReturnRate,
+				netv_purchase AS netvPurchase,
+				netv_selling AS netvSelling,
 				je,
 				real_return AS realReturn,
 				is_redeem AS is_redeem,
@@ -38,6 +40,8 @@
 				start_date AS startDate,
 				end_date AS endDate,
 				expected_returnrate AS expectedReturnRate,
+				netv_purchase AS netvPurchase,
+				netv_selling AS netvSelling,
 				je,
 				real_return AS realReturn,
 				is_redeem AS is_redeem,
@@ -59,6 +63,8 @@
 				start_date AS startDate,
 				end_date AS endDate,
 				expected_returnrate AS expectedReturnRate,
+				netv_purchase AS netvPurchase,
+				netv_selling AS netvSelling,
 				je,
 				real_return AS realReturn,
 				is_redeem AS is_redeem,
@@ -80,6 +86,8 @@
 				start_date AS startDate,
 				end_date AS endDate,
 				expected_returnrate AS expectedReturnRate,
+				netv_purchase AS netvPurchase,
+				netv_selling AS netvSelling,
 				je,
 				real_return AS realReturn,
 				is_redeem AS is_redeem,
@@ -101,6 +109,8 @@
 				start_date AS startDate,
 				end_date AS endDate,
 				expected_returnrate AS expectedReturnRate,
+				netv_purchase AS netvPurchase,
+				netv_selling AS netvSelling,
 				a.je,
 				a.real_return AS realReturn,
 				a.is_redeem AS is_redeem,
@@ -126,6 +136,8 @@
 				start_date AS startDate,
 				end_date AS endDate,
 				expected_returnrate AS expectedReturnRate,
+				netv_purchase AS netvPurchase,
+				netv_selling AS netvSelling,
 				a.je,
 				a.real_return AS realReturn,
 				a.is_redeem AS is_redeem,
@@ -150,6 +162,8 @@
 				start_date AS startDate,
 				end_date AS endDate,
 				expected_returnrate AS expectedReturnRate,
+				netv_purchase AS netvPurchase,
+				netv_selling AS netvSelling,
 				a.je,
 				a.real_return AS realReturn,
 				a.is_redeem AS is_redeem,
@@ -172,13 +186,13 @@
 			SELECT CONCAT('FP',UUID_SHORT())
 		</selectKey>
 		
-  		INSERT INTO financial_product_detail(uuid, transferuuid, product_name, product_type, yh_dm, date_count, start_date, end_date, expected_returnrate, je, real_return, is_redeem, lrrq, xgrq, yxbz)
-			VALUES(#{uuid}, #{transferUuid}, #{productName}, #{productType}, #{yh_dm}, #{dateCount}, #{startDate}, #{endDate}, #{expectedReturnRate}, #{je}, #{realReturn}, #{is_redeem}, #{lrrq}, null, 'Y')
+  		INSERT INTO financial_product_detail(uuid, transferuuid, product_name, product_type, yh_dm, date_count, start_date, end_date, expected_returnrate, netv_purchase, netv_selling, je, real_return, is_redeem, lrrq, xgrq, yxbz)
+			VALUES(#{uuid}, #{transferUuid}, #{productName}, #{productType}, #{yh_dm}, #{dateCount}, #{startDate}, #{endDate}, #{expectedReturnRate}, #{netvPurchase} , #{netvSelling}, #{je}, #{realReturn}, #{is_redeem}, #{lrrq}, null, 'Y')
   	</insert>
   	
   	<update id="updateOne" parameterType="FinancialProductDetail">
 		UPDATE financial_product_detail SET product_name= #{productName}, product_type= #{productType}, yh_dm = #{yh_dm}, date_count=#{dateCount}, start_date = #{startDate}, end_date = #{endDate}, 
-										expected_returnrate= #{expectedReturnRate}, je=#{je},real_return=#{realReturn}, xgrq= #{xgrq}
+										expected_returnrate= #{expectedReturnRate}, netv_purchase=#{netvPurchase}, netv_selling=#{netvSelling}, je=#{je},real_return=#{realReturn}, xgrq= #{xgrq}
 				WHERE transferuuid = #{transferUuid} AND yxbz='Y'
   	</update>
   	

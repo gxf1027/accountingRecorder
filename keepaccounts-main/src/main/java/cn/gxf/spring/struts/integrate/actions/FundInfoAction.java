@@ -24,9 +24,10 @@ public class FundInfoAction extends ActionSupport{
 	private static final long serialVersionUID = -6235277611608364555L;
 	
 	private String fundCode;
-	private ShowApiRequest apiRequest;
+	private ShowApiRequest apiRequestBasic;
+	private ShowApiRequest apiRequestExtra;
 	
-	public String query() throws IOException{
+	public String queryBasicInfo() throws IOException{
 		
 //		String res=new ShowApiRequest("http://route.showapi.com/902-1","79115","cff25d777bea4ca1b414b510c2cc4b5d")
 //				.addTextPara("fundCode",fundCode)
@@ -35,9 +36,8 @@ public class FundInfoAction extends ActionSupport{
 //				.addTextPara("needDetails","0")
 //			  .post();
 		
-		System.out.println("in action fundCode: " + fundCode);
 		// return format jason
-		String res = apiRequest.addTextPara("fundCode",fundCode)
+		String res = apiRequestBasic.addTextPara("fundCode",fundCode)
 					.addTextPara("page","1")
 					.addTextPara("maxResult","20")
 					.addTextPara("needDetails","0")
@@ -49,6 +49,11 @@ public class FundInfoAction extends ActionSupport{
 		try {
 			JSONObject jsonObject = JSON.parseObject(res);
 			JSONObject body = jsonObject.getJSONObject("showapi_res_body");
+			String ret_code = body.getString("ret_code");
+			if (!ret_code.equals("0")){
+				String msg = body.getString("msg");
+				throw new RuntimeException(msg); 
+			}
 			JSONArray data = body.getJSONArray("data");
 			JSONObject detail = (JSONObject) data.get(0);
 			//fundName = detail.getString("simpleName");
@@ -70,6 +75,14 @@ public class FundInfoAction extends ActionSupport{
 		return null;
 	}
 	
+	public String queryExtraInfo() throws IOException{
+		String res = apiRequestExtra.addTextPara("fundCode",fundCode)
+									.addTextPara("date","2016-01-01")
+									.post();
+		System.out.println(res);
+		return null;
+	}
+	
 	public String hello(){
 		System.out.println("hello");
 		return "success";
@@ -83,7 +96,11 @@ public class FundInfoAction extends ActionSupport{
 		this.fundCode = fundCode;
 	}
 	
-	public void setApiRequest(ShowApiRequest apiRequest) {
-		this.apiRequest = apiRequest;
+	public void setApiRequestBasic(ShowApiRequest apiRequest) {
+		this.apiRequestBasic = apiRequest;
+	}
+	
+	public void setApiRequestExtra(ShowApiRequest apiRequestExtra) {
+		this.apiRequestExtra = apiRequestExtra;
 	}
 }

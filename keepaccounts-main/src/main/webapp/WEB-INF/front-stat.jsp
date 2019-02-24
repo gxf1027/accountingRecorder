@@ -44,6 +44,7 @@
 		.query_condition tr{height:36px;}
 		.recordInput{width:118px;padding-left:0px;height:24px;line-height:24px;border:1px solid #CCC;padding-right:2px;font-size:12px;}
 		.selectInput{width:77px;padding-left:5px;height:28px;line-height:24px;border:1px solid #CCC;padding-right:20px;font-size:12px;}
+		.selectInput_widen{width:127px;padding-left:5px;height:28px;line-height:24px;border:1px solid #CCC;padding-right:20px;font-size:12px;position:relative;left:389px;}
 		.queryBtn{cursor:pointer;height:30px;line-height:30px;_height:28px;_line-height:28px;text-align:center;}
 		.queryBtn{background:#15A041;color:#FFF;width:110px;border:1px #15A041 solid;font-weight:bold;}
 		
@@ -257,9 +258,11 @@
 							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 							<s:submit method="reProcStat" key="重新统计" theme="simple" class="button button-primary button-rounded button-small" />
 							&nbsp&nbsp<s:submit method="reProcStatThisMonth" key="刷新本月" theme="simple" class="button button-primary button-rounded button-small" />
+							<s:select list="{'全部','只看工资','只看理财'}" id="income_kind" class="selectInput_widen" theme="simple" ></s:select>
 						</s:form>
+						
 					</div>
-					
+										
 					<div style="min-height: 220px; margin-left: 170px; margin-top: 6px; ">
 						<table id="queryResTable" class="record_biz" >
 							<thead style="font-size: 14px;color:#737373; background-color: #eee; font-weight: bold;">

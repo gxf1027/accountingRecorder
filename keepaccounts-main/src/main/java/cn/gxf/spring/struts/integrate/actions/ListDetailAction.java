@@ -78,10 +78,8 @@ public class ListDetailAction extends ActionSupport implements RequestAware, Pre
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		//this.myrequest.put("ZH_INFO", daoImplJdbc.getZhInfo(user.getId()));
 		
-		//List<AccDateStat> list = detailAccountService.getDateStat(5, "2017", "10");
-		//List<AccDateStat> list = accountStatService.getDateStatMB(5, "2017", "10");
 		List<AccDateStat> list = accountStatService.getDateStatMB(user.getId(), this.date_from, this.date_to);
-		System.out.println("listByMonth: " + list.hashCode());
+		//System.out.println("listByMonth: " + list.hashCode());
 		this.myrequest.put("detailList", list);
 		System.out.println(list.size());
 		//System.out.println(list);

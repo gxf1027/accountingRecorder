@@ -72,7 +72,7 @@
         	<!-- each n minuts -->
             <!-- <value>0 0/1 * * * ?</value> -->
             <!-- everyday 23 o'clock -->
-            <value>0 45 22 * * ?</value>
+            <value>0 06 22 * * ?</value>
         </property>
     </bean>  
     
@@ -154,4 +154,10 @@
 	    	</props>
 	    </property>
 	</bean>
+	
+	<!-- DELETE from test.qrtz_cron_triggers;
+		DELETE from test.qrtz_triggers;
+		delete from test.qrtz_job_details;
+		delete from test.qrtz_locks;
+		COMMIT; -->
 </beans>

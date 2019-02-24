@@ -5,6 +5,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "TransferDetail")
+@XmlType
 public class TransferDetail extends AccountObject implements Serializable{
 	private static final long serialVersionUID = 3519049834018168814L;
 	private String mxuuid;

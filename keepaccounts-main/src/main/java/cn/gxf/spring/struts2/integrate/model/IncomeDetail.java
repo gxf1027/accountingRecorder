@@ -5,6 +5,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "IncomeDetail")
+@XmlType
 public class IncomeDetail extends AccountObject implements Serializable {
 
 	/**
@@ -12,8 +21,11 @@ public class IncomeDetail extends AccountObject implements Serializable {
 	 */
 	private static final long serialVersionUID = 853505961922326813L;
 
+	/*@XmlElement(required=true)*/
 	private String mxuuid;
+	/*@XmlElement(required=true)*/
 	private String accuuid;
+	/*@XmlElement(nillable=true)*/
 	private String finprodUuid; // 与“收入”关联的“理财产品”，当收入类型是“理财收益”时有效
 	private String user_name;
 	private int user_id;
@@ -22,8 +34,10 @@ public class IncomeDetail extends AccountObject implements Serializable {
 	private String fkfmc;
 	private String zh_dm;
 	private Date shijian;
+	/*@XmlElement(nillable=true)*/
 	private String bz;
 	private String yxbz;
+	/*@XmlElement(nillable=true)*/
 	private Date xgrq;
 
 	public String getMxuuid() {

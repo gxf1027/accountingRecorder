@@ -191,4 +191,22 @@
     <!-- 系统初始化和关闭有关 -->
     <bean class="cn.gxf.spring.struts.integrate.sysctr.InstantiationTracingBeanPostProcessor"/>
     <!-- <bean class="cn.gxf.spring.struts.integrate.sysctr.SpringContextCloseListener" /> -->
+    
+    
+    
+    <bean id="taskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<!-- 线程池维护线程的最少数量 -->
+		<property name="corePoolSize" value="10" />
+		<!-- 允许的空闲时间 -->
+		<property name="keepAliveSeconds" value="2000" />
+		<!-- 线程池维护线程的最大数量 -->
+		<property name="maxPoolSize" value="20" />
+		<!-- 缓存队列 -->
+		<property name="queueCapacity" value="20" />
+		<!-- 对拒绝task的处理策略 -->
+		<property name="rejectedExecutionHandler">
+			<bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />
+		</property>
+	</bean>
 </beans>

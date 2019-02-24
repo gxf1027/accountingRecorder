@@ -60,6 +60,7 @@ public class AccountStatisticDaoJdbcImpl implements AccountStatisticDao{
 		long startmillis = System.currentTimeMillis();
 		int row = namedTemplate.update(sql, paramMap);
 		System.out.println("getUsersNumHavingData: " + (System.currentTimeMillis()-startmillis));
+		System.out.println("getUsersNumHavingData users num" + row);
 		
 		return row;
 	}
