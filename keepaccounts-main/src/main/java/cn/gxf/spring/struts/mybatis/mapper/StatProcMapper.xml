@@ -60,19 +60,46 @@
 	</select>
 
 	<select id="queryMonthsHaveNewData" parameterType="map" resultType="string">
-		SELECT DATE_FORMAT(fsrq, '%Y-%m') FROM (
-			SELECT p.shijian AS fsrq FROM account_payment_detail p
-				WHERE (p.lrrq &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s')
-						OR p.xgrq &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s'))
-				AND p.user_id = #{user_id} 
-				AND p.yxbz='Y'
-			UNION
-			SELECT p.shijian AS fsrq FROM account_income_detail p 
-				WHERE (p.lrrq &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s')
-					 	OR p.xgrq &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d %H:%i:%s'))
-				AND p.user_id = #{user_id} 
-				AND p.yxbz='Y') A
-		GROUP BY DATE_FORMAT(fsrq, '%Y-%m')
+		SELECT fsrq
+		FROM
+			(
+				SELECT
+					DATE_FORMAT(t.shijian, '%Y-%m') fsrq
+				FROM
+					account_income_detail t
+				WHERE
+					t.lrrq &gt;= DATE_FORMAT(#{date_from},'%Y-%m-%d %H:%i:%s')
+				AND t.user_id = #{user_id}
+				AND t.yxbz = 'Y'
+				UNION ALL
+				SELECT
+					DATE_FORMAT(t.shijian, '%Y-%m') fsrq
+				FROM
+					account_income_detail t
+				WHERE
+					t.xgrq &gt;= DATE_FORMAT(#{date_from},'%Y-%m-%d %H:%i:%s')
+				AND t.user_id = #{user_id}
+				AND t.yxbz = 'Y'
+				UNION ALL
+				SELECT
+					DATE_FORMAT(p.shijian, '%Y-%m') AS fsrq
+				FROM
+					account_payment_detail p
+				WHERE
+					p.lrrq &gt;= DATE_FORMAT(#{date_from},'%Y-%m-%d %H:%i:%s')
+				AND p.user_id = #{user_id}
+				AND p.yxbz = 'Y'
+				UNION ALL
+				SELECT
+					DATE_FORMAT(p.shijian, '%Y-%m') AS fsrq
+				FROM
+					account_payment_detail p
+				WHERE
+					p.xgrq &gt;= DATE_FORMAT(#{date_from},'%Y-%m-%d %H:%i:%s')
+				AND p.user_id = #{user_id}
+				AND p.yxbz = 'Y'
+			) TEMP
+		GROUP BY fsrq
 	</select>
 </mapper>
 
