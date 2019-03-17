@@ -180,8 +180,10 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         if (authentication.getCredentials() == null) {
             logger.debug("Authentication failed: no credentials provided");
 
+            /*throw new BadCredentialsException(messages.getMessage(
+                    "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"), userDetails);*/
             throw new BadCredentialsException(messages.getMessage(
-                    "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"), userDetails);
+                    "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
 
         String presentedPassword = authentication.getCredentials().toString();
@@ -189,8 +191,10 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         if (!passwordEncoder.isPasswordValid(userDetails.getPassword(), presentedPassword, salt)) {
             logger.debug("Authentication failed: password does not match stored value");
 
+            /*throw new BadCredentialsException(messages.getMessage(
+                    "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"), userDetails);*/
             throw new BadCredentialsException(messages.getMessage(
-                    "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"), userDetails);
+                    "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
     }
 

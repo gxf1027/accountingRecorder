@@ -26,7 +26,7 @@
 		<intercept-url pattern="/demo/**" access="hasRole('ROLE_USER')" requires-channel="https" />
 		<intercept-url pattern="/myLoginWcai.jsp"  requires-channel="https" />
 		<intercept-url pattern="/myRegisterWcai.jsp"  requires-channel="https" />
-		<form-login login-page="/myLoginWcai.jsp" default-target-url="/demo/frontStatistics!inputFront" always-use-default-target="false" />
+		<form-login login-page="/myLoginWcai.jsp" login-processing-url="/j_spring_security_check" username-parameter="j_username" password-parameter="j_password" default-target-url="/demo/frontStatistics!inputFront" always-use-default-target="false" />
 		<!-- 使用自定义的logout filter, 将以下注释掉 -->
 		<!-- <logout logout-success-url="/myLoginWcai.jsp" invalidate-session="true" /> -->
 		<!-- 自定退出的logout filter -->
