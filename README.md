@@ -11,7 +11,7 @@
 
 ### **技术框架**：<br>  
 * 核心框架：Spring framework 4.0+  <br>  
-* 安全框架：Spring Security 3.0+  <br>  
+* 安全框架：Spring Security 4.0+  <br>  
 * 视图框架：Struts2  <br>  
 * 持久层框架：MyBatis3  <br>  
 * 数据库连接池：dbcp2 <br>  
