@@ -1,5 +1,7 @@
 package cn.gxf.spring.bill.receiver;
 
+import java.util.Date;
+
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
 
@@ -11,8 +13,10 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.gxf.spring.bill.dao.CreditCardBillConsumingDao;
 import cn.gxf.spring.bill.dao.MailDao;
 import cn.gxf.spring.bill.mailsender.MailSenderService;
+import cn.gxf.spring.bill.model.CreditCardBillConsumingInfo;
 import cn.gxf.spring.cxf.AuthorizingInterceptor;
 import cn.gxf.spring.quartz.job.endpoint.BillServiceEndpoint;
 import cn.gxf.spring.quartz.job.model.CreditCardBill;
@@ -29,9 +33,16 @@ public class MqMsgProcessor implements ApplicationContextAware{
 	@Autowired
 	private MailDao maiDao;
 	
+	@Autowired
+	private CreditCardBillConsumingDao creditCardConDao;
+	
 	private ApplicationContext appCtx;
 	
-	
+	public void testProcessing(String info) throws InterruptedException{
+		long thread_id = Thread.currentThread().getId();
+		Thread.sleep(5000);
+		System.out.println("thread_id: "+ thread_id+" info: "+ info);
+	}
 	
 	/*
 	       将POJO作为处理消息的类，接受的消息由Adapter直接转化为CreditCardBill类型
@@ -49,6 +60,20 @@ public class MqMsgProcessor implements ApplicationContextAware{
 		System.out.println("onMessage count: " + count);
 		count++;
 		
+		// 判断是否已经接收过，如果已经接收过了就放弃
+		long thread_id = Thread.currentThread().getId();
+		int isExists = creditCardConDao.isPchExists(bill.getPch());
+		if (isExists > 0){
+			System.out.println("pch: "+bill.getPch()+" was already proceeded.");
+			return;
+		}
+		
+		CreditCardBillConsumingInfo ccbci = new CreditCardBillConsumingInfo();
+		ccbci.setPch(bill.getPch());
+		ccbci.setThreadId(String.valueOf(thread_id));
+		ccbci.setRevTime(new Date());
+		ccbci.setYxbz("Y");
+		
 		System.out.println("bill: " + bill);
 		
 		try {
@@ -59,10 +84,13 @@ public class MqMsgProcessor implements ApplicationContextAware{
 			throw new RuntimeException();
 		} 
 		
-		//this.mailSenderService.sendSimpleMailTxt(bill);
 		this.mailSenderService.sendSimpleMailThymeleaf(bill);
 		
 		this.setBillMailed(bill);
+		
+		// 保存发送的时间
+		ccbci.setSendTime(new Date());
+		creditCardConDao.saveConsumingInfo(ccbci);
 		
 		System.out.println("billProcessed");
 		
@@ -82,10 +110,11 @@ public class MqMsgProcessor implements ApplicationContextAware{
 		BillServiceEndpoint billService =  (BillServiceEndpoint) appCtx.getBean("billService");
 		
 		AuthorizingInterceptor authorizingInterceptor = new AuthorizingInterceptor();
-		authorizingInterceptor.setUserName("John");
-		authorizingInterceptor.setPassword("password");
-		org.apache.cxf.endpoint.Client cxfClient = ClientProxy.getClient(billService);
-		cxfClient.getOutInterceptors().add(authorizingInterceptor);
+		// 模拟增加一个拦截器
+//		authorizingInterceptor.setUserName("John");
+//		authorizingInterceptor.setPassword("password");
+//		org.apache.cxf.endpoint.Client cxfClient = ClientProxy.getClient(billService);
+//		cxfClient.getOutInterceptors().add(authorizingInterceptor);
 		
 		billService.SetBillMailed(bill.getMxUuidList());
 	}

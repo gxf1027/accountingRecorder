@@ -24,11 +24,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/CreditCardBill.jar"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/FinancialProductDetail.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/FinancialProductsNotice.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/BillServiceEndpoint.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/RpcService.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/SayHi.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/FinancialProductDetail.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.0"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -116,6 +116,15 @@
 	    <property name="defaultListenerMethod" value="financialProductsNoticeProcessing"/> <!-- 处理消息的方法 -->
 	</bean>
 	
+	<!-- 测试 -->
+	<!-- <bean id="msgAdapterTest"
+	      class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+	    <constructor-arg>
+	        <bean class="cn.gxf.spring.bill.receiver.MqMsgProcessor"/> 
+	    </constructor-arg>
+	    <property name="defaultListenerMethod" value="testProcessing"/> 
+	</bean> -->
+	
 	<!--
 		org.springframework.jms.listener.AbstractMessageListenerContainer  
 		<p>The listener container offers the following message acknowledgment options:
@@ -144,7 +153,9 @@
 	    <property name="messageListener" ref="msgAdapterCreditCardBill" /> <!-- 使用MessageListenerAdapter来作为消息监听器 -->
 	    <property name="sessionTransacted" value="true"/>
 	    <property name="transactionManager" ref="springJtaTxManager"/> <!-- 配置后函数不需要使用@Transactional注解 -->
-	    <!-- <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>  --> <!--使用JTA的情况下，即为客户端确认，这个配置被忽略 -->  
+	    <!-- <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>  --> <!--使用JTA的情况下，即为客户端确认，这个配置被忽略 -->
+	    <property name="concurrentConsumers" value="5" /> <!-- 增加并发, 否则只有一个consumer线程处理 -->
+	    <property name="maxConcurrentConsumers" value="20" />  
 	</bean>
 	
 	<bean id="jmsContainerFinanProdNotice" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
@@ -153,8 +164,17 @@
 	    <property name="messageListener" ref="msgAdapterFinanProdNotice" /> <!-- 使用MessageListenerAdapter来作为消息监听器 -->
 	    <property name="sessionTransacted" value="true"/>
 	    <property name="transactionManager" ref="springJtaTxManager"/> <!-- 配置后函数不需要使用@Transactional注解 -->
-	    <!-- <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>  --> <!--使用JTA的情况下，即为客户端确认，这个配置被忽略 -->  
+	    <!-- <property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/> -->  <!-- 使用JTA的情况下，即为客户端确认，这个配置被忽略   -->
+	    <property name="concurrentConsumers" value="5" /> <!-- 增加并发 -->
+	    <property name="maxConcurrentConsumers" value="20" />
 	</bean>
+	
+	<!-- test -->
+	<!-- <bean id="jmsContainerTest" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+	    <property name="connectionFactory" ref="amqConnectionFactory"/>
+	    <property name="destination" ref="mailQueueDest_FinaProducts"/>
+	    <property name="messageListener" ref="msgAdapterTest" /> 
+	</bean> -->
 	
 	
 	<!-- atomikos事务管理器 -->
