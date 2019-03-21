@@ -171,7 +171,7 @@
 				a.xgrq 
 			  FROM financial_product_detail a, account_transfer_detail b
 		WHERE a.transferuuid = b.mxuuid
-		AND a.product_type = 'FP_A1'
+		AND a.product_type IN ('FP_A1','FP_A3')
 		AND a.end_date  &gt;= DATE_FORMAT(#{date_from}, '%Y-%m-%d')
 		AND a.end_date  &lt;= DATE_FORMAT(#{date_to}, '%Y-%m-%d 23:59:59')
 		AND a.redeemuuid IS NULL

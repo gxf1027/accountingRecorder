@@ -40,6 +40,8 @@
 				ON a.nd = b.nd
 				AND a.yf = b.yf
 				AND a.user_id = b.user_id
+				WHERE a.user_id = #{user_id}
+				  AND a.nd = #{nd}
 				UNION
 				SELECT
 					b.nd AS nd,
@@ -55,10 +57,10 @@
 				ON a.nd = b.nd
 				AND a.yf = b.yf
 				AND a.user_id = b.user_id
+				WHERE b.user_id = #{user_id}
+				  AND b.nd = #{nd}
 			) AS tab
-		WHERE user_id = #{user_id}
-		AND nd = #{nd}
-		ORDER BY nd,	yf
+		ORDER BY nd, yf
 	</select>
 	
 	<select id="getIncomeStatOnSrlb" resultType="cn.gxf.spring.struts2.integrate.model.StatByCategory">

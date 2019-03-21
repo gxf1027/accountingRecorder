@@ -46,7 +46,8 @@
         <property name="poolConfig" ref="jedisPoolConfig" />
     </bean>
     
-    <!-- 给spring security使用 -->
+    <!-- 给spring security使用
+     sessionRepository对象由RedisHttpSessionConfiguration生成，因RedisHttpSessionConfiguration带注释 @Configuration-->
 	<bean id="sessionRegistry" class="org.springframework.session.security.SpringSessionBackedSessionRegistry">
 	    <constructor-arg ref="sessionRepository"/>
 	</bean>
