@@ -19,6 +19,7 @@ import com.opensymphony.xwork2.Preparable;
 import cn.gxf.spring.struts.integrate.security.UserLogin;
 import cn.gxf.spring.struts.mybatis.dao.CustomTailorQueryDao;
 import cn.gxf.spring.struts.mybatis.dao.StatNdYfMBDao;
+import cn.gxf.spring.struts2.integrate.dao.DmUtilDaoImplJdbc;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
 import cn.gxf.spring.struts2.integrate.model.IncomeDetailVO;
@@ -175,7 +176,10 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		int user_id = user.getId();
 		this.myrequest.put("zh_info", dmService.getZhInfoSimple(user_id));
 		this.myrequest.put("ZH_INFO_MAP", dmService.getZhInfoMap(user_id));
-		this.myrequest.put("dm_zzlx", dmService.getTransferType(user_id));
+		Map<String, String> zzlxDm = new HashMap<String, String>();
+		zzlxDm.putAll(dmService.getTransferType(user_id));
+		zzlxDm.putAll(dmService.getTransferTypeCommon());
+		this.myrequest.put("dm_zzlx", zzlxDm);
 				
 		return "inputTransferOk";
 	}
@@ -227,6 +231,7 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		if (this.pageNumPayment == null){
 			this.pageNumPayment = new Integer(1);
 		}
+		this.pageNumPayment = this.pageNumPayment.intValue() < 1 ? 1 : this.pageNumPayment; 
 		// ²éÑ¯
 		List<PaymentDetailVO> paymentlist = customTailorQueryService.queryPayment(params,
 																				this.pageNumPayment.intValue(),
