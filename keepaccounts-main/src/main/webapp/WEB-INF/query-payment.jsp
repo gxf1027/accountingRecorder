@@ -58,7 +58,7 @@
 		a {text-decoration: none;}
 		.prePage{color: #666;line-height: 25px;height: 25px;}
 		.nextPage{color: #666;line-height: 25px;height: 25px;}
-		.firstPage , .lastPage{color: #666;line-height: 25px;height: 25px;}
+		.firstPage , .lastPage, .tonthPage{color: #666;line-height: 25px;height: 25px;}
 		
 		.pageInfo{margin-left: 16%; margin-top: 10px;font:17px "Trebuchet MS", Arial, Helvetica, sans-serif;}
 		.even{ background: #FFFFEE;}
@@ -224,6 +224,24 @@
 				$pageNumElem.val(curPageNum+1); // 页码++
 				var $queryBtn = $(this).parent().siblings().eq(0).children().find('.queryBtn');
 				
+				$queryBtn.click();
+			});
+			
+			$(".tonthPage").click(function(){
+				
+				var $pageNumElem = $(this).parent().siblings().eq(0).children('.currentPageNum');
+				var curPageNum = $pageNumElem.val();
+				
+				/*总共多少页*/
+				var $totalPagesElem =  $(this).parent().siblings().eq(0).children('.totalPages');
+				console.log('总共：' + $totalPagesElem.val());
+				var totalPages = Number($totalPagesElem.val());
+				
+				var topage = $("#tonthpage").val(); // 跳转到第tonthpage页
+				console.log("topage:" + topage);
+				$pageNumElem.val(topage);
+				
+				var $queryBtn = $(this).parent().siblings().eq(0).children().find('.queryBtn');
 				$queryBtn.click();
 			});
 			
@@ -544,6 +562,7 @@
 						第<s:property value="pageNumPayment==null?1:pageNumPayment"/>页（共<s:property value="totalPagesPayment==null?' ':totalPagesPayment"/>页）
 						<a id="nextPagePayment" class="nextPage" href="#"><span>下一页&gt;&gt;</span></a>
 						<a class="lastPage" href="#" target="_self"><span>尾页</span></a>   
+						&nbsp;&nbsp;<a class="tonthPage" href="#" target="_self"><span>转到：</span></a> 第&nbsp;<input type="number" id="tonthpage" name="tothpage" min="1" style="width: 35px;vertical-align:middle;" />&nbsp;页
 					</div>
 				</div>
 				
