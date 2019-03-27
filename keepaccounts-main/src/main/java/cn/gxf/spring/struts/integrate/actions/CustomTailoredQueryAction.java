@@ -389,7 +389,12 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		this.myrequest.put("queryType", "transfer");
 		
 		// 当result type是默认（dispatcher），直接调整到jsp页面，页面上select元素需要初始化内容
-		this.myrequest.put("dm_zzlx", dmService.getTransferType(user.getId())); // transfer页面特有元素
+		// transfer页面特有元素
+		Map<String, String> zzlxDm = new HashMap<String, String>();
+		zzlxDm.putAll(dmService.getTransferType(user.getId()));
+		zzlxDm.putAll(dmService.getTransferTypeCommon());
+		this.myrequest.put("dm_zzlx", zzlxDm);
+		
 		pageElement2Request();
 		
 		return "inputTransferOk";
