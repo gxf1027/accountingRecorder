@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2018-12-29 22:18:05
+Date: 2019-03-28 19:39:16
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -34,6 +34,29 @@ CREATE TABLE `account_detail` (
   KEY `acc_recdm_index` (`rec_dm`) USING HASH,
   KEY `acc_userid_recdm_index` (`user_id`,`rec_dm`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for account_detail_test
+-- ----------------------------
+DROP TABLE IF EXISTS `account_detail_test`;
+CREATE TABLE `account_detail_test` (
+  `accuuid` varchar(255) NOT NULL,
+  `rec_dm` varchar(10) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `je` float(11,2) NOT NULL,
+  `shijian` datetime NOT NULL,
+  `yxbz` varchar(255) NOT NULL,
+  `xgrq` datetime DEFAULT NULL,
+  `lrrq` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+/*!50100 PARTITION BY RANGE (user_id)
+(PARTITION p0 VALUES LESS THAN (2000) ENGINE = InnoDB,
+ PARTITION p1 VALUES LESS THAN (4000) ENGINE = InnoDB,
+ PARTITION p2 VALUES LESS THAN (6000) ENGINE = InnoDB,
+ PARTITION p3 VALUES LESS THAN (8000) ENGINE = InnoDB,
+ PARTITION p4 VALUES LESS THAN (10000) ENGINE = InnoDB,
+ PARTITION p5 VALUES LESS THAN (12000) ENGINE = InnoDB,
+ PARTITION p9 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 
 -- ----------------------------
 -- Table structure for account_income_detail
@@ -378,7 +401,6 @@ CREATE TABLE `financial_product_detail` (
   `yxbz` varchar(2) DEFAULT NULL,
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 -- ----------------------------
 -- Table structure for financial_product_notice
@@ -885,6 +907,19 @@ CREATE TABLE `zh_detail_ccbill` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
+-- Table structure for zh_detail_ccbill_consumer
+-- ----------------------------
+DROP TABLE IF EXISTS `zh_detail_ccbill_consumer`;
+CREATE TABLE `zh_detail_ccbill_consumer` (
+  `pch` varchar(255) NOT NULL,
+  `thread_id` varchar(128) DEFAULT NULL,
+  `rev_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `send_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `yxbz` varchar(2) DEFAULT NULL,
+  PRIMARY KEY (`pch`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
 -- Table structure for zh_detail_ccbill_mx
 -- ----------------------------
 DROP TABLE IF EXISTS `zh_detail_ccbill_mx`;
@@ -991,12 +1026,9 @@ BEGIN
   END IF;
 
 	INSERT INTO stat_payment_nd 
-	SELECT
-			DATE_FORMAT(t.shijian, '%Y'),
-			DATE_FORMAT(t.shijian, '%m'),
-			ROUND(sum(t.je), 2) je,
-			t.user_id as user_id,
-			NOW() as proc_time
+  SELECT nd_str, yf_str, TMP.je, user_id, NOW() FROM
+	(SELECT
+			ROUND(sum(t.je), 2) je
 		FROM
 			test.account_payment_detail t,
 			test.account_detail d
@@ -1006,9 +1038,9 @@ BEGIN
 		AND t.yxbz = 'Y'
 		AND t.shijian >= date_from
 		AND t.shijian < date_to
-		AND t.user_id = user_id
-		GROUP BY
-			DATE_FORMAT(t.shijian, '%Y-%m');
+		AND t.user_id = user_id) TMP
+    WHERE TMP.je IS NOT NULL;
+		
 
 	# income stat
 	SELECT table_name into tab_str FROM information_schema.TABLES WHERE table_name ='stat_income_nd';
@@ -1027,21 +1059,19 @@ BEGIN
   END IF;
 
 	INSERT INTO stat_income_nd
+	SELECT nd_str, yf_str, je, je_salary, je_finproduct, user_id, NOW() FROM (
   SELECT
-			DATE_FORMAT(t.shijian, '%Y') nd,
-			DATE_FORMAT(t.shijian, '%m') yf,
 			ROUND(sum(t.je), 2) je,
      ROUND(sum(CASE t.lb_dm 
 				WHEN  '2002' 	THEN t.je
 				WHEN '2003' 	THEN t.je
 				WHEN '2004' 	THEN t.je
+        WHEN '2014'   THEN t.je
 			ELSE 0 END), 2) je_salary,
 		ROUND(sum(CASE t.lb_dm 
 				WHEN  '2001' 	THEN t.je
 				WHEN '2009' 	THEN t.je
-			ELSE 0 END), 2) je_finproduct,
-			t.user_id as user_id,
-			NOW() as proc_time
+			ELSE 0 END), 2) je_finproduct
 		FROM
 			test.account_income_detail t,
 			test.account_detail d
@@ -1051,9 +1081,8 @@ BEGIN
 		AND t.yxbz = 'Y'
 		AND t.shijian >= date_from 
 		AND t.shijian < date_to
-		AND t.user_id = user_id
-		GROUP BY
-			DATE_FORMAT(t.shijian, '%Y-%m');
+		AND t.user_id = user_id) TMP
+WHERE TMP.je IS NOT NULL;
 
 	# payment stat by dl_dm
 	SELECT table_name into tab_str FROM information_schema.TABLES WHERE table_name ='stat_payment_dl';
