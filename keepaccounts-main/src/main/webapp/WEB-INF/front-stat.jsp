@@ -99,6 +99,7 @@
 			});
 			
 			$("a[name='billsend']").click(function(){
+				console.log("");
 				//window.location.href = "${pageContext.request.contextPath}/demo/billsend";
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
@@ -123,9 +124,9 @@
 				        dataType:"text",
 				        async: true,
 				        error: function(data, error) {},
-				        beforeSend : function(xhr) {
+				        /* beforeSend : function(xhr) {
 			                xhr.setRequestHeader(header, token);
-			            }, 
+			            },  */ /*在不使用csrf时要屏蔽掉，否则出错*/
 				        success: function(data)
 				        {
 				        	//$("#username_msg").html(data);
@@ -208,6 +209,12 @@
 						<i class="g-icon-header"></i>
 						<span class="userAccount"><span>${pageContext.request.userPrincipal.name}</span></span>
 					</div>
+				</li>
+				
+				<li>
+					<s:if test="#request.keepdates!=null">
+					<a class="home before">累计记账<s:property value="#request.keepdates" />天</a>
+					</s:if>
 				</li>
 			</ul>
 		</div>

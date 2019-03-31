@@ -15,6 +15,7 @@ import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.model.StatByCategory;
 import cn.gxf.spring.struts2.integrate.model.StatByMonth;
 import cn.gxf.spring.struts2.integrate.service.FrontStatisticsService;
+import cn.gxf.spring.struts2.integrate.service.KeepAccountingDatesService;
 
 public class FrontStatisticsAction extends ActionSupport implements RequestAware{
 
@@ -26,6 +27,8 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 	@Autowired
 	private FrontStatisticsService frontStatService;
 	
+	@Autowired
+	private KeepAccountingDatesService keepAccountingDatesService;
 	
 //	@Autowired
 //	private AccTools accTools; 
@@ -69,6 +72,10 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 		
 		myrequest.put("incomeStatLb", incomeStatLb);
 		myrequest.put("paymentStatDl", paymentStatDl);
+		
+		int keepdates = keepAccountingDatesService.getKeepAccountingDates(user.getId());
+		myrequest.put("keepdates", keepdates);
+		System.out.println("keepdates: " + keepdates);
 		
 		return "inputOk";
 	}

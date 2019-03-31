@@ -22,4 +22,6 @@ public interface StatNdYfMBDao {
 	public Date getLastProcTime(@Param("user_id") int user_id);
 	public void insertProcTime(@Param("proc_time") Date proc_time, @Param("user_id") int user_id);
 	public void updateProcTime(@Param("proc_time") Date proc_time, @Param("user_id") int user_id);
+	
+	public int getKeepAccountingDates(@Param("user_id") int user_id); // 获取记账天数
 }

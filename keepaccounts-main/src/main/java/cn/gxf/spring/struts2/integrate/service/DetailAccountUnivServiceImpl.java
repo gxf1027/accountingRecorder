@@ -69,6 +69,9 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	@Autowired
 	private DmService dmService;
 	
+	@Autowired
+	private KeepAccountingDatesService keepAccountingDatesService;
+	
 	// 通过accuuid获得具体的明细对象
 	public AccountObject getOneItem(String accuuid){
 		AccountingDetail acc = accountDetailMBDao.getAccountingDetailByUuid(accuuid);
@@ -229,7 +232,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	    // 清除缓存
 		this.accountStatService.EvictDateStatRedis(keys);
 		this.dmService.removeZhInfoCache(detail.getUser_id());
-		
+		this.keepAccountingDatesService.updatekeepAccountingDates(detail.getUser_id(), new Date());
 		return accountingDetail.getAccuuid();
 	}
 
