@@ -99,6 +99,9 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 		myrequest.put("incomeStatLb", incomeStatLb);
 		myrequest.put("paymentStatDl", paymentStatDl);
 		
+		int keepdates = keepAccountingDatesService.getKeepAccountingDates(user.getId());
+		myrequest.put("keepdates", keepdates);
+		
 		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync*10);
 		
 		return "inputOk";
@@ -126,6 +129,9 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 		
 		myrequest.put("incomeStatLb", incomeStatLb);
 		myrequest.put("paymentStatDl", paymentStatDl);
+		
+		int keepdates = keepAccountingDatesService.getKeepAccountingDates(user.getId());
+		myrequest.put("keepdates", keepdates);
 		
 		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync*10);
 		
