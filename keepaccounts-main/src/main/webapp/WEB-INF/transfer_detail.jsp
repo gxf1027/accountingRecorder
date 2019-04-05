@@ -276,7 +276,7 @@
 	    }else{
 	    	$('#financial-extra-info').hide();
 	    }
-	    if ($('#zzlxDm').find('option:selected').val() == '0009' || $('#zzlxDm').val() == '0009'){
+	    if ($('#zzlxDm').find('option:selected').val() == '0009' || $('#zzlxDm').val() == '0009' || $('#zzlxDm').val() == '0011'){
 	    	$('#fund-redeem').show();
 	    }else{
 	    	$('#fund-redeem').hide();
@@ -299,7 +299,7 @@
 	    		$('#financial-extra-info').hide();
 	    	}
 	    	
-	    	if ('0009' == selectVal){
+	    	if ('0009' == selectVal || '0011' == selectVal){
 	    		$('#fund-redeem').show();
 	    	}else{
 	    		$('#fund-redeem').hide();
@@ -315,6 +315,12 @@
     		$('#netv_selling').attr("disabled","disabled");
     	}
 	    
+	    if (finprodType == 'FP_A4'){
+        	$('#dateEnd').attr("disabled","disabled");
+        }else{
+        	$('#dateEnd').removeAttr("disabled");
+        }
+	    
 	    $("input:radio[name='financialProductDetail.productType']").on('ifChecked', function(event){
 	        //alert($(this).val());
 	        if (this.value == 'FP_A3'){
@@ -326,6 +332,12 @@
 	    		$('#netv_purchase').val("0.0");
 	    		$('#netv_selling').val("0.0");
 	    	}
+	        
+	        if (this.value == 'FP_A4'){
+	        	$('#dateEnd').attr("disabled","disabled");
+	        }else{
+	        	$('#dateEnd').removeAttr("disabled");
+	        }
 	 	});
 	    
 	    // 使用icheck控件以后，以下失效？要用$("input:radio[name='financialProductDetail.productType']").on('ifChecked', function(event){
@@ -778,11 +790,11 @@
 						<td>
 							<s:if test="#request.DETAIL_MODE=='EDIT'">
 								<input type="date"  id="dateStart" name="financialProductDetail.startDate" value="<s:property value='financialProductDetail.startDateToShow'/>" style="height:24px;line-height:24px;border:1px solid #CCC;background-position: 115px 12px;" > 至
-								<input type="date"  id="dateStart" name="financialProductDetail.endDate" value="<s:property value='financialProductDetail.endDateToShow'/>" style="height:24px;line-height:24px;border:1px solid #CCC;background-position: 115px 12px;" >
+								<input type="date"  id="dateEnd" name="financialProductDetail.endDate" value="<s:property value='financialProductDetail.endDateToShow'/>" style="height:24px;line-height:24px;border:1px solid #CCC;background-position: 115px 12px;" >
 							</s:if>
 							<s:else>
 								<input type="date"  id="dateStart" name="financialProductDetail.startDate"  style="height:24px;line-height:24px;border:1px solid #CCC;background-position: 115px 12px;" > 至
-								<input type="date"  id="dateStart" name="financialProductDetail.endDate"  style="height:24px;line-height:24px;border:1px solid #CCC;background-position: 115px 12px;" >
+								<input type="date"  id="dateEnd" name="financialProductDetail.endDate"  style="height:24px;line-height:24px;border:1px solid #CCC;background-position: 115px 12px;" >
 							</s:else>
 						</td>
 					</tr>
