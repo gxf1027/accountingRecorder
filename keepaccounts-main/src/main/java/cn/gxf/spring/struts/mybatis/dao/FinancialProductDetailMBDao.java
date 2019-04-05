@@ -21,6 +21,7 @@ public interface FinancialProductDetailMBDao {
 	
 	public void addOne(FinancialProductDetail financialProductDetail);
 	public void updateOne(FinancialProductDetail financialProductDetail);
+	public void addAmount(@Param("uuid") String uuid, @Param("addAmount") float addAmount); // 追加金额
 	public void setRedeem(@Param("uuid") String uuid, @Param("redeemUuid") String redeemUuid); // 设置赎回和关联的“转账”
 	public void cancelRedeem(String redeemUuid); // 当“转账”被删除时，根据转账的uuid撤销理财产品的赎回和关联信息
 	public void setRealReturn(@Param("uuid") String uuid, @Param("returnUuid") String returnUuid, @Param("realReturn") float realReturn); // 设置收益和关联的“收入”

@@ -176,6 +176,36 @@
 		AND a.end_date  &lt;= DATE_FORMAT(#{date_to}, '%Y-%m-%d 23:59:59')
 		AND a.redeemuuid IS NULL
 		AND a.yxbz='Y' AND b.yxbz='Y'
+		
+		UNION ALL
+		
+		SELECT  a.uuid,
+				a.transferuuid AS transferUuid, 
+				a.redeemuuid AS redeemUuid,
+				a.returnuuid AS returnUuid,
+				b.user_id,
+				a.product_name AS productName,
+				yh_dm AS yh_dm,
+				(SELECT y.yh_mc FROM dm_yh y WHERE y.yh_dm = a.yh_dm) AS yh_mc, 
+				date_count AS dateCount,
+				start_date AS startDate,
+				end_date AS endDate,
+				expected_returnrate AS expectedReturnRate,
+				netv_purchase AS netvPurchase,
+				netv_selling AS netvSelling,
+				a.je,
+				a.real_return AS realReturn,
+				a.is_redeem AS is_redeem,
+				a.lrrq, 
+				a.xgrq 
+		     FROM financial_product_detail a, account_transfer_detail b
+		WHERE a.transferuuid = b.mxuuid
+		AND a.product_type IN ('FP_A4')
+	    AND a.redeemuuid IS NULL
+	    AND a.start_date IS NOT NULL
+	    AND a.date_count > 0
+	    AND FLOOR(DATEDIFF(#{date_to},a.start_date)/a.date_count) &gt; FLOOR(DATEDIFF(#{date_from},a.start_date)/a.date_count)
+		AND a.yxbz='Y' AND b.yxbz='Y'
 	</select>
 	
 	
@@ -194,6 +224,11 @@
 		UPDATE financial_product_detail SET product_name= #{productName}, product_type= #{productType}, yh_dm = #{yh_dm}, date_count=#{dateCount}, start_date = #{startDate}, end_date = #{endDate}, 
 										expected_returnrate= #{expectedReturnRate}, netv_purchase=#{netvPurchase}, netv_selling=#{netvSelling}, je=#{je},real_return=#{realReturn}, xgrq= #{xgrq}
 				WHERE transferuuid = #{transferUuid} AND yxbz='Y'
+  	</update>
+  	
+  	<update id="addAmount">
+  		UPDATE financial_product_detail SET je = je + #{addAmount}, xgrq=NOW()
+  			WHERE uuid = #{uuid} AND yxbz='Y'
   	</update>
   	
   	<update id="setRedeem">
