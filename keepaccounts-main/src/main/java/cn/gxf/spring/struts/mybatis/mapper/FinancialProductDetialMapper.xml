@@ -189,7 +189,11 @@
 				(SELECT y.yh_mc FROM dm_yh y WHERE y.yh_dm = a.yh_dm) AS yh_mc, 
 				date_count AS dateCount,
 				start_date AS startDate,
-				end_date AS endDate,
+				<!-- 净值型需要重新计算到期日期 --> 
+				(CASE WHEN DATE_ADD(a.start_date,INTERVAL  ((FLOOR(DATEDIFF(#{date_from},a.start_date)/a.date_count))*a.date_count) day ) >= #{date_from}
+           				THEN DATE_ADD(a.start_date,INTERVAL  ((FLOOR(DATEDIFF(#{date_from},a.start_date)/a.date_count))*a.date_count) day)
+           				ELSE DATE_ADD(a.start_date,INTERVAL  ((FLOOR(DATEDIFF(#{date_from},a.start_date)/a.date_count)+1)*a.date_count) day  ) END)
+				  AS endDate,
 				expected_returnrate AS expectedReturnRate,
 				netv_purchase AS netvPurchase,
 				netv_selling AS netvSelling,
