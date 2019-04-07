@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2019-03-28 19:39:16
+Date: 2019-04-07 16:13:45
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -28,12 +28,16 @@ CREATE TABLE `account_detail` (
   `yxbz` varchar(255) NOT NULL,
   `xgrq` datetime DEFAULT NULL,
   `lrrq` datetime NOT NULL,
-  PRIMARY KEY (`accuuid`),
-  UNIQUE KEY `uuid_index` (`accuuid`) USING HASH,
+  PRIMARY KEY (`accuuid`,`user_id`),
   KEY `userid_index` (`user_id`) USING HASH,
   KEY `acc_recdm_index` (`rec_dm`) USING HASH,
   KEY `acc_userid_recdm_index` (`user_id`,`rec_dm`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+/*!50100 PARTITION BY RANGE (user_id)
+(PARTITION p0 VALUES LESS THAN (5000) ENGINE = InnoDB,
+ PARTITION p1 VALUES LESS THAN (10000) ENGINE = InnoDB,
+ PARTITION p2 VALUES LESS THAN (15000) ENGINE = InnoDB,
+ PARTITION p3 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 
 -- ----------------------------
 -- Table structure for account_detail_test
@@ -76,7 +80,6 @@ CREATE TABLE `account_income_detail` (
   `xgrq` datetime DEFAULT NULL,
   `lrrq` datetime NOT NULL,
   PRIMARY KEY (`mxuuid`),
-  UNIQUE KEY `index_income_accuuid` (`accuuid`) USING BTREE,
   KEY `index_income_lb` (`lb_dm`) USING BTREE,
   KEY `index_income_zhdm` (`zh_dm`) USING BTREE,
   KEY `index_income_zhdm_userid` (`user_id`,`zh_dm`) USING HASH,
@@ -120,15 +123,19 @@ CREATE TABLE `account_payment_detail` (
   `yxbz` varchar(255) DEFAULT NULL,
   `xgrq` datetime DEFAULT NULL,
   `lrrq` datetime NOT NULL,
-  PRIMARY KEY (`mxuuid`),
-  UNIQUE KEY `index_pay_accuuid` (`accuuid`) USING BTREE,
+  PRIMARY KEY (`mxuuid`,`user_id`),
   KEY `index_zhdm_userid` (`user_id`,`zh_dm`) USING HASH,
   KEY `index_pay_dl` (`dl_dm`) USING BTREE,
   KEY `index_pay_xl` (`xl_dm`) USING BTREE,
   KEY `indes_pay_zhdm` (`zh_dm`) USING BTREE,
   KEY `index_pay_dl_xl_userid` (`user_id`,`dl_dm`,`xl_dm`) USING BTREE,
   KEY `index_pay_userid` (`user_id`) USING HASH
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+/*!50100 PARTITION BY RANGE (user_id)
+(PARTITION p0 VALUES LESS THAN (5000) ENGINE = InnoDB,
+ PARTITION p1 VALUES LESS THAN (10000) ENGINE = InnoDB,
+ PARTITION p2 VALUES LESS THAN (15000) ENGINE = InnoDB,
+ PARTITION p3 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 
 -- ----------------------------
 -- Table structure for account_snapshot
@@ -399,7 +406,9 @@ CREATE TABLE `financial_product_detail` (
   `lrrq` datetime DEFAULT NULL,
   `xgrq` datetime DEFAULT NULL,
   `yxbz` varchar(2) DEFAULT NULL,
-  PRIMARY KEY (`uuid`)
+  PRIMARY KEY (`uuid`),
+  KEY `indx_fp_type` (`product_type`) USING HASH,
+  KEY `indx_fp_enddate` (`end_date`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -853,7 +862,8 @@ CREATE TABLE `user_prepared_stat` (
 DROP TABLE IF EXISTS `user_role_dzb`;
 CREATE TABLE `user_role_dzb` (
   `user_id` int(11) DEFAULT NULL COMMENT '用户表_id',
-  `role_id` int(11) DEFAULT NULL COMMENT '角色表_id'
+  `role_id` int(11) DEFAULT NULL COMMENT '角色表_id',
+  KEY `urdzb_userid_indx` (`user_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户角色表';
 
 -- ----------------------------
