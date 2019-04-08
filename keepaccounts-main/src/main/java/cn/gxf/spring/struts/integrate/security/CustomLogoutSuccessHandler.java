@@ -24,9 +24,14 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler{
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws IOException, ServletException {
 		// TODO Auto-generated method stub
+		System.out.println("Authentication: " + authentication);
 		System.out.println("on LogoutSuccess....");
-		UserLogin user = (UserLogin) authentication.getPrincipal();
-		logger.info(String.format("%s Logout successfully", user.getUsername()));
+		if (null != authentication){
+			UserLogin user = (UserLogin) authentication.getPrincipal();
+			if (null != user){
+				logger.info(String.format("%s Logout successfully", user.getUsername()));
+			}
+		}
 		response.sendRedirect(this.logoutSuccessUrl);
 	}
 	
