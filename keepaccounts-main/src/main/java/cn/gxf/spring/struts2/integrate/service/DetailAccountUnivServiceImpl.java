@@ -232,6 +232,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	    // 清除缓存
 		this.accountStatService.EvictDateStatRedis(keys);
 		this.dmService.removeZhInfoCache(detail.getUser_id());
+		// 更新记账天数数据（可能不更新）
 		this.keepAccountingDatesService.updatekeepAccountingDates(detail.getUser_id(), new Date());
 		return accountingDetail.getAccuuid();
 	}
@@ -339,7 +340,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 				FinancialProductDetail financialProductDetail = transferDetail_new.getFinancialProductDetail();
 				financialProductDetail.setTransferUuid(transferDetail_new.getMxuuid());
 				financialProductDetail.setXgrq(new Date());
-				this.financialProductDetailMBDao.updateOne(financialProductDetail);
+				this.financialProductDetailMBDao.updateOne(financialProductDetail); // 通过产品的transferUuid更新理财产品
 			}else if (!transferDetail_new.getZzlx_dm().equals(DmService.zzlx_purchase_fin_prod_dm) && transferDetail_old.getZzlx_dm().equals(DmService.zzlx_purchase_fin_prod_dm)){
 				// 修改后不是理财产品
 				this.financialProductDetailMBDao.deleteOne(transferDetail_new.getMxuuid());

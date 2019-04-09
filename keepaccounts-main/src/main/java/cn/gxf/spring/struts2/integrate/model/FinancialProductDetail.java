@@ -171,6 +171,25 @@ public class FinancialProductDetail implements Serializable {
 	public void setNetvSelling(float netvSelling) {
 		this.netvSelling = netvSelling;
 	}
+	
+	/*
+	 * 用于界面上（name=financialProductDetail.netvalused）元素的回显,
+	 * 如果返回1，那么checkbox在回显时会自动勾选
+	 * */
+	public int getNetvalused(){
+		return this.netvPurchase > 0.f ? 1 : 0;
+	}
+	
+	/*
+	 * 如果界面上（name=financialProductDetail.netvalused）checkbox元素未被选中，
+	 * 那么used传入为0，将界面传入的“买入净值”和“卖出净值”强制设置为0
+	 * */
+	public void setNetvalused(int used){
+		if (used == 0){
+			this.netvPurchase = 0.f;
+			this.netvSelling = 0.f;
+		}
+	}
 
 	public float getJe() {
 		return je;
@@ -228,8 +247,6 @@ public class FinancialProductDetail implements Serializable {
 	public void setYxbz(String yxbz) {
 		this.yxbz = yxbz;
 	}
-
-	
 
 	@Override
 	public String toString() {

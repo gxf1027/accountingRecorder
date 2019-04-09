@@ -16,7 +16,7 @@
 	<link rel="stylesheet" type="text/css" href="../css/footer.css" />
 	<link rel="stylesheet" type="text/css" href="../css/left-nav.css" />
 	<link rel="stylesheet" type="text/css" href="../js/toastr/toastr.css" />
-	<link rel="stylesheet" type="text/css" href="../js/icheck/skins/flat/green.css" />
+	<link rel="stylesheet" type="text/css" href="../js/icheck/skins/flat/green.css" />	
 	
 	<style type="text/css"> 
 		.record_biz{font-size:12px;font-weight:normal;width:99%;margin:0 auto;margin-top:15px;}
@@ -150,6 +150,7 @@
 	<script type="text/javascript" src="../js/toastr/toastr.js"></script>
 	<script type="text/javascript" src="../js/icheck/icheck.js"></script>
 	
+	
 	<script type="text/javascript">	
 	function choiceTab(B)
 	{
@@ -245,6 +246,10 @@
 		    radioClass: 'iradio_flat-green'
 		  });
 	   
+	   $("input[name='financialProductDetail.netvalused']").iCheck({
+		    checkboxClass: 'icheckbox_flat-green',
+		    increaseArea: '20%' // optional
+		  });
 	   
 	    $('#input_je').blur(function(){
 	    	
@@ -307,14 +312,7 @@
 	    });
 	    
 	    var finprodType = $("input[name='financialProductDetail.productType'][checked]").val();
-	    if (finprodType == 'FP_A3'){
-	    	$('#netv_purchase').removeAttr("disabled");
-    		$('#netv_selling').removeAttr("disabled");
-	    }else{
-    		$('#netv_purchase').attr("disabled","disabled");
-    		$('#netv_selling').attr("disabled","disabled");
-    	}
-	    
+	
 	    if (finprodType == 'FP_A4'){
         	$('#dateEnd').attr("disabled","disabled");
         }else{
@@ -322,23 +320,37 @@
         }
 	    
 	    $("input:radio[name='financialProductDetail.productType']").on('ifChecked', function(event){
-	        //alert($(this).val());
-	        if (this.value == 'FP_A3'){
-	    		$('#netv_purchase').removeAttr("disabled");
-	    		$('#netv_selling').removeAttr("disabled");
-	    	}else{
-	    		$('#netv_purchase').attr("disabled","disabled");
-	    		$('#netv_selling').attr("disabled","disabled");
-	    		$('#netv_purchase').val("0.0");
-	    		$('#netv_selling').val("0.0");
-	    	}
-	        
 	        if (this.value == 'FP_A4'){
 	        	$('#dateEnd').attr("disabled","disabled");
 	        }else{
 	        	$('#dateEnd').removeAttr("disabled");
 	        }
 	 	});
+    	
+	    // 加载时
+	    if ($("input:checkbox[name='financialProductDetail.netvalused']").prop('checked')){
+	    	$('#netv_purchase_tr').show();
+    		$('#netv_selling_tr').show();
+    		$(this).attr("value","1"); // 向后台传入
+	    }else{
+	    	$('#netv_purchase_tr').hide();
+			$('#netv_selling_tr').hide();
+			$(this).attr("value","0");  // 向后台传入
+	    }
+	    // “是否净值型”checked
+	    $("input:checkbox[name='financialProductDetail.netvalused']").on('ifChecked', function(event){ 
+    		$('#netv_purchase_tr').show(500);
+    		$('#netv_selling_tr').show(500);
+    		$(this).attr("value","1"); // 向后台传入
+    		//console.log($(this).val());
+	    });
+
+		$("input:checkbox[name='financialProductDetail.netvalused']").on('ifUnchecked', function(event){ 
+			$('#netv_purchase_tr').hide(500);
+			$('#netv_selling_tr').hide(500);
+			$(this).attr("value","0"); // 向后台传入，如果非净值型，但是买入净值非空，在后台被设置为0
+			//console.log($(this).val());
+	    });
 	    
 	    // 使用icheck控件以后，以下失效？要用$("input:radio[name='financialProductDetail.productType']").on('ifChecked', function(event){
 	    /* $("input[type=radio][name='financialProductDetail.productType']").change(function(){
@@ -487,6 +499,20 @@
     		toastr.info("<b>转账金额不能小于零.</b>","提示");
     		return false;
     	}
+    	
+    	
+    	if ($("input:checkbox[name='financialProductDetail.netvalused']").prop('checked')){
+    		// 选择了净值型，买入净值必填且必须大于0
+    		if ($("#netv_purchase").val() <= 0 || $("#netv_purchase").val() == ""){
+    			toastr.info("<b>'买入净值'必须大于0.</b>","提示");
+        		return false;
+    		}
+    	}else{
+    		// 非净值型，买入和卖出净值都为0
+    		$("#netv_purchase").val("0.0");
+    		$("#netv_purchase").val("0.0");
+    	}
+
 		
 		return checkForTransferRoles(); // 再检查转账账户是否设置正确
 	}
@@ -749,7 +775,7 @@
 						</td>
 					</tr>
 					<tr>
-						<th>产品类型</th>
+						<th>产品周期</th>
 						<td>
 						 	<ul class="fin-prod-list">
 						 		<s:iterator value="#request.fin_prod_type">
@@ -762,12 +788,21 @@
 		              	</td>
 		             </tr>
 		             <tr>
+		             	<th>是否净值型</th>
+		             	<td>
+		             		<ul style="margin-left: -35px;" >
+		             		    <!-- <s:if test="financialProductDetail.netvalused > 0 ">checked="checked"</s:if> 用于edit模式的回显 -->
+			             		<input type="checkbox" name="financialProductDetail.netvalused" <s:if test="financialProductDetail.netvalused > 0 ">checked="checked"</s:if> value="" />
+		             		</ul>
+		             	</td>
+		             </tr>
+		             <tr id="netv_purchase_tr">
 		             	<th>买入净值</th>
 		             	<td>
 		             		<s:textfield name="financialProductDetail.netvPurchase" id="netv_purchase"  maxlength="16" class="recordInput" theme="simple"/>
 		             	</td>
 		             </tr>
-		             <tr>
+		             <tr id="netv_selling_tr">
 		             	<th>卖出净值</th>
 		             	<td>
 		             		<s:textfield name="financialProductDetail.netvSelling" id="netv_selling"  maxlength="16" class="recordInput" theme="simple"/>
@@ -879,7 +914,7 @@
 	</div>
 	</div>
 	</div>
-	<s:debug></s:debug>
+	<%-- <s:debug></s:debug> --%>
 	<section class="footer-evaluate">
 		<ul class="g-layout">
 			<li>

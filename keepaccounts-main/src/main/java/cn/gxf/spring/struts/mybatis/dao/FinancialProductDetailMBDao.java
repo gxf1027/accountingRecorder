@@ -20,7 +20,7 @@ public interface FinancialProductDetailMBDao {
 	public List<FinancialProductDetail> queryFinancialProductDetailByEndDate(@Param("date_from") Date date_from, @Param("date_to") Date date_to); // 查询到期时间在指定时间段之间的理财产品
 	
 	public void addOne(FinancialProductDetail financialProductDetail);
-	public void updateOne(FinancialProductDetail financialProductDetail);
+	public void updateOne(FinancialProductDetail financialProductDetail); // 通过产品的transferUuid更新理财产品
 	public void addAmount(@Param("uuid") String uuid, @Param("addAmount") float addAmount); // 追加金额
 	public void setRedeem(@Param("uuid") String uuid, @Param("redeemUuid") String redeemUuid); // 设置赎回和关联的“转账”
 	public void cancelRedeem(String redeemUuid); // 当“转账”被删除时，根据转账的uuid撤销理财产品的赎回和关联信息
