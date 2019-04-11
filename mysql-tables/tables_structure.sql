@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2019-04-07 16:13:45
+Date: 2019-04-11 20:37:21
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -79,13 +79,19 @@ CREATE TABLE `account_income_detail` (
   `yxbz` varchar(255) DEFAULT NULL,
   `xgrq` datetime DEFAULT NULL,
   `lrrq` datetime NOT NULL,
-  PRIMARY KEY (`mxuuid`),
+  PRIMARY KEY (`mxuuid`,`user_id`),
   KEY `index_income_lb` (`lb_dm`) USING BTREE,
   KEY `index_income_zhdm` (`zh_dm`) USING BTREE,
   KEY `index_income_zhdm_userid` (`user_id`,`zh_dm`) USING HASH,
   KEY `index_income_lb_userid` (`user_id`,`lb_dm`) USING BTREE,
-  KEY `index_income_userid` (`user_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `index_income_userid` (`user_id`) USING BTREE,
+  KEY `index_income_accuuid` (`accuuid`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+/*!50100 PARTITION BY RANGE (user_id)
+(PARTITION p0 VALUES LESS THAN (5000) ENGINE = InnoDB,
+ PARTITION p1 VALUES LESS THAN (10000) ENGINE = InnoDB,
+ PARTITION p2 VALUES LESS THAN (15000) ENGINE = InnoDB,
+ PARTITION p3 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 
 -- ----------------------------
 -- Table structure for account_info
@@ -129,7 +135,8 @@ CREATE TABLE `account_payment_detail` (
   KEY `index_pay_xl` (`xl_dm`) USING BTREE,
   KEY `indes_pay_zhdm` (`zh_dm`) USING BTREE,
   KEY `index_pay_dl_xl_userid` (`user_id`,`dl_dm`,`xl_dm`) USING BTREE,
-  KEY `index_pay_userid` (`user_id`) USING HASH
+  KEY `index_pay_userid` (`user_id`) USING HASH,
+  KEY `index_pay_accuuid` (`accuuid`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 /*!50100 PARTITION BY RANGE (user_id)
 (PARTITION p0 VALUES LESS THAN (5000) ENGINE = InnoDB,
@@ -172,10 +179,10 @@ CREATE TABLE `account_transfer_detail` (
   `xgrq` datetime DEFAULT NULL,
   `lrrq` datetime NOT NULL,
   PRIMARY KEY (`mxuuid`),
-  UNIQUE KEY `index_trans_accuuid` (`accuuid`) USING BTREE,
   KEY `index_transfer_zzlx` (`zzlx_dm`) USING BTREE,
   KEY `index_trans_userid` (`user_id`) USING BTREE,
-  KEY `index_trans_userid_zzlx` (`user_id`,`zzlx_dm`) USING BTREE
+  KEY `index_trans_userid_zzlx` (`user_id`,`zzlx_dm`) USING BTREE,
+  KEY `index_trans_accuuid` (`accuuid`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
