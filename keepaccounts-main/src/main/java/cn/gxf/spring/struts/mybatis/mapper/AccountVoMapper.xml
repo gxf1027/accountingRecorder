@@ -38,7 +38,7 @@
 			 (select lx.zzlx_mc from dm_zzlx lx where lx.zzlx_dm = t.zzlx_dm and yxbz='Y') zzlxmc,
 			 (CASE
 				WHEN t.zzlx_dm = '0003' THEN
-					(SELECT CONCAT_WS('-',f.fund_code,f.fund_name,f.unit_net) FROM transfer_fund_detail f WHERE f.transferuuid = t.mxuuid and f.yxbz='Y')
+					CONCAT((CASE ISNULL(t.bz) WHEN 1 THEN '' ELSE CONCAT(t.bz,' ') END) ,(SELECT CONCAT_WS('-',f.fund_code,f.fund_name,f.unit_net) FROM transfer_fund_detail f WHERE f.transferuuid = t.mxuuid and f.yxbz='Y'))
 				ELSE
 					t.bz
 				END
