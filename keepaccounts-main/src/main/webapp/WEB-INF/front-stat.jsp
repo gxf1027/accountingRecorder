@@ -98,6 +98,35 @@
 				 $("#logout-form").submit();
 			});
 			
+			$("#income_kind").change(function(){
+				//console.log("11111");
+				//$(this).css("background-color","#FFFFCC");
+				$('.income-je').css("display","none");
+				$('.salary-je').css("display","none");
+				$('.fp-je').css("display","none");
+				$('.income-je-net').css("display","none");
+				$('.salary-je-net').css("display","none");
+				$('.fp-je-net').css("display","none");
+				$('.income-je-sum').css("display","none");
+				$('.salary-je-sum').css("display","none");
+				$('.fp-je-sum').css("display","none");
+				
+				var selv=$(this).children('option:selected').val();
+				if ("只看工资" == selv){
+					$('.salary-je').css("display","inline");
+					$('.salary-je-net').css("display","inline");
+					$('.salary-je-sum').css("display","inline");
+				}else if ("只看理财" == selv){
+					$('.fp-je').css("display","inline");
+					$('.fp-je-net').css("display","inline");
+					$('.fp-je-sum').css("display","inline");
+				}else{
+					$('.income-je').css("display","inline");
+					$('.income-je-net').css("display","inline");
+					$('.income-je-sum').css("display","inline");
+				}
+			});
+			
 			$("a[name='billsend']").click(function(){
 				console.log("");
 				//window.location.href = "${pageContext.request.contextPath}/demo/billsend";
@@ -291,8 +320,14 @@
 										</td>
 										<td title="显示明细">
 											<a class="income-je" href="listDetail!listIncomeByMonth?date_from=${yfFirstDate }&date_to=${yfLastDate }">${incomesumStr2 }</a>
+											<a class="salary-je" style="display:none" href="listDetail!listIncomeByMonth?date_from=${yfFirstDate }&date_to=${yfLastDate }">${incomesalary2 }</a>
+											<a class="fp-je" style="display:none" href="listDetail!listIncomeByMonth?date_from=${yfFirstDate }&date_to=${yfLastDate }">${incomefinproduct2 }</a>
 										</td>
-										<td>${jeNetSumStr2 }</td>
+										<td>
+											<p class="income-je-net">${jeNetSumStr2 }</p>
+											<p class="salary-je-net" style="display:none">--</p>
+											<p class="fp-je-net" style="display:none">--</p>
+										</td>
 									</tr>
 								</s:iterator>
 							</tbody>
@@ -300,8 +335,16 @@
 							<tfoot style="background-color: #eee; font-weight: bold;" >
 								<td>合计</td>
 								<td>${statsum.paysum }</td>
-								<td>${statsum.incomesum }</td>
-								<td>${statsum.jeNetSumStr2 }</td>
+								<td>
+									<p class="income-je-sum">${statsum.incomesum }</p>
+									<p class="salary-je-sum" style="display:none">${statsum.incomesalary }</p>
+									<p class="fp-je-sum" style="display:none">${statsum.incomefinproduct }</p>
+								</td>
+								<td>
+									<p class="income-je-net">${statsum.jeNetSumStr2 }</p>
+									<p class="salary-je-net" style="display:none">--</p>
+									<p class="fp-je-net" style="display:none">--</p>
+								</td>
 							</tfoot>
 						</table>
 					</div>

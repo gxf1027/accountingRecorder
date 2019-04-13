@@ -102,7 +102,7 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 		int keepdates = keepAccountingDatesService.getKeepAccountingDates(user.getId());
 		myrequest.put("keepdates", keepdates);
 		
-		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync*10);
+		AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync*20);
 		
 		return "inputOk";
 	}
