@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="WARN" packages="cn.gxf.spring.struts.integrate.sysctr">
 
 	<properties>
         <property name="LOG_HOME">logs1/sample</property>
@@ -11,11 +11,11 @@
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %l %msg%n" />
 		</Console>
 
-		<File name="filelog" fileName="${web:rootDir}/WEB-INF/log/test.log"
+		<!-- <File name="filelog" fileName="${web:rootDir}/WEB-INF/log/test.log"
 			append="true">
 			<PatternLayout
 				pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
-		</File>
+		</File> -->
 
 		<RollingFile name="RollingFileDebug" fileName="${web:rootDir}/WEB-INF/log/debug.log"
 			filePattern="${web:rootDir}/WEB-INF/log/$${date:yyyy-MM}/debug-%d{yyyy-MM-dd}-%i.log">
@@ -86,6 +86,31 @@
 				<SizeBasedTriggeringPolicy size="5 MB" />
 			</Policies>
 		</RollingFile>
+		
+		<!-- syncSend不能设置为false, 否则无法实现故障转移 -->
+		<MyKafka name="kafkaLog" topic="test" syncSend="true" ignoreExceptions="false" >
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}] [%t] (%F:%L)  - %m%n" />
+            <Property name="bootstrap.servers">127.0.0.1:9092</Property>
+            <!-- <Property name="timeout.ms">2000</Property>
+            <Property name="requestTimeoutMillis">2000</Property> -->
+            <Property name="max.block.ms">2000</Property>
+        </MyKafka>
+        
+        <RollingFile name="failoverKafkaLog" fileName="${web:rootDir}/WEB-INF/log/kafka-failover.log"
+		            filePattern="${web:rootDir}/WEB-INF/log/failoverKafka/$${date:yyyy-MM}/kafka-failover-%d{yyyy-MM-dd}-%i.log">
+		    <ThresholdFilter level="Debug" onMatch="ACCEPT" onMismatch="DENY"/>
+		    <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}] [%t] (%F:%L)  - %m%n" />
+		    <Policies>
+		        <TimeBasedTriggeringPolicy />
+		        <SizeBasedTriggeringPolicy size="5 MB" />
+		    </Policies>
+		</RollingFile>
+        
+        <!-- <Failover name="Failover" primary="kafkaLog" retryIntervalSeconds="600" >
+		    <Failovers>
+		        <AppenderRef ref="failoverKafkaLog"/>
+		    </Failovers>
+		</Failover> -->
 
 	</Appenders>
 
@@ -93,12 +118,14 @@
 		<Root level="all">
 			<!-- <AppenderRef ref="Console" /> -->
 		</Root>
-		<Logger name="cn.gxf.spring.struts.mybatis.dao" level="DEBUG">
+		
+		<!-- 使用异步，否则当kafka宕机时会使系统卡顿 -->
+		<AsyncLogger name="cn.gxf.spring.struts.mybatis.dao" level="DEBUG" additivity="false">
 			<AppenderRef ref="Console" />
-			<AppenderRef ref="filelog" /> <!-- 测试 -->
 			<AppenderRef ref="RollingFileDebug" />
 			<AppenderRef ref="RollingFileWarn" />
-		</Logger>
+			<!-- <AppenderRef ref="Failover" /> --> <!-- kafka -->
+		</AsyncLogger>
 		
 		<Logger name="cn.gxf.spring.quartz" level="DEBUG">
 			<AppenderRef ref="Console" />
@@ -123,7 +150,7 @@
 		</Logger>
 		
 		<Logger name="cn.gxf.spring.cxf" level="DEBUG">
-	        <AppenderRef ref="Console" />
+	        <!-- <AppenderRef ref="Console" /> -->
 	        <AppenderRef ref="RollingFileDebug" />
 	    </Logger>
 	    
@@ -146,6 +173,14 @@
 	   		<AppenderRef ref="Console" />
 	        <AppenderRef ref="RollingFileDebug" />
 	    </Logger>
+	    
+	    <!-- <Logger name="kafkaLogger" level="DEBUG">
+            <AppenderRef ref="kafkaLog" />
+        </Logger> -->
+        
+        <!-- <AsyncLogger name="kafkaLogger" level="DEBUG" additivity="false">
+		    <appender-ref ref="Failover"/>
+		</AsyncLogger> -->
 	    
 	</Loggers>
 </Configuration>  
