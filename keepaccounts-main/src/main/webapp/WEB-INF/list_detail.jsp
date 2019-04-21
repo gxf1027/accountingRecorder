@@ -534,15 +534,19 @@
 				alert('你还没有选择任何内容！'); 
 				return;
 			}
+			
+			if (chk_value.length >= 100){
+				alert('一次选择不能超过100条记录');
+				return;
+			}
+			
 			// 保证删除后仍旧重定向到删除前页面
 			url += "&date_from=" + $("#date_from").val();
 			url += "&date_to=" + $("#date_to").val();
-			//alert(url);
+			
 			if (confirm("确定删除？")){
 				window.location.href = url;
 			}
-			// alert(chk_value.length==0 ?'你还没有选择任何内容！':chk_value); 
-			//alert(url); 
 		}
 		
 		function checkAll(){

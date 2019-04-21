@@ -143,6 +143,11 @@
 			url += "&date_from=" + $("#date_from").val();
 			url += "&date_to=" + $("#date_to").val();
 			
+			if (chk_value.length > 100){
+				alert('一次选择不能超过100条记录');
+				return;
+			}
+			
 			if (chk_value.length == 0){
 				//alert(chk_value.length==0 ?'你还没有选择任何内容！':chk_value); 
 				alert('你还没有选择任何内容！'); 
