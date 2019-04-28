@@ -26,7 +26,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<struts.version>2.3.36</struts.version>
-		<spring.version>4.3.22.RELEASE</spring.version>
+		<spring.version>4.3.23.RELEASE</spring.version>
 		<cxf.version>3.2.2</cxf.version>
 		<org.springframework.security.version>4.2.11.RELEASE</org.springframework.security.version>
 		<activemq.version>5.9.0</activemq.version>
@@ -325,7 +325,7 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-redis</artifactId>
-			<version>1.7.10.RELEASE</version>
+			<version>1.8.20.RELEASE</version>
 		</dependency>
 
 		<dependency>
