@@ -18,6 +18,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
+import cn.gxf.spring.struts.integrate.util.DateFomatTransfer;
 import cn.gxf.spring.struts.mybatis.dao.TransferDetailMBDao;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDaoImplJdbc;
 import cn.gxf.spring.struts2.integrate.model.AccDateStat;
@@ -40,7 +41,7 @@ public class ListDetailAction extends ActionSupport implements RequestAware, Pre
 	private DmUtilDaoImplJdbc daoImplJdbc;
 	
 	private Logger logger = LogManager.getLogger();
-	
+
 	@Override
 	public void prepare() throws Exception {
 		// TODO Auto-generated method stub
@@ -79,10 +80,7 @@ public class ListDetailAction extends ActionSupport implements RequestAware, Pre
 		//this.myrequest.put("ZH_INFO", daoImplJdbc.getZhInfo(user.getId()));
 		
 		List<AccDateStat> list = accountStatService.getDateStatMB(user.getId(), this.date_from, this.date_to);
-		//System.out.println("listByMonth: " + list.hashCode());
 		this.myrequest.put("detailList", list);
-		System.out.println(list.size());
-		//System.out.println(list);
 		
 		// 用于时间回显
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -91,7 +89,6 @@ public class ListDetailAction extends ActionSupport implements RequestAware, Pre
 		this.myrequest.put("listType", "listAll");
 		
 		logger.debug("listByMonth username:" + user.getUsername() + " " + this.date_from + " " + this.date_to);
-		
 		return "listOk";
 	}
 	

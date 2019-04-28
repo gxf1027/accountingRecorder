@@ -40,7 +40,7 @@ public class SimpleRateLimitServiceImpl implements SimpleRateLimitService {
 //		ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
 //		zset.add(key, "V"+key, nowTs);
 //		zset.removeRangeByScore(key, 0, nowTs - period * 1000);
-		System.out.println(tries);
+//		System.out.println(tries);
 		return tries.get(2) <= maxCount;
 	}
 

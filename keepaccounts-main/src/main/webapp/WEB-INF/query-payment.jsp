@@ -152,6 +152,7 @@
 				}
 				$pageNumElem.val('1');
 				var $queryBtn = $(this).parent().siblings().eq(0).children().find('.queryBtn');
+				$("#actionSrc").val("0");
 				$queryBtn.click();
 			});
 			
@@ -164,6 +165,7 @@
 				}
 				$pageNumElem.val($totalPagesElem.val());
 				var $queryBtn = $(this).parent().siblings().eq(0).children().find('.queryBtn');
+				$("#actionSrc").val("0");
 				$queryBtn.click();
 			});
 			
@@ -190,6 +192,7 @@
 						$(this).css('pointer-events','none');
 					}
 					var $queryBtn = $(this).parent().siblings().eq(0).children().find('.queryBtn');
+					$("#actionSrc").val("0");
 					$queryBtn.click();
 				}
 			});
@@ -224,6 +227,7 @@
 				$pageNumElem.val(curPageNum+1); // 页码++
 				var $queryBtn = $(this).parent().siblings().eq(0).children().find('.queryBtn');
 				
+				$("#actionSrc").val("0");
 				$queryBtn.click();
 			});
 			
@@ -235,13 +239,24 @@
 				/*总共多少页*/
 				var $totalPagesElem =  $(this).parent().siblings().eq(0).children('.totalPages');
 				console.log('总共：' + $totalPagesElem.val());
+				if ('' == $totalPagesElem.val()){
+					return;
+				}
 				var totalPages = Number($totalPagesElem.val());
 				
 				var topage = $("#tonthpage").val(); // 跳转到第tonthpage页
+				if ('' == topage){
+					return;
+				}
+				if (Number(topage) > totalPages){
+					alert("超出最大页码");
+					return;
+				}
 				console.log("topage:" + topage);
 				$pageNumElem.val(topage);
 				
 				var $queryBtn = $(this).parent().siblings().eq(0).children().find('.queryBtn');
+				$("#actionSrc").val("0");
 				$queryBtn.click();
 			});
 			
@@ -516,6 +531,7 @@
 							
 								<s:textfield id="paymentCurPageNum" name="pageNumPayment" class="currentPageNum" theme="simple" style="display: none;"  />
 								<s:textfield id="paymentTotalPages" name="totalPagesPayment" class="totalPages" theme="simple" style="display: none;" />
+								<s:textfield id="actionSrc" name="actionSrc" value="1" theme="simple" style="display: none;" />
 							<tr>
 								<th></th><td></td>
 								<th></th><td></td>

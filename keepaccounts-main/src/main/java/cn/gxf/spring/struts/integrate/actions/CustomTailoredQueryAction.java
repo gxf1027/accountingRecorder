@@ -54,6 +54,8 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 	private Integer totalPagesIncome;
 	private Integer totalPagesTransfer;
 	
+	private String actionSrc;
+
 	private Integer pageSize = new Integer(10);
 	
 	
@@ -75,6 +77,10 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 	@Override
 	public void prepare() throws Exception{
 		
+	}
+	
+	private boolean isFromQueryButton(){
+		return this.actionSrc.equals("1");
 	}
 	
 	public void prepareInputQuery() throws Exception {
@@ -228,7 +234,7 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		params.put("user_id", user.getId());
 		
 		System.out.println("pageNum: " + pageNumPayment);
-		if (this.pageNumPayment == null){
+		if (this.pageNumPayment == null || isFromQueryButton()){
 			this.pageNumPayment = new Integer(1);
 		}
 		this.pageNumPayment = this.pageNumPayment.intValue() < 1 ? 1 : this.pageNumPayment; 
@@ -302,7 +308,7 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		params.put("user_id", user.getId());
 		
 		System.out.println("pageNum: " + pageNumIncome);
-		if (this.pageNumIncome == null){
+		if (this.pageNumIncome == null || isFromQueryButton()){
 			this.pageNumIncome = new Integer(1);
 		}
 		
@@ -363,7 +369,7 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		params.put("user_id", user.getId());
 		
 		System.out.println("pageNum: " + pageNumTransfer);
-		if (this.pageNumTransfer == null){
+		if (this.pageNumTransfer == null || isFromQueryButton()){
 			this.pageNumTransfer = new Integer(1);
 		}
 		
@@ -568,6 +574,13 @@ public class CustomTailoredQueryAction extends ActionSupport implements Preparab
 		return totalPagesTransfer;
 	}
 
+	public String getActionSrc() {
+		return actionSrc;
+	}
+	
+	public void setActionSrc(String actionSrc) {
+		this.actionSrc = actionSrc;
+	}
 
 	@Override
 	public void setRequest(Map<String, Object> request) {

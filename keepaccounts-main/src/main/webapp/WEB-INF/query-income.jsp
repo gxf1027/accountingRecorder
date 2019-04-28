@@ -194,6 +194,7 @@
 				}
 				$pageNumElem.val('1');
 				var $queryBtn = $(this).parent().siblings().eq(0).children().find('.queryBtn');
+				$("#actionSrc").val("0");
 				$queryBtn.click();
 			});
 			
@@ -206,6 +207,7 @@
 				}
 				$pageNumElem.val($totalPagesElem.val());
 				var $queryBtn = $(this).parent().siblings().eq(0).children().find('.queryBtn');
+				$("#actionSrc").val("0");
 				$queryBtn.click();
 			});
 			
@@ -232,6 +234,7 @@
 						$(this).css('pointer-events','none');
 					}
 					var $queryBtn = $(this).parent().siblings().eq(0).children().find('.queryBtn');
+					$("#actionSrc").val("0");
 					$queryBtn.click();
 				}
 			});
@@ -266,6 +269,7 @@
 				$pageNumElem.val(curPageNum+1); // 页码++
 				var $queryBtn = $(this).parent().siblings().eq(0).children().find('.queryBtn');
 				
+				$("#actionSrc").val("0");
 				$queryBtn.click();
 			});
 			
@@ -520,6 +524,7 @@
 							
 							<s:textfield id="incomeCurPageNum" name="pageNumIncome" class="currentPageNum" theme="simple" style="display: none;" />
 							<s:textfield id="incomeTotalPages" name="totalPagesIncome" class="totalPages" theme="simple" style="display: none;" />
+							<s:textfield id="actionSrc" name="actionSrc" value="1" theme="simple" style="display: none;" />
 							<tr>
 								
 								<th>账户</th>
