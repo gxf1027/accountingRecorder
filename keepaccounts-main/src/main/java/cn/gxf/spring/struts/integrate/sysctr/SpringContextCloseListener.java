@@ -21,6 +21,7 @@ import cn.gxf.spring.motan.control.MotanController;
 import cn.gxf.spring.motan.filter.FilterConstants;
 import cn.gxf.spring.motan.mbdao.RpcRequestLogDao;
 import cn.gxf.spring.motan.model.RpcRequestInfo;
+import cn.gxf.spring.struts.integrate.cache.RedisKeysContants;
 import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 
 @Service
@@ -52,6 +53,9 @@ public class SpringContextCloseListener implements ApplicationListener<ContextCl
         	// server程序启动后，需要显式调用心跳开关，注册到consul
         	MotanSwitcherUtil.setSwitcherValue(MotanConstants.REGISTRY_HEARTBEAT_SWITCHER, false);
     		System.out.println("SpringContextCloseListener.....容器关闭，反注册到consul.");
+    		
+    		// 删除在线人数统计 
+    		redisTemplate.delete(RedisKeysContants.ONLINE_USERS_KEY);
     		
     		// 如果需要持久化redis中保存的rpc调用数据
     		long sz = redisTemplate.opsForList().size(FilterConstants.RPC_REQUEST_LIST);

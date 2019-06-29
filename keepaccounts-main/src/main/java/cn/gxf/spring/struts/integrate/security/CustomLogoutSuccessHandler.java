@@ -8,9 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
+import cn.gxf.spring.struts.integrate.cache.RedisKeysContants;
 import cn.gxf.spring.struts.integrate.sysctr.KryoRedisSerializer;
 
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler{
@@ -19,6 +21,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler{
 	
 	private String logoutSuccessUrl;
 	
+	private StringRedisTemplate redisTemplate;
 
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
@@ -29,6 +32,8 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler{
 		if (null != authentication){
 			UserLogin user = (UserLogin) authentication.getPrincipal();
 			if (null != user){
+				UserLogin userLogin = (UserLogin)user;
+				redisTemplate.opsForValue().setBit(RedisKeysContants.ONLINE_USERS_KEY, (long)userLogin.getId(), false);
 				logger.info(String.format("%s Logout successfully", user.getUsername()));
 			}
 		}
@@ -42,6 +47,10 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler{
 	
 	public String getLogoutSuccessUrl() {
 		return logoutSuccessUrl;
+	}
+	
+	public void setRedisTemplate(StringRedisTemplate redisTemplate) {
+		this.redisTemplate = redisTemplate;
 	}
 
 }

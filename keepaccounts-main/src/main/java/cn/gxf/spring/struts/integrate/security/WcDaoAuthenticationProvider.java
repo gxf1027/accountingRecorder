@@ -13,6 +13,7 @@ import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -28,6 +29,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.util.Assert;
 
+import cn.gxf.spring.struts.integrate.cache.RedisKeysContants;
 import cn.gxf.spring.struts2.integrate.dao.UserDao;
 import cn.gxf.spring.struts2.integrate.service.SimpleRateLimitService;
 
@@ -62,6 +64,8 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
     private SimpleRateLimitService rateLimitService;
     private int period; // seconds
     private int maxCount; // max tries in period no matter success or failure
+    
+    private StringRedisTemplate redisTemplate;
 
     public WcDaoAuthenticationProvider() {
         setPasswordEncoder(new PlaintextPasswordEncoder());
@@ -164,6 +168,10 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         userDao.resetUserAttemptLimit(username);
         // 记录登录信息
         userDao.recordUserLoginInfo(user.getUsername(), new Date(), wauth.getRemoteAddress());
+        
+        // 统计在线人数
+        UserLogin userLogin = (UserLogin)user;
+        redisTemplate.opsForValue().setBit(RedisKeysContants.ONLINE_USERS_KEY, (long)userLogin.getId(), true);
         
         return createSuccessAuthentication(principalToReturn, authentication, user);
     }
@@ -325,5 +333,9 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
 	protected UserDetailsService getUserDetailsService() {
         return userDetailsService;
     }
+	
+	public void setRedisTemplate(StringRedisTemplate redisTemplate) {
+		this.redisTemplate = redisTemplate;
+	}
     
 }

@@ -23,9 +23,11 @@
 		<!-- 这个/demo是struts.xml的namespace, myLogin.jsp在web-inf之外，
 			所以访问myLogin.jsp的url是http://localhost:8080/Struts2Spring4Test2/myLogin.jsp，
 			在下面这个过滤器之外 -->
-		<intercept-url pattern="/demo/**" access="hasRole('ROLE_USER')" requires-channel="https" />
+		<!-- <intercept-url pattern="/demo/**" access="hasRole('ROLE_USER')" requires-channel="https" />
 		<intercept-url pattern="/myLoginWcai.jsp"  requires-channel="https" />
-		<intercept-url pattern="/myRegisterWcai.jsp"  requires-channel="https" />
+		<intercept-url pattern="/myRegisterWcai.jsp"  requires-channel="https" /> -->
+		<intercept-url pattern="/demo/**" access="hasRole('ROLE_USER')"  />
+		
 		<form-login login-page="/myLoginWcai.jsp" login-processing-url="/j_spring_security_check" username-parameter="j_username" password-parameter="j_password" default-target-url="/demo/frontStatistics!inputFront" always-use-default-target="false" />
 		<!-- 使用自定义的logout filter, 将以下注释掉 -->
 		<!-- <logout logout-success-url="/myLoginWcai.jsp" invalidate-session="true" /> -->
@@ -35,7 +37,7 @@
 		<!-- <remember-me data-source-ref="datasource" token-validity-seconds="3600"  /> -->
 		<!-- spring security 与 spring-session集成 方式的remember-me -->
 		<remember-me services-ref="rememberMeServices" />
-		<csrf/>
+		<csrf disabled="true"/>
 		<access-denied-handler error-page="/WEB-INF/content/1.jsp"/>
 		
 		<session-management >
@@ -67,6 +69,7 @@
 	<!-- 自定义logout filter -->
 	<beans:bean id="myLogoutSuccessFilter" class="cn.gxf.spring.struts.integrate.security.CustomLogoutSuccessHandler" >
 		<beans:property name="logoutSuccessUrl" value="myLoginWcai.jsp" />
+		<beans:property name="redisTemplate" ref="stringRedisTemplate" />
 	</beans:bean>
 	<!-- 指定退出filter的实现类 -->
     <beans:bean id="customLogoutFilter" class="cn.gxf.spring.struts.integrate.security.CustomLogoutFilter">
@@ -103,6 +106,7 @@
 		<beans:property name="rateLimitService" ref="simpleRateLimitServiceImpl"></beans:property>
 		<beans:property name="passwordEncoder" ref="passwordEncoder" />
 		<beans:property name="userDao" ref="userDaoImplJdbc"></beans:property>
+		<beans:property name="redisTemplate" ref="stringRedisTemplate" />
 	</beans:bean>
 
 	<!-- 对密码进行MD5编码 -->
