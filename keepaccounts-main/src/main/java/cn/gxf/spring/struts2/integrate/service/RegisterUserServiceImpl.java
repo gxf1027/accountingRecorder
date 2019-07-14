@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
+import cn.gxf.spring.struts.integrate.sysctr.SequenceFactory;
 import cn.gxf.spring.struts2.integrate.dao.RegisterUserDao;
 
 @Service
@@ -15,6 +16,9 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 
 	@Autowired
 	private RegisterUserDao registerDao;
+	
+	@Autowired
+	private SequenceFactory sequenceFactory; 
 	
 	@Transactional("dsTransactionManager")
 	@Override
@@ -26,7 +30,7 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 			return -1;
 		}
 		
-		int newid = registerDao.generateUserId();
+		int newid = (int)sequenceFactory.generate(SequenceFactory.USER_ID_SEQ);
 		user.setId(newid);
 		registerDao.saveUser(user);
 		

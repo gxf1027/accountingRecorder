@@ -189,7 +189,10 @@
     </bean> -->
     
     <!-- 系统初始化和关闭有关 -->
-    <bean class="cn.gxf.spring.struts.integrate.sysctr.InstantiationTracingBeanPostProcessor"/>
+    <!-- <bean class="cn.gxf.spring.struts.integrate.sysctr.InstantiationTracingBeanPostProcessor">
+    	<property name="registerUserDao" ref="registerUserDaoImpl" />
+    	<property name="sequenceFactory" ref="sequenceFactory" />
+    </bean> -->
     <!-- <bean class="cn.gxf.spring.struts.integrate.sysctr.SpringContextCloseListener" /> -->
     
     
