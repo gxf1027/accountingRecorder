@@ -11,6 +11,8 @@ import org.springframework.security.authentication.dao.SaltSource;
 
 import java.util.Date;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -66,6 +68,8 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
     private int maxCount; // max tries in period no matter success or failure
     
     private StringRedisTemplate redisTemplate;
+    
+    private RedisUserCache redisUserCache;
 
     public WcDaoAuthenticationProvider() {
         setPasswordEncoder(new PlaintextPasswordEncoder());
@@ -73,6 +77,11 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
 
     //~ Methods ========================================================================================================
 
+    @PostConstruct
+    private void initUserCahce(){
+    	this.setUserCache(this.redisUserCache);
+    }
+    
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         Assert.isInstanceOf(UsernamePasswordAuthenticationToken.class, authentication,
@@ -164,13 +173,17 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         WebAuthenticationDetails wauth = (WebAuthenticationDetails) authentication.getDetails();
         logger.debug("LoginUsername: " +authentication.getPrincipal() + ", LoginAddr: " + wauth.getRemoteAddress());
         
+        // 先更新缓存
+        UserLogin userLogin = (UserLogin)user;
+        userLogin.setAttemptLimit(5);
+        redisUserCache.putUserInCache(userLogin);
+        
         // 验证成功, 尝试次数恢复
         userDao.resetUserAttemptLimit(username);
         // 记录登录信息
         userDao.recordUserLoginInfo(user.getUsername(), new Date(), wauth.getRemoteAddress());
         
         // 统计在线人数
-        UserLogin userLogin = (UserLogin)user;
         redisTemplate.opsForValue().setBit(RedisKeysContants.ONLINE_USERS_KEY, (long)userLogin.getId(), true);
         
         return createSuccessAuthentication(principalToReturn, authentication, user);
@@ -338,4 +351,7 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
 		this.redisTemplate = redisTemplate;
 	}
     
+	public void setRedisUserCache(RedisUserCache redisUserCache) {
+		this.redisUserCache = redisUserCache;
+	}
 }
