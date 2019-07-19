@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -71,8 +70,6 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
     private StringRedisTemplate redisTemplate;
     
     private RedisUserCache redisUserCache;
-    
-    private ThreadPoolTaskExecutor taskExecutor;
 
     public WcDaoAuthenticationProvider() {
         setPasswordEncoder(new PlaintextPasswordEncoder());
@@ -108,7 +105,7 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         boolean cacheWasUsed = true;
         //UserDetails user = this.userCache.getUserFromCache(username);
         UserDetails user = this.getUserCache().getUserFromCache(username);
-        
+
         if (user == null) {
             cacheWasUsed = false;
 
@@ -135,17 +132,10 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         } catch (AuthenticationException exception) {
         	////
         	if (exception instanceof BadCredentialsException){
-        		// 先更新缓存
-        		UserLogin userLogin = (UserLogin)user;
-        		int attemptsRemain = userLogin.getAttemptLimit()-1;
-        		userLogin.setAttemptLimit(attemptsRemain);
-        		redisUserCache.putUserInCache(userLogin);
-        		
-        		// 更新数据库
         		userDao.decreaseUserAttempts(username);
-        	
-        		if (attemptsRemain > 0){
-        			throw new MyUserAuthorityException("密码错误, 还可以尝试"+attemptsRemain+"次");
+        		int attempts = userDao.getUserAttempts(username); // 目前还剩余登录次数
+        		if (attempts > 0){
+        			throw new MyUserAuthorityException("密码错误, 还可以尝试"+attempts+"次");
         		}else{
         			throw new MyUserAuthorityException("用户被锁定, 无法登陆");
         		}
@@ -185,13 +175,13 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         
         // 先更新缓存
         UserLogin userLogin = (UserLogin)user;
-        if (userLogin.getAttemptLimit() < MyUserDetailService.attemptsLimit){
-	        userLogin.setAttemptLimit(MyUserDetailService.attemptsLimit);
-	        redisUserCache.putUserInCache(userLogin);
-        }
+        userLogin.setAttemptLimit(5);
+        redisUserCache.putUserInCache(userLogin);
         
-        // 再更新数据库
-        this.taskExecutor.execute(new LoginPostProcess(userDao, userLogin, wauth.getRemoteAddress()));
+        // 验证成功, 尝试次数恢复
+        userDao.resetUserAttemptLimit(username);
+        // 记录登录信息
+        userDao.recordUserLoginInfo(user.getUsername(), new Date(), wauth.getRemoteAddress());
         
         // 统计在线人数
         redisTemplate.opsForValue().setBit(RedisKeysContants.ONLINE_USERS_KEY, (long)userLogin.getId(), true);
@@ -363,9 +353,5 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
     
 	public void setRedisUserCache(RedisUserCache redisUserCache) {
 		this.redisUserCache = redisUserCache;
-	}
-	
-	public void setTaskExecutor(ThreadPoolTaskExecutor taskExecutor) {
-		this.taskExecutor = taskExecutor;
 	}
 }
