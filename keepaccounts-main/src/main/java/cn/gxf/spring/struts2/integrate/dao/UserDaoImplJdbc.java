@@ -18,9 +18,9 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
+import cn.gxf.spring.struts.integrate.security.MySimpleGrantedAuthority;
 import cn.gxf.spring.struts.integrate.security.MyUserDetailService;
 import cn.gxf.spring.struts.integrate.security.UserLogin;
 
@@ -154,9 +154,9 @@ public class UserDaoImplJdbc implements UserDao{
 		List<GrantedAuthority> role_list = namedTemplate.query(sql, paramMap, new RowMapper<GrantedAuthority>() {
 
 			@Override
-			public SimpleGrantedAuthority mapRow(ResultSet rs, int rowNum) throws SQLException {
+			public MySimpleGrantedAuthority mapRow(ResultSet rs, int rowNum) throws SQLException {
 				
-				return new SimpleGrantedAuthority(rs.getString("role_name"));
+				return new MySimpleGrantedAuthority(rs.getString("role_name"));
 			}
 		});
 		
