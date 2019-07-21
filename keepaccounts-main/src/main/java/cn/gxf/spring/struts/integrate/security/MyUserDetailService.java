@@ -101,6 +101,7 @@ public class MyUserDetailService implements UserDetailsService{
 		userLogin.setPassword(user_list.get(0).getPassword());
 		userLogin.setEnabled(user_list.get(0).getEnabled());
 		userLogin.setDescription(user_list.get(0).getDescription());
+		userLogin.setAttemptLimit(user_list.get(0).getAttemptLimit());
 		userLogin.setAuthorities(role_list);
 	
 		return userLogin;
