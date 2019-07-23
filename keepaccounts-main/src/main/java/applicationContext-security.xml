@@ -107,7 +107,7 @@
 		<beans:property name="passwordEncoder" ref="passwordEncoder" />
 		<beans:property name="userDao" ref="userDaoImplJdbc"></beans:property>
 		<beans:property name="redisTemplate" ref="stringRedisTemplate" />
-		<beans:property name="redisUserCache" ref="redisUserCache" /> 
+		<beans:property name="redisUserCache" ref="redisUserCache" />
 		<beans:property name="taskExecutor" ref="taskExecutor" />
 	</beans:bean>
 	

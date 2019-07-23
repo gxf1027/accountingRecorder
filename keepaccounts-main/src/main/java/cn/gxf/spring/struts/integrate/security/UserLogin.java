@@ -35,9 +35,12 @@ public class UserLogin implements UserDetails {
 		this.id = id;
 	}
 
-	public String getEnabled() {
+	/*
+	 * mybatis:isEnabled与setEnabled产生混淆，所以注释掉一个
+	 * */
+	/*public String getEnabled() {
 		return enabled;
-	}
+	}*/
 
 	public void setEnabled(String enabled) {
 		this.enabled = enabled;

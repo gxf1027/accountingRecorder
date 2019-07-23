@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import cn.gxf.spring.struts.mybatis.dao.UserMBDao;
 import cn.gxf.spring.struts2.integrate.dao.UserDao;
 
 public class MyUserDetailService implements UserDetailsService{
@@ -31,9 +32,8 @@ public class MyUserDetailService implements UserDetailsService{
 	
 	public static final int attemptsLimit = 5;
 
-	
 	@Autowired
-	private UserDao userDao;
+	private UserMBDao userDao;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -42,69 +42,25 @@ public class MyUserDetailService implements UserDetailsService{
 			return null;
 		}
 		
-		List<UserLogin> user_list = userDao.getUserLoginByName(username);
+		UserLogin user = userDao.getUserByName(username);
 		
-//		String sql = "SELECT * from test.user_ss where username = :name";
-//		Map<String, Object> paramMap = new HashMap<>();
-//		paramMap.put("name", username);
-//		List<UserLogin> user_list = namedParameterJdbcTemplate.query(sql, paramMap, new RowMapper<UserLogin>() {
-//
-//			@Override
-//			public UserLogin mapRow(ResultSet rs, int rowNum) throws SQLException {
-//				// TODO Auto-generated method stub
-//				UserLogin u = new UserLogin();
-//				u.setId(rs.getInt("id"));
-//				u.setUsername(rs.getString("username"));
-//				u.setPassword(rs.getString("password"));
-//				u.setEnabled(rs.getString("enabled"));
-//				u.setDescription(rs.getString("description"));
-//				u.setAttemptLimit(rs.getInt("attempt_limit"));
-//				return u;
-//			}
-//		});
-		
-		if(user_list.size() == 0){
+		if(user == null){
 			throw new MyUsernameNotFoundException("用户名不存在");
 		}
 		
-		if(user_list.size() > 1){
-			throw new MyUserAuthorityException("用户存在异常");
-		}
 		
-		if(user_list.get(0).getAttemptLimit() <= 0){
+		if(user.getAttemptLimit() <= 0){
 			throw new MyUserAuthorityException("用户被锁定, 无法登陆");
 		}
 		
-		List<GrantedAuthority> role_list = userDao.getUserAutoritiesByName(username);
 		
-//		sql = "SELECT c.role_name FROM user_role_dzb a, user_ss b, role_ss c WHERE a.user_id = b.id AND a.role_id = c.id "
-//				+ " AND b.username = :name";
-//		
-//		List<GrantedAuthority> role_list = namedParameterJdbcTemplate.query(sql, paramMap, new RowMapper<GrantedAuthority>() {
-//
-//			@Override
-//			public SimpleGrantedAuthority mapRow(ResultSet rs, int rowNum) throws SQLException {
-//				
-//				return new SimpleGrantedAuthority(rs.getString("role_name"));
-//			}
-//		});
-		
-		if(role_list.size() == 0){
+		if(user.getAuthorities() == null || user.getAuthorities().size() == 0){
 			
 			throw new MyRoleNotFound("此用户无有效权限");
 			
 		}
 		
-		UserLogin userLogin = new UserLogin();
-		userLogin.setId(user_list.get(0).getId());
-		userLogin.setUsername(user_list.get(0).getUsername());
-		userLogin.setPassword(user_list.get(0).getPassword());
-		userLogin.setEnabled(user_list.get(0).getEnabled());
-		userLogin.setDescription(user_list.get(0).getDescription());
-		userLogin.setAttemptLimit(user_list.get(0).getAttemptLimit());
-		userLogin.setAuthorities(role_list);
-	
-		return userLogin;
+		return user;
 
 	}
 	

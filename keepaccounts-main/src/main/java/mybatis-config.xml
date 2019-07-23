@@ -32,6 +32,9 @@
     	<typeAlias type="cn.gxf.spring.quartz.job.model.FinancialProductsNotice" alias="FinancialProductsNotice"/>
     	
     	<typeAlias type="cn.gxf.spring.motan.model.RpcRequestInfo" alias="RpcRequestInfo"/>
+    	
+    	<typeAlias type="cn.gxf.spring.struts.integrate.security.UserLogin" alias="UserLogin"/>
+    	<typeAlias type="cn.gxf.spring.struts.integrate.security.MySimpleGrantedAuthority" alias="MySimpleGrantedAuthority"/>
     </typeAliases>
     
     <plugins>

@@ -33,6 +33,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.util.Assert;
 
 import cn.gxf.spring.struts.integrate.cache.RedisKeysContants;
+import cn.gxf.spring.struts.mybatis.dao.UserMBDao;
 import cn.gxf.spring.struts2.integrate.dao.UserDao;
 import cn.gxf.spring.struts2.integrate.service.SimpleRateLimitService;
 
@@ -71,7 +72,7 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
     private StringRedisTemplate redisTemplate;
     
     private RedisUserCache redisUserCache;
-    
+        
     private ThreadPoolTaskExecutor taskExecutor;
 
     public WcDaoAuthenticationProvider() {
@@ -246,6 +247,7 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
             }
             throw notFound;
         } catch (Exception repositoryProblem) {
+        	repositoryProblem.printStackTrace();
             throw new InternalAuthenticationServiceException(repositoryProblem.getMessage(), repositoryProblem);
         }
 
