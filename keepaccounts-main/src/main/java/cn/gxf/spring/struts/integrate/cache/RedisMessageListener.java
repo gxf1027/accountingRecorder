@@ -59,7 +59,6 @@ public class RedisMessageListener implements MessageListener{
 				rpcReqList.add(rpcReq);
 				
 			} catch (Exception e) {
-				e.printStackTrace();
 				logger.info("RedisMessageListener exception in loop: " + e.getMessage());
 			}
 			
@@ -75,7 +74,7 @@ public class RedisMessageListener implements MessageListener{
 				rpcRequestLogDao.saveRequestsInfo(rpcReqList);
 				logger.info(String.format("RedisMessageListener '%s' persistent RpcRequestInfo Objects", this.listenerName));
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 		

@@ -112,7 +112,6 @@ public class StatByMonth implements Serializable {
 			date = dateFormat.parse(this.getYfFirstDate());
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}  
 		Calendar calendar = Calendar.getInstance(); 
 		calendar.setTime(date);

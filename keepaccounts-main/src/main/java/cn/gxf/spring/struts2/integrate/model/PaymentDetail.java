@@ -14,8 +14,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "PaymentDetail")
 @XmlType
 public class PaymentDetail extends AccountObject implements Serializable {
-
-	
 	private static final long serialVersionUID = 2228658324437876254L;
 
 	private String mxuuid;
@@ -145,7 +143,6 @@ public class PaymentDetail extends AccountObject implements Serializable {
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(this.getClass() + "getFsrq error");
-			e.printStackTrace();
 		}
 		return null;
 	}
@@ -161,7 +158,6 @@ public class PaymentDetail extends AccountObject implements Serializable {
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(this.getClass() + "getFsrq error");
-			e.printStackTrace();
 		}
 		return null;
 	}

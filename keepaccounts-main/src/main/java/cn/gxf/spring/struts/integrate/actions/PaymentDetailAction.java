@@ -9,6 +9,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,8 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 	private List<String> mxuuidList;
 	private Date date_from;
 	private Date date_to;
+	
+    private Logger logger = LogManager.getLogger();
 
 	
 	@Autowired
@@ -118,9 +123,14 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		//detailAccountService.saveOnePaymentMB(this.paymentDetail);
 		String accuuid = detailAccountUnivServiceImpl.saveOne(this.paymentDetail);
 		
-		// 延迟一段时间等待主从同步
-		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
-		int count = wait4SyncService.queryWaiting4Save(accuuid);
+		if (accuuid.equals("BLOCKED_BY_SENTINEL")){
+            logger.info("payment save over flow.");
+			return "OVER_FLOW";
+		}else{
+			
+			// 延迟一段时间等待主从同步
+			int count = wait4SyncService.queryWaiting4Save(accuuid);
+		}
 		
 		return "saveOk";
 	}

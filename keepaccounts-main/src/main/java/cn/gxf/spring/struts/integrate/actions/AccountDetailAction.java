@@ -38,7 +38,7 @@ public class AccountDetailAction extends ActionSupport implements Preparable{
 		
 		if (list.size()>0){
 			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
-			//System.out.println("count: " + count);
+			System.out.println("count: " + count);
 		}
 		
 		return "delOk";

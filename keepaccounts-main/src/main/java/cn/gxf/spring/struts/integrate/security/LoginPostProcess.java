@@ -2,10 +2,15 @@ package cn.gxf.spring.struts.integrate.security;
 
 import java.util.Date;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import cn.gxf.spring.struts2.integrate.dao.UserDao;
 
 public class LoginPostProcess implements Runnable{
 	
+    private Logger logger = LogManager.getLogger();
+
 	private UserDao userDao;
 	private UserLogin user;
 	private String ip;
@@ -23,7 +28,7 @@ public class LoginPostProcess implements Runnable{
 			userDao.resetUserAttemptLimit(user.getUsername());
 	    	userDao.recordUserLoginInfo(user.getUsername(), new Date(), ip);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		
 	}

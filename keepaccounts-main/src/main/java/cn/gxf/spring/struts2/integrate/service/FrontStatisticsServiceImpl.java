@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -25,6 +27,8 @@ import cn.gxf.spring.struts2.integrate.model.StatByMonth;
 @Service
 public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 	
+    private Logger logger = LogManager.getLogger();
+
 	@Autowired
 	private StatNdYfMBDao statDao;
 	
@@ -163,7 +167,7 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 			//System.out.println("after remove: " + this.cacheUtils.getAllKeys("front-stat"));
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 

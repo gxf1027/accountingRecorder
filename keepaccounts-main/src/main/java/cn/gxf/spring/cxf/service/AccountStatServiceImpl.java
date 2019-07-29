@@ -12,6 +12,8 @@ import java.util.TreeMap;
 
 import javax.jws.WebService;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ import cn.gxf.spring.struts2.integrate.model.TransferDetailVO;
 @WebService(endpointInterface="cn.gxf.spring.cxf.service.AccountStatService")
 public class AccountStatServiceImpl implements AccountStatService{
 	
+    private Logger logger = LogManager.getLogger();
+
+    
 	@Autowired
 	private AccountVoMBDao accountVoMBDao;
 	
@@ -87,7 +92,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float pay_sum = 0.f;
@@ -151,7 +156,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float in_sum = 0.f;

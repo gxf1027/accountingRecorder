@@ -247,7 +247,7 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
             }
             throw notFound;
         } catch (Exception repositoryProblem) {
-        	repositoryProblem.printStackTrace();
+        	logger.error(repositoryProblem.getMessage());
             throw new InternalAuthenticationServiceException(repositoryProblem.getMessage(), repositoryProblem);
         }
 

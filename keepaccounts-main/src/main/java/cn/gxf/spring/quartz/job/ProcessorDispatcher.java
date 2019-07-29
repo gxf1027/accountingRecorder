@@ -3,6 +3,8 @@ package cn.gxf.spring.quartz.job;
 
 import java.io.Serializable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.ContextLoader;
@@ -22,6 +24,9 @@ public class ProcessorDispatcher implements Serializable{
 	 */
 	private static final long serialVersionUID = 1068867817750858030L;
 	
+    private Logger logger = LogManager.getLogger();
+
+	
 	/**
 	 * @param processorName
 	 * @param ctx 从调用者注入context
@@ -33,7 +38,7 @@ public class ProcessorDispatcher implements Serializable{
 			JobProcessor processor = (JobProcessor)ctx.getBean(processorName);
 			processor.process();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		
 	}

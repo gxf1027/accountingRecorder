@@ -132,10 +132,10 @@
 			<AppenderRef ref="RollingFileDebug" />
 		</Logger>
 		
-		<!-- <Logger name="cn.gxf.spring.struts.integrate.actions" level="DEBUG">
-			<AppenderRef ref="Console" />
+		<Logger name="cn.gxf.spring.struts.integrate.actions" level="DEBUG">
+			<!-- <AppenderRef ref="Console" /> -->
 			<AppenderRef ref="RollingFileActionDebug" />
-		</Logger> -->
+		</Logger>
 		
 		<Logger name="org.apache.struts2" level="INFO">
 			<AppenderRef ref="RollingFileStruts" />

@@ -1,11 +1,15 @@
 package cn.gxf.spring.quartz.job;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
 
 public class GenericProcessJob  implements Job{
+
+    private Logger logger = LogManager.getLogger();
 
 	private static final String APPLICATION_CONTEXT_KEY = "applicationContextKey";
 	
@@ -25,7 +29,7 @@ public class GenericProcessJob  implements Job{
 			dispatcher.execute(processorName, ctx);
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 	

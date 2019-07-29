@@ -143,7 +143,6 @@ public class IncomeDetail extends AccountObject implements Serializable {
 			}
 		} catch (Exception e) {
 			System.out.println(this.getClass() + "getFsrq error");
-			e.printStackTrace();
 		}
 		return null;
 	}
@@ -160,7 +159,6 @@ public class IncomeDetail extends AccountObject implements Serializable {
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(this.getClass() + "getFsrq error");
-			e.printStackTrace();
 		}
 		return null;
 	}

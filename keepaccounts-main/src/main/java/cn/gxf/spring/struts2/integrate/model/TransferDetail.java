@@ -10,11 +10,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "TransferDetail")
 @XmlType
 public class TransferDetail extends AccountObject implements Serializable{
 	private static final long serialVersionUID = 3519049834018168814L;
+
 	private String mxuuid;
 	private String accuuid;
 	private String user_name;
@@ -113,7 +115,6 @@ public class TransferDetail extends AccountObject implements Serializable{
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(this.getClass() + "getFsrq error");
-			e.printStackTrace();
 		}
 		return null;
 	}
@@ -129,7 +130,6 @@ public class TransferDetail extends AccountObject implements Serializable{
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(this.getClass() + "getFsrq error");
-			e.printStackTrace();
 		}
 		return null;
 	}

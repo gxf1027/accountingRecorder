@@ -8,7 +8,12 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class AESUtil {
+    private static Logger logger = LogManager.getLogger();
+
 	private static final String KEY_ALGORITHM = "AES";
 	private static final String DEFAULT_CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";// 默认的加密算法
 	private static final String KEY = "9f265d42ab3c66d8f50a3a2e793a30c2";
@@ -33,7 +38,7 @@ public class AESUtil {
 
 			return byteToHex(result);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error(ex.getMessage());
 		}
 
 		return null;
@@ -87,7 +92,7 @@ public class AESUtil {
 
 			return new SecretKeySpec(secretKey.getEncoded(), KEY_ALGORITHM);// 转换为AES专用密钥
 		} catch (NoSuchAlgorithmException ex) {
-			ex.printStackTrace();
+			logger.error(ex.getMessage());
 		}
 
 		return null;

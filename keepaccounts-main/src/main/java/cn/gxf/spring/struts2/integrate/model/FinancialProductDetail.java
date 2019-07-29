@@ -10,12 +10,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "FinancialProductDetail")
 @XmlType
 public class FinancialProductDetail implements Serializable {
 
 	private static final long serialVersionUID = -3685279529329841186L;
+
 	private String uuid;
 	private String transferUuid;
 	private String redeemUuid;
@@ -268,7 +270,6 @@ public class FinancialProductDetail implements Serializable {
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(this.getClass() + "dateToShow error");
-			e.printStackTrace();
 		}
 		return null;
 	}

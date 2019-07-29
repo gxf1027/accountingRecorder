@@ -5,7 +5,12 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class AuxiliaryTools {
+	
+    private static Logger logger = LogManager.getLogger();
 
 	public static final long millisec_wait_mysql_sync = 20;
 
@@ -49,7 +54,7 @@ public class AuxiliaryTools {
 			Thread.currentThread().sleep(milliseconds); //毫秒
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 	
