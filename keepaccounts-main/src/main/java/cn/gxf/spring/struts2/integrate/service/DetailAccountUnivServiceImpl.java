@@ -8,10 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 
 import cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator;
 import cn.gxf.spring.struts.mybatis.dao.AccountDetailMBDao;
@@ -32,6 +37,8 @@ import cn.gxf.spring.struts2.integrate.model.TransferDetail;
 @Service
 public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	
+    private Logger logger = LogManager.getLogger();
+
 	@Autowired
 	private AccountDetailMBDao accountDetailMBDao;
 	
@@ -143,6 +150,22 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		return this.accountDetailMBDao.getAccountingDetailByPatchUuid(accuuidList);
 	}
 	
+	public String saveOneBlockHandler(T detail, BlockException ex){
+		System.out.println("error in saveOneBlockHandler by sentinel.");
+		logger.error(ex.getMessage());
+		return "BLOCKED_BY_SENTINEL";
+	}
+	
+	
+	/*
+	 * 
+	 * 注意 blockHandler 函数会在原方法被限流/降级/系统保护的时候调用，而 fallback 函数会针对所有类型的异常
+	 * blockHandler 对应处理 BlockException 的函数名称，可选项。
+	 * blockHandler 函数访问范围需要是 public，返回类型需要与原方法相匹配，参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为 BlockException
+	 * 
+	 * 特别地，若 blockHandler 和 fallback 都进行了配置，则被限流降级而抛出 BlockException 时只会进入 blockHandler 处理逻辑。若未配置 blockHandler、fallback 和 defaultFallback，则被限流降级时会将 BlockException 直接抛出。
+	 */
+	@SentinelResource(value="saveAccount", blockHandler="saveOneBlockHandler")
 	//@CacheEvict(value="statCache", allEntries=true)
 	@Transactional(value="dsTransactionManager", isolation=Isolation.READ_COMMITTED)
 	public String saveOne(T detail) {
