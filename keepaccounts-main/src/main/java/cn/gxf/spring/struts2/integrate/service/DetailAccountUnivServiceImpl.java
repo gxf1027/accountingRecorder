@@ -150,7 +150,7 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		return this.accountDetailMBDao.getAccountingDetailByPatchUuid(accuuidList);
 	}
 	
-	public String saveOneBlockHandler(T detail, BlockException ex){
+	public String detailAccountBlockHandler(T detail, BlockException ex){
 		System.out.println("error in saveOneBlockHandler by sentinel.");
 		logger.error(ex.getMessage());
 		return "BLOCKED_BY_SENTINEL";
@@ -165,11 +165,11 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	 * 
 	 * 特别地，若 blockHandler 和 fallback 都进行了配置，则被限流降级而抛出 BlockException 时只会进入 blockHandler 处理逻辑。若未配置 blockHandler、fallback 和 defaultFallback，则被限流降级时会将 BlockException 直接抛出。
 	 */
-	@SentinelResource(value="saveAccount", blockHandler="saveOneBlockHandler")
-	//@CacheEvict(value="statCache", allEntries=true)
+	@SentinelResource(value="DetailAccountUnivServiceImpl", blockHandler="detailAccountBlockHandler")
 	@Transactional(value="dsTransactionManager", isolation=Isolation.READ_COMMITTED)
 	public String saveOne(T detail) {
 		
+		long start = System.currentTimeMillis();
 		AccountingDetail accountingDetail = new AccountingDetail();
 		//String accuuid = accUtil.generateUuid();
 		//accountingDetail.setAccuuid(accuuid);
@@ -257,9 +257,11 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		this.dmService.removeZhInfoCache(detail.getUser_id());
 		// 更新记账天数数据（可能不更新）
 		this.keepAccountingDatesService.updatekeepAccountingDates(detail.getUser_id(), new Date());
+		System.out.println("save consumption: " +(System.currentTimeMillis()-start));
 		return accountingDetail.getAccuuid();
 	}
 
+	@SentinelResource(value="DetailAccountUnivServiceImpl", blockHandler="detailAccountBlockHandler")
 	//@CacheEvict(value="redisCacheStat", allEntries=true)
 	@Transactional(value="dsTransactionManager", isolation=Isolation.READ_COMMITTED)
 	public AccountingDetail updateOne(T detail) {

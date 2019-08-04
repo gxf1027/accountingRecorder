@@ -53,7 +53,7 @@ public class InstantiationTracingBeanPostProcessor implements ApplicationListene
 	private void initFlowRules(){
     	List<FlowRule> rules = new ArrayList<>();
         FlowRule rule = new FlowRule();
-        rule.setResource("saveAccount");
+        rule.setResource("DetailAccountUnivServiceImpl");
         rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
         /*
          * CONTROL_BEHAVIOR_RATE_LIMITER means requests more than threshold will be queueing in the queue,
