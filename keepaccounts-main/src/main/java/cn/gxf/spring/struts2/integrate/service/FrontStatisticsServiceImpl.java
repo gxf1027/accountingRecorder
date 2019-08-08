@@ -64,7 +64,7 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 		Date current = new Date();
 		
 		// 获取该用户上次更新时间
-		Date lastproc = statProcDao.getLastProcTime(Integer.valueOf(userid).intValue());
+		Date lastproc = statProcDao.getLastProcTime(userid.intValue());
 		List<String> monthsHashNewData = null;
 		if (null == lastproc){
 			Date date = new Date();
@@ -74,7 +74,7 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 			statDao.procAccStatThisMonth(Integer.valueOf(userid));
 			System.out.println("updateStatThisMonth username:"+username);
 			// 更新last proc time
-			statProcDao.insertProcTime(current, Integer.valueOf(userid).intValue());
+			statProcDao.insertProcTime(current, userid.intValue());
 		}else{
 			Map<String, Object> params = new HashMap<>();
 			params.put("user_id", userid);
@@ -85,7 +85,7 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 				// 从上次运行存储过程到现在，没有新增数据
 				System.out.println("username:"+username+" hasn't new data.");
 				// 即使这段时间没有数据也要更新运行时间，使下一段统计时间变短
-				statProcDao.updateProcTime(current, Integer.valueOf(userid).intValue());
+				statProcDao.updateProcTime(current, userid.intValue());
 				return;
 			}
 			
@@ -98,7 +98,7 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 			}
 			System.out.println("updateStatThisMonth username:"+username);
 			// 更新last proc time
-			statProcDao.updateProcTime(current, Integer.valueOf(userid).intValue());
+			statProcDao.updateProcTime(current, userid.intValue());
 		}
 	}
 	

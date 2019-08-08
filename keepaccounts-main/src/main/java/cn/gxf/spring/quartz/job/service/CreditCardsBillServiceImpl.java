@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.jms.Destination;
 import javax.jms.Queue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ import cn.gxf.spring.struts2.integrate.service.UserService;
 
 @Service
 public class CreditCardsBillServiceImpl implements CreditCardsBillService{
+	
+    private Logger logger = LogManager.getLogger();
 
 	@Autowired
 	private CreditCardBillDao creditCardBillDao;
@@ -146,7 +150,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 				recList.addAll(creditCardBillDao.getCreditCardTranscationRecordInZDQ(params));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			throw new RuntimeException();
 		}
 		
@@ -167,7 +171,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 			int num = creditCardBillDao.saveTranscationRecordInZDQ(cctrList);
 			System.out.println("保存"+num+"条数据");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			throw new RuntimeException();
 		}
 		
@@ -183,7 +187,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 		try {
 			creditCardBillDao.deleteInvalidRecord(paramsMap);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			throw new RuntimeException();
 		}
 		
@@ -215,7 +219,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
         	bill.setEmail(userEmails.get(key.split("-")[0]));
         	// 对应还款数保留两位小数，四舍五入
         	float yhkje = bill.getYhkje();
-        	BigDecimal b = new BigDecimal(yhkje);  
+        	BigDecimal b = BigDecimal.valueOf(yhkje);  
         	bill.setYhkje(b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue());
         }
         

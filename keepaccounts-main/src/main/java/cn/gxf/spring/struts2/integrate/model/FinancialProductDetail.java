@@ -205,7 +205,7 @@ public class FinancialProductDetail implements Serializable {
 		float expectedReturn = 1.0f * dateCount / 365 * expectedReturnRate * je;
 		int scale = 2;// 设置位数
 		int roundingMode = 4;// 表示四舍五入，可以选择其他舍值方式，例如去尾，等等.
-		BigDecimal bd = new BigDecimal((double) expectedReturn);
+		BigDecimal bd = BigDecimal.valueOf((double) expectedReturn);
 		bd = bd.setScale(scale, roundingMode);
 		return bd.floatValue();
 	}

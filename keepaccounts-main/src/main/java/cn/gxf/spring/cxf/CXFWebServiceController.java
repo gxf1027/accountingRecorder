@@ -13,7 +13,7 @@ public class CXFWebServiceController {
 
 	private Logger logger = LogManager.getLogger();
 	
-	public static String CXF_BLOCKED_IP_SET = "cxf_blocked_ip_set";
+	public static final String CXF_BLOCKED_IP_SET = "cxf_blocked_ip_set";
 	// 是否阻止所有的ws访问（容器关闭时自动触发设置为1）
 	private int blocked = 0;
 	

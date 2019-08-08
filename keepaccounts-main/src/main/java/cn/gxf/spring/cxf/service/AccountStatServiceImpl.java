@@ -210,8 +210,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float pay_sum = 0.f;
@@ -265,8 +264,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float transfersum = 0.f;

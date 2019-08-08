@@ -8,12 +8,16 @@ import cn.gxf.spring.struts2.integrate.model.IncomeDetail;
 @WebService
 public interface IncomeDetailService {
 	
-	@WebMethod
-	public int save(IncomeDetail incomeDetail);
+	/*@WebMethod
+	public String save(String incomeDetailXml);*/
 	
 	@WebMethod
-	public int update(IncomeDetail incomeDetailNew);
+	public int update(String incomeDetailNewXml);
 	
 	@WebMethod
 	public int delete(String mxuuid);
+	
+	//test
+	@WebMethod
+	public int save2(IncomeDetail paymentDetail);
 }

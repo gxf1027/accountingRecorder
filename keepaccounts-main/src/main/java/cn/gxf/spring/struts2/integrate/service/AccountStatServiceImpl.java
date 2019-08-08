@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -32,6 +34,9 @@ import cn.gxf.spring.struts2.integrate.model.TransferDetailVO;
 @Service("accountStatService")
 public class AccountStatServiceImpl implements AccountStatService{
 	
+    private Logger logger = LogManager.getLogger();
+
+    
 	@Autowired
 	private AccDetailVoDao accDetailVoDao;
 	
@@ -77,8 +82,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float pay_sum = 0.f;
@@ -162,8 +166,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float pay_sum = 0.f;
@@ -254,8 +257,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float pay_sum = 0.f;
@@ -344,8 +346,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float in_sum = 0.f;
@@ -406,8 +407,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float in_sum = 0.f;
@@ -469,8 +469,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float pay_sum = 0.f;
@@ -530,8 +529,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float pay_sum = 0.f;
@@ -591,8 +589,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float transfersum = 0.f;
@@ -654,8 +651,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			
 			float transfersum = 0.f;

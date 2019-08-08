@@ -2,6 +2,7 @@ package cn.gxf.spring.cxf.service;
 
 import javax.jws.WebService;
 
+import org.apache.cxf.interceptor.Fault;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class TransferDetailServiceImpl implements TransferDetailService{
 		try {
 			detailAccountUnivServiceImpl.saveOne(transferDetail);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new Fault(new RuntimeException(e));
 		}
 		
 		return 1;
@@ -42,7 +43,7 @@ public class TransferDetailServiceImpl implements TransferDetailService{
 		try {
 			detailAccountUnivServiceImpl.updateOne(transferDetailNew);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new Fault(new RuntimeException(e));
 		}
 		
 		return 1;
@@ -59,7 +60,7 @@ public class TransferDetailServiceImpl implements TransferDetailService{
 			TransferDetail transferDetail = detailAccountUnivServiceImpl.getTransferDetailByMxuuid(mxuuid);
 			detailAccountUnivServiceImpl.deleteOne(transferDetail);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new Fault(new RuntimeException(e));
 		}
 		return 0;
 	}
