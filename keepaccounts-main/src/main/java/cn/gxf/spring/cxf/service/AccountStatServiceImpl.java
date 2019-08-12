@@ -36,8 +36,6 @@ public class AccountStatServiceImpl implements AccountStatService{
 	@Autowired
 	private AccountVoMBDao accountVoMBDao;
 	
-	@Autowired
-	private StringRedisTemplate stringRedisTemplate;
 
 	@Override
 	public List<AccDateStat> getDateStat(int user_id, Date date_from, Date date_to) {

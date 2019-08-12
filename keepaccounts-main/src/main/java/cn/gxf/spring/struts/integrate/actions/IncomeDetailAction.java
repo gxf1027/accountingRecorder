@@ -170,7 +170,7 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		
 		// 延迟一段时间等待主从同步
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
-		if (list.size()>0){
+		if (!list.isEmpty()){
 			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
 		}
 				

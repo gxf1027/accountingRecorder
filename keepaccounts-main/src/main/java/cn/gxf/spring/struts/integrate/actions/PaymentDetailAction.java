@@ -166,7 +166,7 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		
 		// 延迟一段时间用于主从同步
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
-		if (list.size()>0){
+		if (!list.isEmpty()){
 			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
 		}
 				

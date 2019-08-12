@@ -15,7 +15,7 @@ public class BillServiceImpl implements BillService {
 
 	@Override
 	public void SetBillMailed(List<String> uuidList) {
-		if (null == uuidList || uuidList.size() == 0){
+		if (null == uuidList || uuidList.isEmpty()){
 			System.out.println("SetBillMailed error parameter");
 			return ;
 		}

@@ -48,7 +48,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 	@Transactional(value="JtaXAManager",propagation=Propagation.REQUIRED)
 	@Override
 	public int processBill(List<String> zzdmList, Date jyqq, Date jyqz) {
-		if (zzdmList == null || zzdmList.size() == 0){
+		if (zzdmList == null || zzdmList.isEmpty()){
 			//System.out.println("今天没有信用卡账单需要处理");
 			return 0;
 		}
@@ -57,7 +57,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
         // 获取账单明细
         List<CreditCardTransRecord> recList = getCreditCardTranscationRecordInZDQ(zzdmList, jyqq, jyqz);
         System.out.println(recList); 
-        if (recList.size() == 0){
+        if (recList.isEmpty()){
         	System.out.println("信用卡 " + zzdmList + "本期无账单");
         	return 0;
         }
@@ -89,7 +89,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 	public int processBillManually(int user_id, Date jyqq, Date jyqz){
 		// 1. 获取需要处理的账户代码
 		List<CreditCard> creditCards = creditCardBillDao.getCreditCardbyUserId(user_id);
-		if (creditCards == null || creditCards.size() == 0){
+		if (creditCards == null || creditCards.isEmpty()){
 			System.out.println("用户没有需要处理的账户");
 			return 0;
 		}
@@ -98,7 +98,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
         // 获取账单明细
         List<CreditCardTransRecord> recList = getCreditCardTranscationRecordInZDQ(CreditCard.getZhdmList(creditCards), jyqq, jyqz);
         System.out.println(recList);  
-        if (recList.size() == 0){
+        if (recList.isEmpty()){
         	System.out.println("信用卡 " + recList + "本期无账单");
         	return 0;
         }

@@ -14,7 +14,7 @@ public class CreditCard implements Serializable{
 	private float ye;
 	
 	public static List<String> getZhdmList(List<CreditCard> cards){
-		if (null == cards || cards.size() == 0){
+		if (null == cards || cards.isEmpty()){
 			return null;
 		}
 		List<String> zhdms = new ArrayList<>();

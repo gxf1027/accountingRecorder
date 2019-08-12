@@ -79,7 +79,7 @@ public class AccountStatisticDaoJdbcImpl implements AccountStatisticDao{
 
 			@Override
 			public Map<String, String> extractData(ResultSet rs) throws SQLException, DataAccessException {
-				Map<String, String> map = new TreeMap<String, String>();
+				Map<String, String> map = new TreeMap<>();
 				while(rs.next()){
 					map.put(rs.getString("user_id"), rs.getString("user_name"));
 				}

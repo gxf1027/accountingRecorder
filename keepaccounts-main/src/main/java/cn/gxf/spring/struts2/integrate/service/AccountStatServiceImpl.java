@@ -49,9 +49,6 @@ public class AccountStatServiceImpl implements AccountStatService{
 	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
 	
-	@Autowired
-	private RedisTemplate redisTemplate;
-	
 	@Override
 	public List<AccDateStat> getDateStat(int user_id, String nd, String yf)  {
 		
@@ -76,8 +73,12 @@ public class AccountStatServiceImpl implements AccountStatService{
 		//System.out.println(map);
 		// 将上面的map整理到AccDateStat类型中
 		List<AccDateStat> stat_list = new ArrayList<>();
-		for (String keyd : map.keySet()){
+		
+		for (Map.Entry<String,List<AccountingDetailVO>> entry : map.entrySet()){
 			AccDateStat accDateStat = new AccDateStat();
+			
+			String keyd = entry.getKey();
+			List<AccountingDetailVO> accDetailVoList = entry.getValue();
 			
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
@@ -88,7 +89,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			float pay_sum = 0.f;
 			float in_sum = 0.f;
 			
-			for (AccountingDetailVO acc : map.get(keyd)){
+			for (AccountingDetailVO acc : accDetailVoList){
 				/*if (acc.getType() == 1)*/ // 收入
 				if (acc instanceof IncomeDetailVO)
 				{
@@ -160,8 +161,11 @@ public class AccountStatServiceImpl implements AccountStatService{
 		//System.out.println(map);
 		// 将上面的map整理到AccDateStat类型中
 		List<AccDateStat> stat_list = new ArrayList<>();
-		for (String keyd : map.keySet()){
+		for (Map.Entry<String,List<AccountingDetailVO>> entry : map.entrySet()){
 			AccDateStat accDateStat = new AccDateStat();
+			
+			String keyd = entry.getKey();
+			List<AccountingDetailVO> accDetailVoList = entry.getValue();
 			
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
@@ -172,7 +176,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			float pay_sum = 0.f;
 			float in_sum = 0.f;
 			
-			for (AccountingDetailVO acc : map.get(keyd)){
+			for (AccountingDetailVO acc : accDetailVoList){
 				/*if (acc.getType() == 1)*/ // 收入
 				if (acc instanceof IncomeDetailVO)
 				{
@@ -251,8 +255,11 @@ public class AccountStatServiceImpl implements AccountStatService{
 		//System.out.println(map);
 		// 将上面的map整理到AccDateStat类型中
 		List<AccDateStat> stat_list = new ArrayList<>();
-		for (String keyd : map.keySet()){
+		for (Map.Entry<String,List<AccountingDetailVO>> entry : map.entrySet()){
 			AccDateStat accDateStat = new AccDateStat();
+			
+			String keyd = entry.getKey();
+			List<AccountingDetailVO> accDetailVoList = entry.getValue();
 			
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
@@ -263,7 +270,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			float pay_sum = 0.f;
 			float in_sum = 0.f;
 			
-			for (AccountingDetailVO acc : map.get(keyd)){
+			for (AccountingDetailVO acc : accDetailVoList){
 				/*if (acc.getType() == 1)*/ // 收入
 				if (acc instanceof IncomeDetailVO)
 				{
@@ -340,8 +347,11 @@ public class AccountStatServiceImpl implements AccountStatService{
 		
 		//System.out.println(map);
 		List<AccDateStat> stat_list = new ArrayList<>();
-		for (String keyd : map.keySet()){
+		for (Map.Entry<String,List<IncomeDetailVO>> entry : map.entrySet()){
 			AccDateStat accDateStat = new AccDateStat();
+			
+			String keyd = entry.getKey();
+			List<IncomeDetailVO> incomeDetailVoList = entry.getValue();
 			
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
@@ -351,7 +361,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			
 			float in_sum = 0.f;
 			
-			for (IncomeDetailVO acc : map.get(keyd)){
+			for (IncomeDetailVO acc : incomeDetailVoList){
 
 				in_sum += acc.getJe();
 				
@@ -401,8 +411,11 @@ public class AccountStatServiceImpl implements AccountStatService{
 		
 		//System.out.println(map);
 		List<AccDateStat> stat_list = new ArrayList<>();
-		for (String keyd : map.keySet()){
+		for (Map.Entry<String,List<IncomeDetailVO>> entry : map.entrySet()){
 			AccDateStat accDateStat = new AccDateStat();
+			
+			String keyd = entry.getKey();
+			List<IncomeDetailVO> incomeDetailVoList = entry.getValue();
 			
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
@@ -412,7 +425,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			
 			float in_sum = 0.f;
 			
-			for (IncomeDetailVO acc : map.get(keyd)){
+			for (IncomeDetailVO acc : incomeDetailVoList){
 
 				in_sum += acc.getJe();
 				
@@ -463,8 +476,11 @@ public class AccountStatServiceImpl implements AccountStatService{
 		
 		//System.out.println(map);
 		List<AccDateStat> stat_list = new ArrayList<>();
-		for (String keyd : map.keySet()){
+		for (Map.Entry<String,List<PaymentDetailVO>> entry : map.entrySet()){
 			AccDateStat accDateStat = new AccDateStat();
+			
+			String keyd = entry.getKey();
+			List<PaymentDetailVO> paymentDetailVoList = entry.getValue();
 			
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
@@ -474,7 +490,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			
 			float pay_sum = 0.f;
 			
-			for (PaymentDetailVO acc : map.get(keyd)){
+			for (PaymentDetailVO acc : paymentDetailVoList){
 
 				pay_sum += acc.getJe();
 				
@@ -523,8 +539,11 @@ public class AccountStatServiceImpl implements AccountStatService{
 		
 		//System.out.println(map);
 		List<AccDateStat> stat_list = new ArrayList<>();
-		for (String keyd : map.keySet()){
+		for (Map.Entry<String,List<PaymentDetailVO>> entry : map.entrySet()){
 			AccDateStat accDateStat = new AccDateStat();
+			
+			String keyd = entry.getKey();
+			List<PaymentDetailVO> paymentDetailVoList = entry.getValue();
 			
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
@@ -534,7 +553,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			
 			float pay_sum = 0.f;
 			
-			for (PaymentDetailVO acc : map.get(keyd)){
+			for (PaymentDetailVO acc : paymentDetailVoList){
 
 				pay_sum += acc.getJe();
 				
@@ -583,8 +602,11 @@ public class AccountStatServiceImpl implements AccountStatService{
 		//System.out.println(map);
 		
 		List<AccDateStat> stat_list = new ArrayList<>();
-		for (String keyd : map.keySet()){
+		for (Map.Entry<String,List<TransferDetailVO>> entry : map.entrySet()){
 			AccDateStat accDateStat = new AccDateStat();
+			
+			String keyd = entry.getKey();
+			List<TransferDetailVO> transDetailVoList = entry.getValue();
 			
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
@@ -593,7 +615,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			}
 			
 			float transfersum = 0.f;
-			for (TransferDetailVO acc : map.get(keyd)){
+			for (TransferDetailVO acc : transDetailVoList){
 				transfersum += acc.getJe();
 				accDateStat.getDetail_list().add(acc);
 			}
@@ -645,8 +667,11 @@ public class AccountStatServiceImpl implements AccountStatService{
 		//System.out.println(map);
 		
 		List<AccDateStat> stat_list = new ArrayList<>();
-		for (String keyd : map.keySet()){
+		for (Map.Entry<String,List<TransferDetailVO>> entry : map.entrySet()){
 			AccDateStat accDateStat = new AccDateStat();
+			
+			String keyd = entry.getKey();
+			List<TransferDetailVO> transDetailVoList = entry.getValue();
 			
 			try {
 				accDateStat.setDate(sdf.parse(keyd));
@@ -655,7 +680,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			}
 			
 			float transfersum = 0.f;
-			for (TransferDetailVO acc : map.get(keyd)){
+			for (TransferDetailVO acc : transDetailVoList){
 				transfersum += acc.getJe();
 				accDateStat.getDetail_list().add(acc);
 			}
