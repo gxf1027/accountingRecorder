@@ -214,10 +214,7 @@ public class UserDaoImplJdbc implements UserDao{
 	}
 
 	@Override
-	public void recordUserLoginInfo(String userName, Date lastLoginTime, String lastLoginIp){
-		if (null == userName){
-			return;
-		}
+	public void recordUserLoginInfo(int userId, Date lastLoginTime, String lastLoginIp){
 		
 		if (null == lastLoginTime && null == lastLoginIp){
 			return;
@@ -225,20 +222,17 @@ public class UserDaoImplJdbc implements UserDao{
 		
 		String sql = "UPDATE user_login_info info "
 				+ "SET last_login_time = :lastLoginTime , last_login_ip = :lastLoginIp "
-				+ "WHERE EXISTS (SELECT 1 FROM user_ss u WHERE u.id = info.user_id AND u.username = :userName)";
+				+ "WHERE info.user_id = :userId";
 		
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("userName", userName);
+		paramMap.put("userId", userId);
 		paramMap.put("lastLoginTime", lastLoginTime);
 		paramMap.put("lastLoginIp", lastLoginIp);
 		int rv = namedTemplate.update(sql, paramMap);
 		
 		if (0 == rv){
 			// 表中不存在，因此插入
-			sql = "INSERT INTO user_login_info "
-					+ "SELECT id, :lastLoginTime, :lastLoginIp "
-					+ "FROM user_ss "
-					+ "WHERE username = :userName";
+			sql = "INSERT INTO user_login_info VALUES(:userId, :lastLoginTime, :lastLoginIp)";
 			namedTemplate.update(sql, paramMap);
 		}
 	}

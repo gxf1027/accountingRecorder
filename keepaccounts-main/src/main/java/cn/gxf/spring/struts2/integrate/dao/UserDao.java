@@ -18,5 +18,5 @@ public interface UserDao {
 	public int resetUserAttemptLimit(String userName);
 	public int decreaseUserAttempts(String userName);
 	
-	public void recordUserLoginInfo(String userName, Date lastLoginTime, String lastLoginIp);
+	public void recordUserLoginInfo(int userId, Date lastLoginTime, String lastLoginIp);
 }
