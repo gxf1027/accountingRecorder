@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import cn.gxf.spring.struts.mybatis.dao.AccountVoMBDao;
@@ -24,7 +25,7 @@ public class DetailVoServiceImpl implements DetailVoService{
 	@Cacheable(value="redisCacheStat",
 			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailPaymentVoPrefix, #user_id, #date_from, #date_to)")
 	@Override
-	public List<PaymentDetailVO> getPaymentVo(int user_id, Date date_from, Date date_to) {
+	public List<PaymentDetailVO> getPaymentVo(int user_id, Date date_from, Date date_to) throws DataAccessException{
 		
 		if (null == date_from || null == date_to){
 			return null;
@@ -37,14 +38,13 @@ public class DetailVoServiceImpl implements DetailVoService{
 		paramMap.put("user_id", user_id);
 		
 		List<PaymentDetailVO> listPayment = accountVoMBDao.getPaymentVo(paramMap);
-	
 		return listPayment;
 	}
 
 	@Cacheable(value="redisCacheStat",
 			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailIncomeVoPrefix, #user_id, #date_from, #date_to)")
 	@Override
-	public List<IncomeDetailVO> getIncomeVo(int user_id, Date date_from, Date date_to) {
+	public List<IncomeDetailVO> getIncomeVo(int user_id, Date date_from, Date date_to) throws DataAccessException{
 		
 		if (null == date_from || null == date_to){
 			return null;
@@ -64,7 +64,7 @@ public class DetailVoServiceImpl implements DetailVoService{
 	@Cacheable(value="redisCacheStat",
 			key="T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).generateKey(T(cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator).detailTransferVoPrefix, #user_id, #date_from, #date_to)")
 	@Override
-	public List<TransferDetailVO> getTransferVo(int user_id, Date date_from, Date date_to) {
+	public List<TransferDetailVO> getTransferVo(int user_id, Date date_from, Date date_to) throws DataAccessException{
 		
 		if (null == date_from || null == date_to){
 			return null;

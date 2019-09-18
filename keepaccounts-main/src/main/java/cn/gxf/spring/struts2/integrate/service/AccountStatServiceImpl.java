@@ -217,9 +217,20 @@ public class AccountStatServiceImpl implements AccountStatService{
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
-		List<PaymentDetailVO> listPayment = detailVoService.getPaymentVo(user_id, date_from, date_to);
-		List<IncomeDetailVO> listIncome = detailVoService.getIncomeVo(user_id, date_from, date_to);
-		List<TransferDetailVO> listTransfer = detailVoService.getTransferVo(user_id, date_from, date_to);
+		List<PaymentDetailVO> listPayment = null;
+		List<IncomeDetailVO> listIncome = null;
+		List<TransferDetailVO> listTransfer = null;
+		
+		try {
+			listPayment = detailVoService.getPaymentVo(user_id, date_from, date_to);
+			listIncome = detailVoService.getIncomeVo(user_id, date_from, date_to);
+			listTransfer = detailVoService.getTransferVo(user_id, date_from, date_to);
+			
+		} catch (Exception e) {
+			logger.error("getDateStatMB user:" + user_id + " getVo Error.");
+			// ·µ»Ø¿Õ
+			return new ArrayList<>();
+		}
 		
 		List<AccountingDetailVO> list = new ArrayList<>();
 		
@@ -393,7 +404,13 @@ public class AccountStatServiceImpl implements AccountStatService{
 	@Override
 	public List<AccDateStat> getDateStatIncome(int user_id, Date date_from , Date date_to) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		List<IncomeDetailVO> list = detailVoService.getIncomeVo(user_id, date_from, date_to);
+		List<IncomeDetailVO> list = null;
+		try {
+			list = detailVoService.getIncomeVo(user_id, date_from, date_to);
+		} catch (Exception e) {
+			logger.error("getDateStatMB user:" + user_id + " getIncomeVo Error.");
+			return new ArrayList<>();
+		}
 		
 		Map<String, List<IncomeDetailVO>> map = new HashMap<>();
 		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -522,7 +539,15 @@ public class AccountStatServiceImpl implements AccountStatService{
 	public List<AccDateStat> getDateStatPayment(int user_id, Date date_from, Date date_to){
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		List<PaymentDetailVO> list = detailVoService.getPaymentVo(user_id, date_from, date_to);
+		
+		List<PaymentDetailVO> list = null;
+		try {
+			list = detailVoService.getPaymentVo(user_id, date_from, date_to);
+		} catch (Exception e) {
+			logger.error("getDateStatMB user:" + user_id + " getPaymentVo Error.");
+			return new ArrayList<>();
+		}
+		
 		
 		Map<String, List<PaymentDetailVO>> map = new HashMap<>();
 		for (PaymentDetailVO e : list){
@@ -648,7 +673,14 @@ public class AccountStatServiceImpl implements AccountStatService{
 	public List<AccDateStat> getDateStatTransfer(int user_id, Date date_from, Date date_to) {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		List<TransferDetailVO> list = detailVoService.getTransferVo(user_id, date_from, date_to);
+		List<TransferDetailVO> list = null;
+		try {
+			list = detailVoService.getTransferVo(user_id, date_from, date_to);
+		} catch (Exception e) {
+			logger.error("getDateStatMB user:" + user_id + " getTransferVo Error.");
+			return new ArrayList<>();
+		}
+		
 		
 		Map<String, List<TransferDetailVO>> map = new HashMap<>();
 		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
