@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"   
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+     http://www.springframework.org/schema/cache 
+     http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
+    
+    <!-- 配置JMS连接工厂 -->
+	<!-- <bean id="connectionFactory"
+		class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616" />
+	</bean> -->
+	
+	<bean id="propertyConfigurer" class="cn.gxf.spring.struts.integrate.sysctr.KeepAccPropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:mq.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	 <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${mq.url}" />
+        <property name="userName" value="${mq.username}"></property>
+		<property name="password" value="${mq.password}"></property>
+    </bean>
+    
+    <!-- 发送消息的目的地（队列）：信用卡账单信息 -->
+	<bean id="mailQueueDest"
+		class="org.apache.activemq.command.ActiveMQQueue">
+		<!-- 设置消息队列的名字 -->
+		<constructor-arg index="0" value="mailQueue" />
+	</bean>
+	
+	<!-- 发送消息的目的地（队列）：理财产品到期通知 -->
+	<bean id="mailQueueDest_FinaProducts"
+		class="org.apache.activemq.command.ActiveMQQueue">
+		<!-- 设置消息队列的名字 -->
+		<constructor-arg index="0" value="mailQueueFinaProducts" />
+	</bean>
+    
+    <!-- 配置QueueJms模板  -->
+	<bean id="jmsQueueTemplate"
+		class="org.springframework.jms.core.JmsTemplate" lazy-init="true">
+		<property name="connectionFactory" ref="jmsFactory" />
+		<property name="defaultDestination" ref="mailQueueDest" /> <!-- 只是默认可以修改的 -->
+		<property name="receiveTimeout" value="10000" />
+		<property name="sessionTransacted" value="true"/>
+	</bean>
+    
+    
+    
+</beans>

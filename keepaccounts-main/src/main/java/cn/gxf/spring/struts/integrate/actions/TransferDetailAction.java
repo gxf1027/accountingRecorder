@@ -128,7 +128,7 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		}
 		else if (this.transferDetail.getZzlx_dm().equals(DmService.zzlx_purchase_fin_prod_dm)){
 			this.transferDetail.getFinancialProductDetail().setJe(this.transferDetail.getJe());
-		}else if (this.transferDetail.getZzlx_dm().equals(DmService.zzlx_redeem_fin_prod_dm)){ // 理财赎回，赎回时只需要更新实际收益
+		}else if (this.transferDetail.getZzlx_dm().equals(DmService.zzlx_redeem_fin_prod_dm) || this.transferDetail.getZzlx_dm().equals(DmService.zzlx_add_fin_prod_dm)){ // 理财赎回，赎回时只需要更新实际收益
 			// this.transferDetail.financialProductDetail已经有realReturn数据，另外需设置uuid
 			if(this.productUnredeemed == null ){
 				this.productUnredeemed = "-1"; // 因为不可能有理财产品的uuid是-1,所以实际不会起作用
@@ -152,7 +152,7 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 			this.transferDetail.getFundDetail().setConfirmedSum(this.transferDetail.getJe()); // 设置金额，因为前台没有输入项目
 		}else if (this.transferDetail.getZzlx_dm().equals(DmService.zzlx_purchase_fin_prod_dm)){
 			this.transferDetail.getFinancialProductDetail().setJe(this.transferDetail.getJe());
-		}else if (this.transferDetail.getZzlx_dm().equals(DmService.zzlx_redeem_fin_prod_dm)){ // 理财赎回，赎回时只需要更新实际收益
+		}else if (this.transferDetail.getZzlx_dm().equals(DmService.zzlx_redeem_fin_prod_dm)|| this.transferDetail.getZzlx_dm().equals(DmService.zzlx_add_fin_prod_dm)){ // 理财赎回，赎回时只需要更新实际收益
 			// this.transferDetail.financialProductDetail已经有realReturn数据，另外需设置uuid
 			if(this.productUnredeemed == null ){
 				this.productUnredeemed = "-1";
@@ -219,7 +219,7 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		
 		// 延迟一段时间等待主从同步
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
-		if (list.size()>0){
+		if (!list.isEmpty()){
 			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
 		}
 		

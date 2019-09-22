@@ -8,18 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jms.Destination;
-import javax.jms.Queue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.gxf.spring.quartz.job.JMSSender;
+import cn.gxf.spring.quartz.job.RabbitSender;
 import cn.gxf.spring.quartz.job.dao.CreditCardBillDao;
 import cn.gxf.spring.quartz.job.model.CreditCard;
 import cn.gxf.spring.quartz.job.model.CreditCardBill;
@@ -35,11 +32,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 	private CreditCardBillDao creditCardBillDao;
 	
 	@Autowired
-	@Qualifier("mailQueueDest")
-	private Queue queue;
-	
-	@Autowired
-	private JMSSender jmsSender;
+	private RabbitSender rabbitSender;
 	
 	@Autowired
 	private UserService userService;
@@ -78,8 +71,8 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
         creditCardBillDao.saveCreditCardBill(bills);
         
         
-        // 4. 发送至JMS
-        sendToJMS(this.queue, bills);
+        // 4. 发送至MQ
+        sendToRabbit(bills);
         
         return 1;
 	}
@@ -119,8 +112,8 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
         creditCardBillDao.saveCreditCardBill(bills);
         
         
-        // 4. 发送至JMS
-        sendToJMS(this.queue, bills);
+        // 4. 发送至MQ
+        sendToRabbit(bills);
         
         return 1;
 	}
@@ -275,10 +268,16 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
         }
 	}*/
 	
-	@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
-	public void sendToJMS(Destination destination, List<CreditCardBill> bills){
+//	@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
+//	public void sendToJMS(Destination destination, List<CreditCardBill> bills){
+//		for (CreditCardBill bill : bills){
+//			this.jmsSender.send(destination, bill);
+//		}
+//	}
+	
+	public void sendToRabbit(List<CreditCardBill> bills){
 		for (CreditCardBill bill : bills){
-			this.jmsSender.send(destination, bill);
+			this.rabbitSender.send("creditcards", bill);
 		}
 	}
 }

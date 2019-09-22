@@ -16,7 +16,7 @@
     <import resource="classpath:META-INF/cxf/cxf.xml" />
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
     
-    <bean id="cachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+    <!-- <bean id="cachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
 	    <property name="targetConnectionFactory">
 	        <bean class="org.apache.activemq.ActiveMQConnectionFactory">
 	            <property name="brokerURL" value="${mq.url}" />
@@ -27,16 +27,16 @@
 	    <property name="sessionCacheSize" value="20"/>
 	    <property name="cacheProducers" value="true"/>
 	    <property name="cacheConsumers" value="true"/>
-	</bean>
+	</bean> -->
   
-    <bean id="jmsConfig" class="org.apache.cxf.transport.jms.JMSConfiguration">  
+    <!-- <bean id="jmsConfig" class="org.apache.cxf.transport.jms.JMSConfiguration">  
         <property name="connectionFactory" ref="cachingConnectionFactory" />  
         <property name="concurrentConsumers" value="16" />
         <property name="targetDestination" value="cxf.queue" />  
-    </bean>
+    </bean> -->
     
     <!--  Cxf WebService 服务端 （JMS通信方式）-->
-    <jaxws:endpoint id="billService" 
+    <!-- <jaxws:endpoint id="billService" 
     		implementor="cn.gxf.spring.quartz.job.endpoint.BillServiceEndPointImpl" 
     		address="jms://">
     	<jaxws:features>
@@ -49,17 +49,17 @@
    			<ref bean="logInInterceptorJms"/>
    			<ref bean="wss4jInInterceptor"/>
     	</jaxws:inInterceptors>	
-    </jaxws:endpoint>
+    </jaxws:endpoint> -->
     
     <!--  Cxf WebService 服务端 -->
-    <!-- <jaxws:endpoint id="billService" implementor="cn.gxf.spring.quartz.job.endpoint.BillServiceEndPointImpl" 
+    <jaxws:endpoint id="billService" implementor="cn.gxf.spring.quartz.job.endpoint.BillServiceEndPointImpl" 
     		address="/billService">
     	<jaxws:inInterceptors>
    			<ref bean="authInterceptor"/>
    			<ref bean="logInInterceptor"/>
    			<ref bean="wss4jInInterceptor"/>
     	</jaxws:inInterceptors>	
-    </jaxws:endpoint> -->
+    </jaxws:endpoint>
     
     <jaxws:endpoint id="incomeDetailService" implementor="cn.gxf.spring.cxf.service.IncomeDetailServiceImpl"
     		address="/incomeService">

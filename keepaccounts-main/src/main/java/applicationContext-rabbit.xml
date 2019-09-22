@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"   
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+     http://www.springframework.org/schema/rabbit 
+     http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd">
+     
+	<!-- <context:property-placeholder location="classpath:rabbitmq.properties"/> -->
+	
+	<!-- 公共部分 -->
+	<!-- 创建连接类 连接安装好的 rabbitmq -->
+	<bean id="rabbitConnectionFactory"  class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
+	    <constructor-arg value="localhost" />    
+	    <!-- username,访问RabbitMQ服务器的账户,默认是guest -->
+	    <property name="username" value="${rabbit.username}" />
+	    <!-- username,访问RabbitMQ服务器的密码,默认是guest -->   
+	    <property name="password" value="${rabbit.password}" />
+	    <!-- host,RabbitMQ服务器地址，默认值"localhost" -->   
+	    <property name="host" value="${rabbit.host}" />   
+	    <!-- port，RabbitMQ服务端口，默认值为5672 -->
+	    <property name="port" value="${rabbit.port}" />
+	    <!-- 发生者的confirm模式必须有这个属性为true，与template的confirm-callback有关 -->
+	    <property name="publisherConfirms" value="true" />
+	</bean>
+	
+	<rabbit:admin connection-factory="rabbitConnectionFactory"/>
+		
+	<rabbit:direct-exchange name="${rabbit.exchange}" durable="true" auto-delete="false">	
+		<rabbit:bindings>
+		    <!-- 'queue' 可以是rabbit:queue的id或者name -->
+			<rabbit:binding queue="creditq" key="creditcards" />
+			<rabbit:binding queue="productsq" key="finproducts" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+	
+	<rabbit:queue id="creditq" name="creditqueue" durable="true"/>
+	<rabbit:queue id="productsq" name="productsqueue" durable="true"/>
+	
+   
+	<rabbit:template id="rabbitTemplate" 
+					exchange="${rabbit.exchange}" 
+					connection-factory="rabbitConnectionFactory"  
+					confirm-callback="confirmCallBackListener"
+					return-callback="returnCallBackListener"
+					mandatory="true" />
+	
+	<bean id="rabbitSender" class="cn.gxf.spring.quartz.job.RabbitSenderImpl">
+		<property name="exchageName" value="${rabbit.exchange}" />
+		<property name="rabbitTemplate" ref="rabbitTemplate" />
+	</bean>
+</beans>

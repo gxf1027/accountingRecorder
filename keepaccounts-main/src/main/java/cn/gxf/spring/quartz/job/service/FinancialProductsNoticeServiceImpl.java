@@ -2,7 +2,6 @@ package cn.gxf.spring.quartz.job.service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,14 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.jms.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.gxf.spring.quartz.job.JMSSender;
+import cn.gxf.spring.quartz.job.RabbitSender;
 import cn.gxf.spring.quartz.job.dao.FinanProductsNoticeDao;
 import cn.gxf.spring.quartz.job.model.FinancialProductsNotice;
 import cn.gxf.spring.struts.mybatis.dao.FinancialProductDetailMBDao;
@@ -37,11 +34,7 @@ public class FinancialProductsNoticeServiceImpl implements FinancialProductsNoti
 	private FinancialProductDetailMBDao finanProdDetailDao;
 	
 	@Autowired
-	private JMSSender jmsSender;
-	
-	@Autowired
-	@Qualifier("mailQueueDest_FinaProducts")
-	private Queue queue;
+	private RabbitSender rabbitSender;
 	
 	
 	// 既可以处理多个用户，也可以处理单个用户
@@ -93,8 +86,8 @@ public class FinancialProductsNoticeServiceImpl implements FinancialProductsNoti
 			// 存入数据库
 			noticeDao.saveNotice(notice);
 			
-			// JMS发送
-			jmsSender.send(this.queue/*destination*/, notice);
+			// 发送至MQ
+			this.rabbitSender.send("finproducts", notice);
 		}
 		
 		return 1;
