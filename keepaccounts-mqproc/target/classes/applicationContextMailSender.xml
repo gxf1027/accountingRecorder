@@ -37,9 +37,23 @@
         </property>    
     </bean>    
     
+    <!--  TODO: 需要删除 -->
     <bean id="mailSenderService" class="cn.gxf.spring.bill.mailsender.MailSenderServiceImpl">
     	<property name="mailSender" ref="mailSender" />
     	<property name="templateEngine" ref="springTemplateEngine" />
+    </bean>
+    
+    <!-- 新 -->
+    <bean id="fpNoticeSender" class="cn.gxf.spring.bill.mailsender.FpNoticeSender">
+    	<property name="mailSender" ref="mailSender" />
+    	<property name="templateEngine" ref="springTemplateEngine" />
+    </bean>
+    
+    <!-- 新 -->
+    <bean id="CcBillSender" class="cn.gxf.spring.bill.mailsender.CcBillSender">
+    	<property name="mailSender" ref="mailSender" />
+    	<property name="templateEngine" ref="springTemplateEngine" />
+    	<property name="creditCardBillConsumingDao" ref="CreditCardBillConsumingDao"></property>
     </bean>
     
     <!-- Thymeleaf View Resolver - implementation of Spring's ViewResolver interface -->

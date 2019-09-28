@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"   
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+     http://www.springframework.org/schema/rabbit 
+     http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd">
+     	
+	<!-- 公共部分 -->
+	<!-- 创建连接类 连接安装好的 rabbitmq -->
+	<bean id="rabbitConnectionFactory"  class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
+	    <constructor-arg value="localhost" />    
+	    <!-- username,访问RabbitMQ服务器的账户,默认是guest -->
+	    <property name="username" value="${rabbit.username}" />
+	    <!-- username,访问RabbitMQ服务器的密码,默认是guest -->   
+	    <property name="password" value="${rabbit.password}" />
+	    <!-- host,RabbitMQ服务器地址，默认值"localhost" -->   
+	    <property name="host" value="${rabbit.host}" />   
+	    <!-- port，RabbitMQ服务端口，默认值为5672 -->
+	    <property name="port" value="${rabbit.port}" />
+	</bean>
+	
+	<rabbit:admin connection-factory="rabbitConnectionFactory"/>
+	
+	<bean id="msgConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter" />
+	
+	<bean id="ACK_AUTO"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField" value="org.springframework.amqp.core.AcknowledgeMode.AUTO" />
+	</bean>
+	
+	<!-- 信用卡账单 --> 
+    <bean id="creditMessageListener" class="cn.gxf.spring.bill.receiver.WcMessageListener">
+   		<property name="simpleMsgConvt" ref="msgConverter" />
+   		<property name="taskExecutor" ref="taskExecutor" />
+   		<property name="sender" ref="CcBillSender" />
+   	</bean>
+	   
+   <bean id="creditContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+	    <property name="connectionFactory" ref="rabbitConnectionFactory"/>
+	    <property name="queueNames" value="creditqueue" />
+	    <property name="messageListener" ref="creditMessageListener" />
+	    <property name="acknowledgeMode" ref="ACK_AUTO" /> <!-- acknowledge模式 -->
+	    <property name="concurrentConsumers" value="5" />
+	    <property name="maxConcurrentConsumers" value="10" />
+	</bean>
+	
+	
+	<!-- 理财产品到期信息 -->
+    <bean id="fpMessageListener" class="cn.gxf.spring.bill.receiver.WcMessageListener">
+    	<property name="simpleMsgConvt" ref="msgConverter" />
+    	<property name="taskExecutor" ref="taskExecutor" />
+    	<property name="sender" ref="fpNoticeSender" />
+    </bean> 
+	    
+	
+   <bean id="finproductsContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+	    <property name="connectionFactory" ref="rabbitConnectionFactory"/>
+	    <property name="queueNames" value="productsqueue" />
+	    <property name="messageListener" ref="fpMessageListener" />
+	    <property name="concurrentConsumers" value="5" />
+	    <property name="maxConcurrentConsumers" value="10" />
+	</bean>
+   
+	
+</beans>
