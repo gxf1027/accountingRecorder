@@ -35,7 +35,13 @@ public class KeepAccountingDatesServiceImpl implements KeepAccountingDatesServic
 			return Integer.valueOf(keepdatesValue.split(",")[1]); 
 		}
 		
-		int dates = statDao.getKeepAccountingDates(user_id);
+		int dates = 0;
+		try {
+			statDao.getKeepAccountingDates(user_id);
+		} catch (Exception e) {
+			return 0;
+		}
+		
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		keepdatesValue = sdf.format(new Date())+","+dates+",0";
@@ -72,7 +78,13 @@ public class KeepAccountingDatesServiceImpl implements KeepAccountingDatesServic
 		}
 		
 		// 如果日期不一致，则肯定要更新
-		int dates_new = statDao.getKeepAccountingDates(user_id);
+		int dates_new = 0;
+		try {
+			dates_new = statDao.getKeepAccountingDates(user_id);
+		} catch (Exception e) {
+			return;
+		}
+		
 		keepdatesValue = dateStr_new+","+dates_new+",1";
 		this.stringRedisTemplate.opsForHash().put(KeepAccountingDatesService.keepdatesHash, KeepAccountingDatesService.prefix_keepdates+user_id, keepdatesValue);
 	}

@@ -11,6 +11,7 @@ import java.util.Set;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,9 @@ public class FinancialProductsNoticeServiceImpl implements FinancialProductsNoti
 	
 	@Autowired
 	private RabbitSender rabbitSender;
+	
+	@Value("${rabbit.routing.key.finproducts}")
+	private String routingKey;
 	
 	
 	// 既可以处理多个用户，也可以处理单个用户
@@ -87,7 +91,7 @@ public class FinancialProductsNoticeServiceImpl implements FinancialProductsNoti
 			noticeDao.saveNotice(notice);
 			
 			// 发送至MQ
-			this.rabbitSender.send("finproducts", notice);
+			this.rabbitSender.send(this.routingKey, notice);
 		}
 		
 		return 1;

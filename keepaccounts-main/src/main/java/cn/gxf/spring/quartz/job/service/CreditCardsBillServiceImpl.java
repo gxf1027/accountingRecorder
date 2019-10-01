@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,9 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 	
 	@Autowired
 	private UserService userService;
+	
+	@Value("${rabbit.routing.key.creditcards}")
+	private String routingKey;
 	
 	// 在一个事务内，如果数据库/JMS抛出异常，会回滚
 	@Transactional(value="JtaXAManager",propagation=Propagation.REQUIRED)
@@ -277,7 +281,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 	
 	public void sendToRabbit(List<CreditCardBill> bills){
 		for (CreditCardBill bill : bills){
-			this.rabbitSender.send("creditcards", bill);
+			this.rabbitSender.send(this.routingKey, bill);
 		}
 	}
 }

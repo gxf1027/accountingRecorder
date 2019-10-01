@@ -24,7 +24,6 @@
 		<property name="locations">
 			<list>
 				<value>classpath:db.properties</value>
-				<value>classpath:mq.properties</value>
 				<value>classpath:rabbitmq.properties</value>
 			</list>
 		</property>
