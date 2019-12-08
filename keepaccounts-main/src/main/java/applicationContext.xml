@@ -49,7 +49,7 @@
 	<tx:annotation-driven/>
 	
 	<!-- 分布式事务 -->
-	<bean id="XADataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean">
+	<!-- <bean id="XADataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean">
         <property name="uniqueResourceName" value="xads11" />
         <property name="xaDataSourceClassName">
             <value>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</value>
@@ -63,10 +63,10 @@
         </property>     
         <property name="poolSize" value="10"/>
         <property name="maxPoolSize" value="15" />
-    </bean>
+    </bean> -->
 	<!-- atomikos事务管理器 -->
 	<!-- 在JMS没有启动的情况下，启动本应用，会报错。  com.atomikos.datasource.ResourceException: Error in getting XA resource -->
-    <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
+    <!-- <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
         init-method="init" destroy-method="close" lazy-init="true">
         <description>UserTransactionManager</description>
         <property name="forceShutdown" value="true" />
@@ -74,15 +74,15 @@
     
     <bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp" lazy-init="true">
         <property name="transactionTimeout" value="3000" />
-    </bean>
+    </bean> -->
 	
 	<!-- spring 事务管理器 -->
-    <bean id="springJtaTxManager"
+    <!-- <bean id="springJtaTxManager"
         class="org.springframework.transaction.jta.JtaTransactionManager" lazy-init="true">
         <property name="transactionManager" ref="atomikosTransactionManager" />
         <property name="userTransaction" ref="atomikosUserTransaction" />
         <qualifier value="JtaXAManager"></qualifier>
-    </bean>
+    </bean> -->
 
 	<!-- <bean id="loanServiceProxy"
 		class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean" lazy-init="true" >
@@ -126,6 +126,8 @@
         <property name="mapperLocations">
         	<list>
                 <value>classpath:cn/gxf/spring/struts/mybatis/mapper/*.xml</value>
+                <value>classpath:cn/gxf/spring/motan/mbxml/*.xml</value>
+                <value>classpath:cn/gxf/spring/quartz/job/mbxml/*.xml</value>
             </list>
         </property>
         <property name="configLocation" value="classpath:mybatis-config.xml" />
@@ -156,9 +158,9 @@
     </bean>
     
     <!-- XA -->
-    <bean id="sqlSessionFactoryXA" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <!-- <bean id="sqlSessionFactoryXA" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="XADataSource" />
-        <!-- 自动扫描mapping.xml文件，**表示迭代查找 -->
+        自动扫描mapping.xml文件，**表示迭代查找
         
         <property name="mapperLocations">
         	<list>
@@ -166,7 +168,7 @@
             </list>
         </property>
         <property name="configLocation" value="classpath:mybatis-config.xml" />
-    </bean>
+    </bean> -->
     
     <!-- DAO接口所在包名，Spring会自动查找其下的类 ,包下的类需要使用@MapperScan注解,否则容器注入会失败 -->
     <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
@@ -176,12 +178,12 @@
     
     <bean id="mapperScannerConfigurerMotan" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="cn.gxf.spring.motan.mbdao" />
-        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryMotan" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
     </bean>
     
     <bean id="mapperScannerConfigurerXA" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="cn.gxf.spring.quartz.job.dao" />
-        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryXA" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
     </bean>
     
     <!-- <bean class="org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter">

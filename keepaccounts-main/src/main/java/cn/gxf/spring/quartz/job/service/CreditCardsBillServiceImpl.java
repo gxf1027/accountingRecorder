@@ -42,7 +42,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 	private String routingKey;
 	
 	// 在一个事务内，如果数据库/JMS抛出异常，会回滚
-	@Transactional(value="JtaXAManager",propagation=Propagation.REQUIRED)
+	@Transactional(value="dsTransactionManager",propagation=Propagation.REQUIRED)
 	@Override
 	public int processBill(List<String> zzdmList, Date jyqq, Date jyqz) {
 		if (zzdmList == null || zzdmList.isEmpty()){
@@ -81,7 +81,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
         return 1;
 	}
 	
-	@Transactional(value="JtaXAManager")
+	@Transactional(value="dsTransactionManager")
 	@Override
 	public int processBillManually(int user_id, Date jyqq, Date jyqz){
 		// 1. 获取需要处理的账户代码
@@ -154,7 +154,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 		return recList;
 	}
 	
-	@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
+	@Transactional(value="dsTransactionManager", propagation=Propagation.REQUIRED)
 	public void saveTranscationRecordInZDQ(List<CreditCardTransRecord> cctrList, Date jyqq, Date jyqz){
 		
 		for (CreditCardTransRecord cctr : cctrList){
@@ -174,7 +174,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
 		
 	}
 	
-	@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
+	@Transactional(value="dsTransactionManager", propagation=Propagation.REQUIRED)
 	public void deleteInvalidRecord(List<String> zzdmList, Date jyqq, Date jyqz){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 交易日起为本日
 		Map<String, Object> paramsMap = new HashMap<>();
@@ -223,7 +223,7 @@ public class CreditCardsBillServiceImpl implements CreditCardsBillService{
         return new ArrayList<CreditCardBill>(ccbMap.values());
 	}
 	
-	@Transactional(value="JtaXAManager", propagation=Propagation.REQUIRED)
+	@Transactional(value="dsTransactionManager", propagation=Propagation.REQUIRED)
 	void writePchToTranscationRecord(List<CreditCardBill> bills){
 		 for(CreditCardBill bill : bills){
         	// 将pch回写到明细中

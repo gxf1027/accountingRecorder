@@ -26,12 +26,11 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<struts.version>2.3.36</struts.version>
-		<spring.version>4.3.24.RELEASE</spring.version>
+		<spring.version>4.3.25.RELEASE</spring.version>
 		<cxf.version>3.2.2</cxf.version>
 		<org.springframework.security.version>4.2.13.RELEASE</org.springframework.security.version>
 		<activemq.version>5.9.0</activemq.version>
 		<motan.version>1.1.5</motan.version>
-		<atomikos.version>4.0.6</atomikos.version>
 		<log4j.version>2.11.2</log4j.version>
 	</properties>
 
@@ -49,6 +48,12 @@
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-dbcp2</artifactId>
 		    <version>2.6.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.1.19</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
@@ -289,31 +294,6 @@
 					<artifactId>c3p0</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>com.atomikos</groupId>
-			<artifactId>atomikos-util</artifactId>
-			<version>${atomikos.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.atomikos</groupId>
-			<artifactId>transactions-jdbc</artifactId>
-			<version>${atomikos.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.atomikos</groupId>
-			<artifactId>transactions-jms</artifactId>
-			<version>${atomikos.version}</version>
-		</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/javax.transaction/jta -->
-		<dependency>
-		    <groupId>javax.transaction</groupId>
-		    <artifactId>jta</artifactId>
-		    <version>1.1</version>
 		</dependency>
 		
 
@@ -559,7 +539,7 @@
 		<dependency>
 		    <groupId>com.alibaba</groupId>
 		    <artifactId>fastjson</artifactId>
-		    <version>1.2.51</version>
+		    <version>1.2.60</version>
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->
@@ -585,6 +565,18 @@
 		    <groupId>com.alibaba.csp</groupId>
 		    <artifactId>sentinel-transport-simple-http</artifactId>
 		    <version>1.6.2</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.rabbitmq</groupId>
+		    <artifactId>amqp-client</artifactId>
+		    <version>4.11.3</version>
+		</dependency>
+	    
+	    <dependency>
+		    <groupId>org.springframework.amqp</groupId>
+		    <artifactId>spring-rabbit</artifactId>
+		    <version>1.7.12.RELEASE</version>
 		</dependency>
 						
 	</dependencies>

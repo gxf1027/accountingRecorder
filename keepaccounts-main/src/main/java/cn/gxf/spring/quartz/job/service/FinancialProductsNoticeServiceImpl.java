@@ -42,7 +42,7 @@ public class FinancialProductsNoticeServiceImpl implements FinancialProductsNoti
 	
 	
 	// 既可以处理多个用户，也可以处理单个用户
-	@Transactional(value="JtaXAManager")
+	@Transactional(value="dsTransactionManager")
 	@Override
 	public int processNotice(List<FinancialProductDetail> finanProdList, Date ssqq, Date ssqz) {
 		
