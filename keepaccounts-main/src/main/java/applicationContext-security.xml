@@ -28,7 +28,7 @@
 		<intercept-url pattern="/myRegisterWcai.jsp"  requires-channel="https" /> -->
 		<intercept-url pattern="/demo/**" access="hasRole('ROLE_USER')"  />
 		
-		<form-login login-page="/myLoginWcai.jsp" login-processing-url="/j_spring_security_check" username-parameter="j_username" password-parameter="j_password" default-target-url="/demo/frontStatistics!inputFront" always-use-default-target="false" />
+		<form-login login-page="/myLoginWcai.jsp" login-processing-url="/j_spring_security_check" username-parameter="j_username" password-parameter="j_password" default-target-url="/demo/frontStatistics!inputFront" always-use-default-target="false" authentication-success-handler-ref="myAuthenticationSuccessHandler"/>
 		<!-- 使用自定义的logout filter, 将以下注释掉 -->
 		<!-- <logout logout-success-url="/myLoginWcai.jsp" invalidate-session="true" /> -->
 		<!-- 自定退出的logout filter -->
@@ -38,7 +38,7 @@
 		<!-- spring security 与 spring-session集成 方式的remember-me -->
 		<remember-me services-ref="rememberMeServices" />
 		<csrf disabled="true"/>
-		<access-denied-handler error-page="/WEB-INF/content/1.jsp"/>
+		<access-denied-handler error-page="/WEB-INF/content/2.jsp"/>
 		
 		<session-management >
 			<concurrency-control max-sessions="1" session-registry-ref="sessionRegistry" />
@@ -66,6 +66,9 @@
 		</authentication-provider>
 	</authentication-manager> -->
 	
+	<beans:bean id="myAuthenticationSuccessHandler" class="cn.gxf.spring.struts.integrate.security.CustomAuthenticationSuccessHandler" >
+		<beans:property name="defaultTargetUrl" value="/demo/frontStatistics!inputFront" />
+	</beans:bean>
 	<!-- 自定义logout filter -->
 	<beans:bean id="myLogoutSuccessFilter" class="cn.gxf.spring.struts.integrate.security.CustomLogoutSuccessHandler" >
 		<beans:property name="logoutSuccessUrl" value="myLoginWcai.jsp" />
