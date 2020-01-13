@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import com.alibaba.fastjson.parser.ParserConfig;
 import com.weibo.api.motan.common.MotanConstants;
 import com.weibo.api.motan.util.MotanSwitcherUtil;
 
@@ -45,6 +46,9 @@ public class InstantiationTracingBeanPostProcessor implements ApplicationListene
     		
     		// sentinel ³õÊ¼»¯
     		initFlowRules();
+    		
+    		// fastjson¿ªÆôautoType
+    		ParserConfig.getGlobalInstance().setAutoTypeSupport(true);
         }
 		
 	}

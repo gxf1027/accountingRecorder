@@ -164,10 +164,10 @@
 	    </Logger>
 	    
 		<!-- https://www.atomikos.com/Documentation/ConfiguringTheLogs -->
-		<Logger name="com.atomikos" level="DEBUG">
+		<!-- <Logger name="com.atomikos" level="DEBUG">
 	        <AppenderRef ref="Console" />
 	        <AppenderRef ref="RollingFileDebug" />
-	    </Logger>
+	    </Logger> -->
 	    
 	    <Logger name="cn.gxf.spring.struts.integrate.security.WcDaoAuthenticationProvider" level="DEBUG">
 	        <AppenderRef ref="RollingFileDebug" />

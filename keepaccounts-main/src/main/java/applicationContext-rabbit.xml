@@ -39,8 +39,8 @@
 	<rabbit:direct-exchange name="${rabbit.exchange}" durable="true" auto-delete="false">	
 		<rabbit:bindings>
 		    <!-- 'queue' 可以是rabbit:queue的id或者name -->
-			<rabbit:binding queue="creditq" key="creditcards" />
-			<rabbit:binding queue="productsq" key="finproducts" />
+			<rabbit:binding queue="creditq" key="${rabbit.routing.key.creditcards}" />
+			<rabbit:binding queue="productsq" key="${rabbit.routing.key.finproducts}" />
 		</rabbit:bindings>
 	</rabbit:direct-exchange>
 	
@@ -58,5 +58,13 @@
 	<bean id="rabbitSender" class="cn.gxf.spring.quartz.job.RabbitSenderImpl">
 		<property name="exchageName" value="${rabbit.exchange}" />
 		<property name="rabbitTemplate" ref="rabbitTemplate" />
+		<property name="msgLogService" ref="msgLogServiceImpl" />
+		<property name="maxResendTimes" value="3" />
+		<property name="class2routkeyMap">
+			<map>
+				<entry key="cn.gxf.spring.quartz.job.model.CreditCardBill" value="creditcards" />
+				<entry key="cn.gxf.spring.quartz.job.model.FinancialProductsNotice" value="finproducts" />
+			</map>
+		</property>
 	</bean>
 </beans>

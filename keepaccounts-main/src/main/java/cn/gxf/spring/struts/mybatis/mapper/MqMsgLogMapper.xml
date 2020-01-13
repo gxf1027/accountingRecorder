@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.gxf.spring.struts.mybatis.dao.MqMsgLogDao">
+  	
+  	<select id="getMsgLogById" parameterType="string" resultType="MsgLog">
+		SELECT msg_id AS msgId,
+			msg AS msg,
+			exchange,
+			routing_key AS routingKey,
+			status,
+			try_count AS tryCount,
+			next_try_time AS nextTryTime,
+			create_time AS createTime,
+			update_time AS updateTime
+		 FROM msg_log WHERE msg_id = #{msgId}
+	</select>
+	
+	
+  
+   <update id="updateStatus">
+  		 UPDATE msg_log SET status=#{status}, update_time = NOW()
+				WHERE msg_id = #{msgId}
+  	</update>
+  	
+	<insert id="addMsg" parameterType="MsgLog">
+		INSERT INTO msg_log(msg_id, msg, exchange, routing_key, status, try_count, next_try_time, create_time, update_time)  
+			VALUES( #{msgId}, #{msg}, #{exchange}, #{routingKey}, #{status}, 1, #{nextTryTime}, #{createTime}, null)
+	</insert>
+	
+	<select id="getTimeoutMsg" resultType="MsgLog">
+		SELECT msg_id AS msgId,
+			msg AS msg,
+			exchange,
+			routing_key AS routingKey,
+			status,
+			try_count AS tryCount,
+			next_try_time AS nextTryTime,
+			create_time AS createTime,
+			update_time AS updateTime
+		 FROM msg_log 
+		 WHERE try_count &lt;= 3 
+		 	AND next_try_time &lt;= NOW()
+	</select>
+	
+	<update id="updateTryCountNextTryTime">
+		UPDATE msg_log SET try_count = try_count+1, next_try_time = #{nextTryTime}, update_time = NOW()
+		 WHERE msg_id = #{msgId}
+	</update>
+    
+</mapper>

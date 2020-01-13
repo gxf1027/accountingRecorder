@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.joda.time.DateTime;
+
 public class DateFomatTransfer {
 	private final static String PATTERN_DEFAULT = "yyyy-MM-dd HH:mm:ss";
 	private final static String PATTERN_B = "yyyyMMdd";
@@ -38,4 +40,27 @@ public class DateFomatTransfer {
 		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 		return sdf.format(date);
 	}
+	
+	public static Date plusMinutes(Date date, int minutes) {
+        if (null == date) {
+            return null;
+        }
+
+        DateTime dateTime = new DateTime(date);
+        dateTime = dateTime.plusMinutes(minutes);
+
+        return dateTime.toDate();
+    }
+	
+	
+	public static Date minusMinutes(Date date, int minutes) {
+        if (null == date) {
+            return null;
+        }
+
+        DateTime dateTime = new DateTime(date);
+        dateTime = dateTime.minusMinutes(minutes);
+        
+        return dateTime.toDate();
+    }
 }
