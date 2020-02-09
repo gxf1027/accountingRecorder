@@ -60,4 +60,21 @@ public class AccountSnapshottingImpl implements AccountSnapshotting{
 		return snapshot;
 	}
 
+	@Transactional(value="dsTransactionManager", propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
+	@Override
+	public AccountSnapshot shottingAfterBookUpdated(String zh_dm, String accuuid, String type, int user_id, float bdje) {
+		AccountBook book = accountBookDao.getZhInfo(zh_dm); // 加入到事务中，可以获取上步已经修改的book金额
+		AccountSnapshot snapshot = new AccountSnapshot();
+		snapshot.setAccuuid(accuuid);
+		snapshot.setZh_dm(zh_dm);
+		snapshot.setBdje(bdje);
+		snapshot.setFshje(book.getYe()); // book中金额已经被修改，所以fshje就是book余额
+		snapshot.setUser_id(user_id);
+		snapshot.setLrrq(new Date());
+		snapshot.setType(type);
+		accountSnapshotMBDao.addOne(snapshot); // 主键回填
+		
+		return snapshot;
+	}
+
 }

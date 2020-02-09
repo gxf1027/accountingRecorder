@@ -10,4 +10,5 @@ public interface AccountSnapshotting {
 	
 	public AccountSnapshot shotting(String zh_dm, String accuuid, String type, int user_id, float bdje);
 	public AccountSnapshot shotting(String zh_dm,  String type, AccountingDetail detail);
+	public AccountSnapshot shottingAfterBookUpdated(String zh_dm, String accuuid, String type, int user_id, float bdje);
 }

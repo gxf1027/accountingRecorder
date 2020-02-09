@@ -277,16 +277,21 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		if ( detail instanceof IncomeDetail ){
 			IncomeDetail incomeDetail_new = (IncomeDetail) detail;
 			IncomeDetail incomeDetail_old = incomeDetailMBDao.getIncomeDetailByUuid(incomeDetail_new.getMxuuid());
-			
-			// 账户SNAPSHOT
-			this.accountSnapshotting.shotting(incomeDetail_old.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(), -1.0f*incomeDetail_old.getJe());
-			this.accountSnapshotting.shotting(incomeDetail_new.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),       incomeDetail_new.getJe());
 						
 			if (incomeDetail_new.getZh_dm().equals(incomeDetail_old.getZh_dm()) ){
-				accountBookDao.updateYe(incomeDetail_new.getZh_dm(), -1.0f*incomeDetail_old.getJe() + incomeDetail_new.getJe());
+				float ye_delt = -1.0f*incomeDetail_old.getJe() + incomeDetail_new.getJe();
+				accountBookDao.updateYe(incomeDetail_new.getZh_dm(), ye_delt);
+				
+				// 账户SNAPSHOT
+				accountSnapshotting.shottingAfterBookUpdated(incomeDetail_old.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(), ye_delt);
+				
 			}else{
 				accountBookDao.updateYe(incomeDetail_new.getZh_dm(), incomeDetail_new.getJe());
 				accountBookDao.updateYe(incomeDetail_old.getZh_dm(), -1.0f*incomeDetail_old.getJe());
+				
+				// 账户SNAPSHOT
+				accountSnapshotting.shottingAfterBookUpdated(incomeDetail_old.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(), -1.0f*incomeDetail_old.getJe());
+				accountSnapshotting.shottingAfterBookUpdated(incomeDetail_new.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),       incomeDetail_new.getJe());
 			}
 			
 			incomeDetailMBDao.updateOne((IncomeDetail)detail);
@@ -296,16 +301,20 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		}else if (detail instanceof PaymentDetail){
 			PaymentDetail paymentDetail_new = (PaymentDetail) detail;
 			PaymentDetail paymentDetail_old = paymentDetailMBDao.getPaymentDetailByUuid(paymentDetail_new.getMxuuid());
-			
-			// 账户SNAPSHOT
-			this.accountSnapshotting.shotting(paymentDetail_old.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),        paymentDetail_old.getJe());
-			this.accountSnapshotting.shotting(paymentDetail_new.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),  -1.0f*paymentDetail_new.getJe());
 						
 			if(paymentDetail_new.getZh_dm().equals(paymentDetail_old.getZh_dm())){
-				accountBookDao.updateYe(paymentDetail_new.getZh_dm(), paymentDetail_old.getJe() - 1.0f*paymentDetail_new.getJe());
+				float ye_delt = paymentDetail_old.getJe() - 1.0f*paymentDetail_new.getJe();
+				accountBookDao.updateYe(paymentDetail_new.getZh_dm(), ye_delt);
+				
+				// 账户SNAPSHOT
+				accountSnapshotting.shottingAfterBookUpdated(paymentDetail_old.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(), ye_delt);
 			}else{
 				accountBookDao.updateYe(paymentDetail_new.getZh_dm(), -1.0f*paymentDetail_new.getJe());
 				accountBookDao.updateYe(paymentDetail_old.getZh_dm(), paymentDetail_old.getJe());
+				
+				// 账户SNAPSHOT
+				accountSnapshotting.shottingAfterBookUpdated(paymentDetail_old.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),        paymentDetail_old.getJe());
+				accountSnapshotting.shottingAfterBookUpdated(paymentDetail_new.getZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),  -1.0f*paymentDetail_new.getJe());
 			}
 						
 			paymentDetailMBDao.updateOne((PaymentDetail)detail);
@@ -316,10 +325,6 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			TransferDetail transferDetail_new = (TransferDetail)detail;
 			TransferDetail transferDetail_old = this.getTransferDetailByMxuuid(transferDetail_new.getMxuuid()); //transferDetailMBDao.getTransferDetailByUuid(transferDetail_new.getMxuuid());
 			FundDetail fundDetail_old = fundDetailMBdao.getFundDetailByUuid(transferDetail_new.getMxuuid());
-			
-			// 账户SNAPSHOT
-			this.accountSnapshotting.shotting(transferDetail_old.getSrcZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),        transferDetail_old.getJe());
-			this.accountSnapshotting.shotting(transferDetail_old.getTgtZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),  -1.0f*transferDetail_old.getJe());
 						
 			// 考虑到修改前后的转出、转入账户都有不同的可能，先做撤销，再重新发起
 			// 撤销上次交易
@@ -327,12 +332,16 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			accountBookDao.updateYe(transferDetail_old.getTgtZh_dm(), -1.0f*transferDetail_old.getJe());
 			
 			// 账户SNAPSHOT
-			this.accountSnapshotting.shotting(transferDetail_new.getSrcZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),  -1.0f*transferDetail_new.getJe());
-			this.accountSnapshotting.shotting(transferDetail_new.getTgtZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),        transferDetail_new.getJe());
+			this.accountSnapshotting.shottingAfterBookUpdated(transferDetail_old.getSrcZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),        transferDetail_old.getJe());
+			this.accountSnapshotting.shottingAfterBookUpdated(transferDetail_old.getTgtZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),  -1.0f*transferDetail_old.getJe());
 						
 			// 进行本次交易
 			accountBookDao.updateYe(transferDetail_new.getSrcZh_dm(), -1.0f*transferDetail_new.getJe());
 			accountBookDao.updateYe(transferDetail_new.getTgtZh_dm(), transferDetail_new.getJe());
+			
+			// 账户SNAPSHOT
+			this.accountSnapshotting.shottingAfterBookUpdated(transferDetail_new.getSrcZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),  -1.0f*transferDetail_new.getJe());
+			this.accountSnapshotting.shottingAfterBookUpdated(transferDetail_new.getTgtZh_dm(), accountingDetail.getAccuuid(), AccountSnapshotting.UPDATE, accountingDetail.getUser_id(),        transferDetail_new.getJe());
 			
 			transferDetailMBDao.updateOne(transferDetail_new);
 			
