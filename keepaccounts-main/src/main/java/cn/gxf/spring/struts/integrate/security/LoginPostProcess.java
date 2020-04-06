@@ -28,7 +28,7 @@ public class LoginPostProcess implements Runnable{
 			userDao.resetUserAttemptLimit(user.getUsername());
 	    	userDao.recordUserLoginInfo(user.getId(), new Date(), ip);
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.warn("recording login processing has exceptions with user :[{}], ip [{}], eception:[{}]", user.getId(), ip, e.getMessage());
 		}
 		
 	}

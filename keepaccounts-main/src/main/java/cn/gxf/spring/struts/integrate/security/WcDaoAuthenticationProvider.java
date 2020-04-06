@@ -116,7 +116,8 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
             try {
                 user = retrieveUser(username, (UsernamePasswordAuthenticationToken) authentication);
             } catch (UsernameNotFoundException notFound) {
-                logger.debug("User '" + username + "' not found");
+            	
+            	logger.info("User [{}] not found.", user.getUsername());
 
                 if (hideUserNotFoundExceptions) {
                     throw new BadCredentialsException(messages.getMessage(
@@ -182,7 +183,9 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         }
 
         WebAuthenticationDetails wauth = (WebAuthenticationDetails) authentication.getDetails();
-        logger.debug("LoginUsername: " +authentication.getPrincipal() + ", LoginAddr: " + wauth.getRemoteAddress());
+        if (logger.isDebugEnabled()){
+        	logger.debug("User [{}] attempts to login in from IP [{}]", authentication.getPrincipal(), wauth.getRemoteAddress()); 
+        }
         
         // ÏÈ¸üÐÂ»º´æ
         UserLogin userLogin = (UserLogin)user;
@@ -210,7 +213,7 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         }
 
         if (authentication.getCredentials() == null) {
-            logger.debug("Authentication failed: no credentials provided");
+            logger.info("Authentication failed: no credentials provided");
 
             /*throw new BadCredentialsException(messages.getMessage(
                     "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"), userDetails);*/
@@ -221,7 +224,7 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         String presentedPassword = authentication.getCredentials().toString();
 
         if (!passwordEncoder.isPasswordValid(userDetails.getPassword(), presentedPassword, salt)) {
-            logger.debug("Authentication failed: password does not match stored value");
+            logger.info("User [{}] authentication failed: password does not match stored value", userDetails.getUsername());
 
             /*throw new BadCredentialsException(messages.getMessage(
                     "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"), userDetails);*/
@@ -247,7 +250,7 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
             }
             throw notFound;
         } catch (Exception repositoryProblem) {
-        	logger.error(repositoryProblem.getMessage());
+        	logger.warn("User [{}] runs into repository problem with exception: [{}].", username, repositoryProblem.getMessage());
             throw new InternalAuthenticationServiceException(repositoryProblem.getMessage(), repositoryProblem);
         }
 
