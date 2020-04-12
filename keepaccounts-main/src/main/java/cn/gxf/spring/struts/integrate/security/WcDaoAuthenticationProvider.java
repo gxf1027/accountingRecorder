@@ -33,7 +33,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.util.Assert;
 
 import cn.gxf.spring.struts.integrate.cache.RedisKeysContants;
-import cn.gxf.spring.struts.mybatis.dao.UserMBDao;
 import cn.gxf.spring.struts2.integrate.dao.UserDao;
 import cn.gxf.spring.struts2.integrate.service.SimpleRateLimitService;
 
@@ -198,7 +197,12 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         this.taskExecutor.execute(new LoginPostProcess(userDao, userLogin, wauth.getRemoteAddress()));
         
         // 统计在线人数
-        redisTemplate.opsForValue().setBit(RedisKeysContants.ONLINE_USERS_KEY, (long)userLogin.getId(), true);
+        try {
+        	redisTemplate.opsForValue().setBit(RedisKeysContants.ONLINE_USERS_KEY, (long)userLogin.getId(), true);
+		} catch (Exception e) {
+			// redis报错不影响登录
+			logger.warn("redis error happened when user [{}] login with exception [{}]", userLogin.getUsername(), e.getMessage());	
+		}
         
         return createSuccessAuthentication(principalToReturn, authentication, user);
     }

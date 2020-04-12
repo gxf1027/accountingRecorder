@@ -4,7 +4,7 @@
 	"http://struts.apache.org/dtds/struts-2.3.dtd">
 
 <struts>
-	<constant name="struts.action.excludePattern" value="/services/.*" />
+	<constant name="struts.action.excludePattern" value="/services/.*,/j_spring_security_check*" />	
     <constant name="struts.devMode" value="true" />
     <!-- 此版本一定要加這個常量，否則不無法開啟DMI -->
 	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
@@ -13,9 +13,10 @@
     	
     	<interceptors>
     		<interceptor name="MySessionInterceptor" class="cn.gxf.spring.struts.integrate.test.SessionInterceptor" />
+    		<interceptor name="MyTokenInterceptor" class="cn.gxf.spring.struts.integrate.test.MyTokenInterceptor" />
     		
     		<interceptor-stack name="myinterceptorStack">
-    			<interceptor-ref name="token" >
+    			<interceptor-ref name="MyTokenInterceptor" >
     				<param name="includeMethods">accountSave,saveExp,registerUser,savePayment,savePaymentAndRec,saveIncome,saveIncomeAndRec,saveTransfer,saveTransferAndRec</param>
     			</interceptor-ref>
     			<interceptor-ref name="paramsPrepareParamsStack" />
@@ -62,7 +63,7 @@
         
         <action name="accountDetail" class="accountDetailAction">
         	<!-- 保证删除后仍旧重定向到删除前页面 -->
-        	<result name="delOk" type="redirectAction">listDetail!listByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<result name="delOk" type="redirectAction">listDetail!listByMonthRefresh?date_from=${date_from}&amp;date_to=${date_to}</result>
         	<result name="editIncome" type="redirectAction">incomeDetail!editShow?mxuuidList=${mxuuidToEdit}&amp;date_from=${date_from}&amp;date_to=${date_to}</result>
         	<result name="editPayment" type="redirectAction">paymentDetail!editShow?mxuuidList=${mxuuidToEdit}&amp;date_from=${date_from}&amp;date_to=${date_to}</result>
         	<result name="editTransfer" type="redirectAction">transferDetail!editShow?mxuuidList=${mxuuidToEdit}&amp;date_from=${date_from}&amp;date_to=${date_to}</result>
@@ -74,7 +75,7 @@
         	<result name="IncomeInputOk">/WEB-INF/income_detail.jsp</result>
         	<result name="saveOk" type="redirectAction">listDetail!listByMonth</result>
         	<result name="saveRecOk" type="redirectAction">incomeDetail!inputIncome</result>
-        	<result name="delOk" type="redirectAction">listDetail!listIncomeByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<result name="delOk" type="redirectAction">listDetail!listIncomeByMonth?date_from=${date_from}&amp;date_to=${date_to}&amp;refresh=1027</result>
         	<result name="invalid.token">/WEB-INF/content/1.jsp</result>
         	<interceptor-ref name="myinterceptorStack" />
         	<allowed-methods>inputIncome,editShow,saveIncome,saveIncomeAndRec,updateIncome,delPatch</allowed-methods>
@@ -84,8 +85,9 @@
         	<result name="PaymentInputOk">/WEB-INF/payment_detail.jsp</result>
         	<result name="saveOk" type="redirectAction" >listDetail!listByMonth</result>
         	<result name="saveRecOk" type="redirectAction">paymentDetail!inputPayment</result>
-        	<result name="delOk" type="redirectAction">listDetail!listPaymentByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<result name="delOk" type="redirectAction">listDetail!listPaymentByMonth?date_from=${date_from}&amp;date_to=${date_to}&amp;refresh=1027</result>
         	<result name="PaymentError">/WEB-INF/payment_detail.jsp</result>
+        	<result name="OVER_FLOW" type="redirectAction">paymentDetail!inputPayment</result>
         	<result name="invalid.token">/WEB-INF/content/1.jsp</result>
         	<interceptor-ref name="myinterceptorStack" />
         	<allowed-methods>inputPayment,editShow,savePayment,savePaymentAndRec,updatePayment,delPatch</allowed-methods>
@@ -95,10 +97,17 @@
         	<result name="TransferInputOk">/WEB-INF/transfer_detail.jsp</result>
         	<result name="saveOk" type="redirectAction" >listDetail!listByMonth</result>
         	<result name="saveRecOk" type="redirectAction">transferDetail!inputTransfer</result>
-        	<result name="delOk" type="redirectAction">listDetail!listTransferByMonth?date_from=${date_from}&amp;date_to=${date_to}</result>
+        	<result name="delOk" type="redirectAction">listDetail!listTransferByMonth?date_from=${date_from}&amp;date_to=${date_to}&amp;refresh=1027</result>
         	<result name="invalid.token">/WEB-INF/content/1.jsp</result>
         	<interceptor-ref name="myinterceptorStack" />
         	<allowed-methods>inputTransfer,editShow,saveTransfer,saveTransferAndRec,updateTransfer,delPatch</allowed-methods>
+        </action>
+        
+        <action name="settings" class="settingsAction">
+        	<result name="SETTINGS_PAGE">/WEB-INF/gentelella-master/production/plain_page.jsp</result>
+        	<result name="SETTINGS_ACCOUNT_BOOK">/WEB-INF/gentelella-master/production/tables_accout_book.jsp</result>
+        	<interceptor-ref name="myinterceptorStack" />
+        	<allowed-methods>showSettings, showAccountBookSettings</allowed-methods>
         </action>
         
         <action name="listDetail" class="listDetailAction">

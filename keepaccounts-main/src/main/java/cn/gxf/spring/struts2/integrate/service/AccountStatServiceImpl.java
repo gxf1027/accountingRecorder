@@ -227,7 +227,7 @@ public class AccountStatServiceImpl implements AccountStatService{
 			listTransfer = detailVoService.getTransferVo(user_id, date_from, date_to);
 			
 		} catch (Exception e) {
-			logger.error("getDateStatMB user:" + user_id + " getVo Error.");
+			logger.warn("getDateStatMB user [{}] with exception [{}]", user_id, e.getMessage());
 			// ·µ»Ø¿Õ
 			return new ArrayList<>();
 		}
@@ -460,6 +460,18 @@ public class AccountStatServiceImpl implements AccountStatService{
 		return stat_list;
 
 	}
+	
+	@Override
+	public List<AccDateStat> getDateStatIncomeRefresh(int user_id, Date date_from, Date date_to){
+		// É¾³ý»º´æ
+		Set<String> keys = new HashSet<String>();
+		keys.add(StatDetailKeyGenerator.generateKey(StatDetailKeyGenerator.detailIncomeVoPrefix, user_id, date_from , date_to));
+		EvictDateStatRedis(keys);
+		
+		List<AccDateStat> list = this.getDateStatIncome(user_id, date_from, date_to);
+		
+		return list;
+	}
 
 	// ¶ÔÓ¦É¾³ýgetDateStatMB(int user_id, Date date_from , Date date_to)µÄ»º´æ
 	/*@CacheEvict(value="redisCacheStat", key="'getDateStatIncome_'+#user_id+'_'+#date_from+'_'+#date_to")
@@ -595,6 +607,18 @@ public class AccountStatServiceImpl implements AccountStatService{
 		return stat_list;
 	}
 	
+	@Override
+	public List<AccDateStat> getDateStatPaymentRefresh(int user_id, Date date_from, Date date_to){
+		// É¾³ý»º´æ
+		Set<String> keys = new HashSet<String>();
+		keys.add(StatDetailKeyGenerator.generateKey(StatDetailKeyGenerator.detailPaymentVoPrefix, user_id, date_from , date_to));
+		EvictDateStatRedis(keys);
+		
+		List<AccDateStat> list = this.getDateStatPayment(user_id, date_from, date_to);
+		
+		return list;
+	}
+	
 	/*@CacheEvict(value="redisCacheStat", key="'getDateStatPayment_'+#user_id+'_'+#date_from+'_'+#date_to")
 	@Override
 	public void EvictDateStatPayment(int user_id, Date date_from , Date date_to){
@@ -727,6 +751,18 @@ public class AccountStatServiceImpl implements AccountStatService{
 		Collections.sort(stat_list);
 		
 		return stat_list;
+	}
+	
+	@Override
+	public List<AccDateStat> getDateStatTransferRefresh(int user_id, Date date_from, Date date_to){
+		// É¾³ý»º´æ
+		Set<String> keys = new HashSet<String>();
+		keys.add(StatDetailKeyGenerator.generateKey(StatDetailKeyGenerator.detailTransferVoPrefix, user_id, date_from , date_to));
+		EvictDateStatRedis(keys);
+		
+		List<AccDateStat> list = this.getDateStatTransfer(user_id, date_from, date_to);
+		
+		return list;
 	}
 	
 	/*@CacheEvict(value="redisCacheStat", key="'getDateStatTransfer_'+#user_id+'_'+#date_from+'_'+#date_to")

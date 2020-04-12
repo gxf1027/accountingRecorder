@@ -14,12 +14,16 @@ public interface AccountStatService {
 	
 		public List<AccDateStat> getDateStatIncome(int user_id, String nd, String yf);
 		public List<AccDateStat> getDateStatIncome(int user_id, Date date_from, Date date_to);
+		public List<AccDateStat> getDateStatIncomeRefresh(int user_id, Date date_from, Date date_to);
 		
 		public List<AccDateStat> getDateStatPayment(int user_id, String nd, String yf);
 		public List<AccDateStat> getDateStatPayment(int user_id, Date date_from, Date date_to);
+		public List<AccDateStat> getDateStatPaymentRefresh(int user_id, Date date_from, Date date_to);
 		
 		public List<AccDateStat> getDateStatTransfer(int user_id, String nd, String yf);
 		public List<AccDateStat> getDateStatTransfer(int user_id, Date date_from, Date date_to);
+		public List<AccDateStat> getDateStatTransferRefresh(int user_id, Date date_from, Date date_to);
+
 		
 		public List<AccDateStat> getDateStat(int user_id, String nd, String yf);
 		

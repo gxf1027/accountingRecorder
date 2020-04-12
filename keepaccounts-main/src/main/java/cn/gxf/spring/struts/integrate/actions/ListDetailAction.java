@@ -33,15 +33,18 @@ public class ListDetailAction extends ActionSupport implements RequestAware, Pre
 	private Map<String, Object> myrequest = null;
 	private Date date_from;
 	private Date date_to;
+	private int refresh;
 	
 	@Autowired
 	private AccountStatService accountStatService;
 	
-	@Autowired
-	private DmUtilDaoImplJdbc daoImplJdbc;
-	
 	private Logger logger = LogManager.getLogger();
 
+	private boolean refreshList(){
+
+		return this.refresh > 0 ? true : false;
+	}
+	
 	@Override
 	public void prepare() throws Exception {
 		// TODO Auto-generated method stub
@@ -88,7 +91,10 @@ public class ListDetailAction extends ActionSupport implements RequestAware, Pre
 		this.myrequest.put("date_to", sdf.format(this.date_to));
 		this.myrequest.put("listType", "listAll");
 		
-		logger.debug("listByMonth username:" + user.getUsername() + " " + this.date_from + " " + this.date_to);
+		if (logger.isDebugEnabled()){
+			logger.debug("listByMonth username [{}] from [{}] to [{}]", user.getUsername(), this.date_from, this.date_to);
+		}
+		
 		return "listOk";
 	}
 	
@@ -110,8 +116,13 @@ public class ListDetailAction extends ActionSupport implements RequestAware, Pre
 	public String listIncomeByMonth(){
 		
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		//List<AccDateStat> list = accountStatService.getDateStatIncome(5, "2017", "10");
-		List<AccDateStat> list = accountStatService.getDateStatIncome(user.getId(), this.date_from, this.date_to);
+		List<AccDateStat> list = null;
+		if (!refreshList()){
+			list = accountStatService.getDateStatIncome(user.getId(), this.date_from, this.date_to);
+		}else{
+			list = accountStatService.getDateStatIncomeRefresh(user.getId(), this.date_from, this.date_to);
+		}
+		
 		System.out.println("listIncomeByMonth: " + list.hashCode());
 		this.myrequest.put("detailList", list);
 		
@@ -129,8 +140,12 @@ public class ListDetailAction extends ActionSupport implements RequestAware, Pre
 	public String listPaymentByMonth(){
 		
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		//List<AccDateStat> list = accountStatService.getDateStatPayment(5, "2017", "10");
-		List<AccDateStat> list = accountStatService.getDateStatPayment(user.getId(), this.date_from, this.date_to);
+		List<AccDateStat> list = null;
+		if (!refreshList()){
+			list = accountStatService.getDateStatPayment(user.getId(), this.date_from, this.date_to);
+		}else{
+			list = accountStatService.getDateStatPaymentRefresh(user.getId(), this.date_from, this.date_to);
+		}
 		System.out.println("listPaymentByMonth: " + list.hashCode());
 		this.myrequest.put("detailList", list);
 		
@@ -149,8 +164,12 @@ public class ListDetailAction extends ActionSupport implements RequestAware, Pre
 	public String listTransferByMonth(){
 		
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		//List<AccDateStat> list = accountStatService.getDateStatTransfer(5, "2017", "10");
-		List<AccDateStat> list = accountStatService.getDateStatTransfer(user.getId(), this.date_from, this.date_to);
+		List<AccDateStat> list = null;
+		if (!refreshList()){
+			list = accountStatService.getDateStatTransfer(user.getId(), this.date_from, this.date_to);
+		}else{
+			list = accountStatService.getDateStatTransferRefresh(user.getId(), this.date_from, this.date_to);
+		}
 		System.out.println("listTransferByMonth: " + list.hashCode());
 		this.myrequest.put("detailList", list);
 		
@@ -192,5 +211,13 @@ public class ListDetailAction extends ActionSupport implements RequestAware, Pre
 
 	public void setDate_to(Date date_to) {
 		this.date_to = date_to;
+	}
+	
+	public int getRefresh() {
+		return refresh;
+	}
+	
+	public void setRefresh(int refresh) {
+		this.refresh = refresh;
 	}
 }
