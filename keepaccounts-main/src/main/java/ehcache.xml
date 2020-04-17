@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ehcache>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:noNamespaceSchemaLocation="ehcache.xsd"
+			updateCheck="false" monitoring="autodetect"
+			dynamicConfig="true">
+
 	<diskStore path="..\ehcachetmp"/>
 
+	<cacheManagerPeerProviderFactory
+			class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+			properties="peerDiscovery=automatic, 
+						multicastGroupAddress=230.0.0.1,
+						multicastGroupPort=4446, 
+						timeToLive=32"/>
+	
+	<!-- properties是否需要??? -->
+	<cacheManagerPeerListenerFactory
+			class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory" 
+			properties="hostName=127.0.0.1,port=4446,socketTimeoutMillis=120000"/>
+			
     <!-- 设定缓存的默认数据过期策略 -->
     <defaultCache
             maxElementsInMemory="10000" 
@@ -18,7 +34,14 @@
         overflowToDisk="true"
         timeToIdleSeconds="3000"
         timeToLiveSeconds="6000"
-		maxBytesLocalHeap="5M"/>
+		maxBytesLocalHeap="5M">
+		
+		<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+		<!-- 用于在初始化缓存，以及自动设置 -->
+		<bootstrapCacheLoaderFactory
+            class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"
+            properties="bootstrapAsynchronously=true" />
+	</cache>
         
         
      <cache name="statCache"

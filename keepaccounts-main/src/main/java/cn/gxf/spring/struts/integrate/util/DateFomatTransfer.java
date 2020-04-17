@@ -2,6 +2,7 @@ package cn.gxf.spring.struts.integrate.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.joda.time.DateTime;
@@ -62,5 +63,18 @@ public class DateFomatTransfer {
         dateTime = dateTime.minusMinutes(minutes);
         
         return dateTime.toDate();
+    }
+	
+	public static String pareTime(long millis){
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(millis);
+
+            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+            return sdf_default.get().format(calendar.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

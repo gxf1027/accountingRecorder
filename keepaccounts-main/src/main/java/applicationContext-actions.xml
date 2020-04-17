@@ -44,6 +44,10 @@
 		class="cn.gxf.spring.struts.integrate.actions.TransferDetailAction"
 		scope="prototype"/>	
 		
+	<bean id="settingsAction"
+		class="cn.gxf.spring.struts.integrate.actions.SettingsAction"
+		scope="prototype" />
+		
 	<bean id="listDetailAction"
 		class ="cn.gxf.spring.struts.integrate.actions.ListDetailAction"
 		scope="prototype" />
@@ -84,5 +88,9 @@
 		<constructor-arg index="1" value="79115" />
 		<constructor-arg index="2" value="cff25d777bea4ca1b414b510c2cc4b5d" />
 	</bean>
+	
+	<bean id="ehCacheMonitorAction" 
+		class="cn.gxf.spring.struts.integrate.actions.EhCacheMonitorAction"
+		scope="prototype" />
 		
 </beans>

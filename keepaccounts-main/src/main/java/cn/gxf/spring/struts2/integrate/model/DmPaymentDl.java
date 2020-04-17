@@ -1,6 +1,13 @@
 package cn.gxf.spring.struts2.integrate.model;
 
-public class DmPaymentDl implements Comparable<DmPaymentDl>{
+import java.io.Serializable;
+
+public class DmPaymentDl implements Comparable<DmPaymentDl>, Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3761670436115465074L;
+	
 	private String dl_dm;
 	private String dl_mc;
 	private String yxbz;

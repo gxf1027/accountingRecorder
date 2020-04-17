@@ -1,6 +1,13 @@
 package cn.gxf.spring.struts2.integrate.model;
 
-public class DmPaymentXl {
+import java.io.Serializable;
+
+public class DmPaymentXl implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4926691898376038851L;
+	
 	private String xl_dm;
 	private String xl_mc;
 	private String dl_dm;

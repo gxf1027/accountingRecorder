@@ -17,6 +17,7 @@
     		
     		<interceptor-stack name="myinterceptorStack">
     			<interceptor-ref name="MyTokenInterceptor" >
+    			<!-- <interceptor-ref name="token" > -->
     				<param name="includeMethods">accountSave,saveExp,registerUser,savePayment,savePaymentAndRec,saveIncome,saveIncomeAndRec,saveTransfer,saveTransferAndRec</param>
     			</interceptor-ref>
     			<interceptor-ref name="paramsPrepareParamsStack" />
@@ -193,6 +194,8 @@
         </action>
         
         <action name="fundInfo" class="fundInfoAction" method="queryBasicInfo"></action>
+        
+        <action name="fundInfo" class="ehCacheMonitorAction" method="monitor"></action>
                 
         <action name="login_*" class="login_action" method="login{1}">
         	<result name="{1}_OK">/WEB-INF/content/1.jsp</result>
