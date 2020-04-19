@@ -30,6 +30,8 @@ public class KryoRedisSerializer implements RedisSerializer<Object> {
 		protected Kryo initialValue() {
 			Kryo kryo = new Kryo();
 			// Configure the Kryo instance.
+			kryo.setRegistrationRequired(false);
+			kryo.setReferences(false);
 			return kryo;
 		};
 	};

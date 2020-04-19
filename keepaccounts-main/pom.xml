@@ -213,7 +213,6 @@
 			<version>5.1.7</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-core</artifactId>
@@ -475,7 +474,7 @@
 
 
 		<!-- https://mvnrepository.com/artifact/com.esotericsoftware/kryo -->
-		<dependency>
+		<!-- <dependency>
 		    <groupId>com.esotericsoftware</groupId>
 		    <artifactId>kryo</artifactId>
 		    <version>4.0.2</version>
@@ -485,6 +484,12 @@
 		    		<artifactId>asm</artifactId>
 		    	</exclusion>
 		    </exclusions>
+		</dependency> -->
+		
+		<dependency>
+		   <groupId>com.esotericsoftware</groupId>
+		   <artifactId>kryo</artifactId>
+		   <version>5.0.0-RC5</version>
 		</dependency>
 		
 

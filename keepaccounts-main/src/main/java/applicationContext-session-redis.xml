@@ -64,7 +64,7 @@
 	</bean>
 	
 	<bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />
-	<bean id="kryoRedisSerializer" class="cn.gxf.spring.struts.integrate.sysctr.KryoRedisSerializer" />  
+	<bean id="kryoRedisSerializer" class="cn.gxf.spring.struts.integrate.sysctr.KryoRedisPoolingSerializer" />  
 	<!-- redis模板 -->
     <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">    
          <property name="connectionFactory" ref="jedisConnectionFactory" />
