@@ -43,6 +43,12 @@
     <bean id="redisCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
      	<constructor-arg index="0" ref="redisTemplate" /> <!-- applicationContext-session-redis.xml -->
      	<property name="defaultExpiration" value="6000" />
+     	<property name="expires">
+     		<map>
+     			<entry key="redisCacheStat" value="2400" />
+     			<entry key="redisCacheCxfIpBlocked" value="86400" />
+     		</map>
+     	</property>
      	<property name="cacheNames">
      		<list>
      			<value>redisCacheStat</value>
