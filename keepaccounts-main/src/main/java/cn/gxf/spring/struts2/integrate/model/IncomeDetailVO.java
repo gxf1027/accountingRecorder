@@ -1,8 +1,11 @@
 package cn.gxf.spring.struts2.integrate.model;
 
-import java.util.Date;
 
 public class IncomeDetailVO extends AccountingDetailVO {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1173065464477163457L;
 	/*
 	 * private int user_id; private Date fsrq; private float je; private String
 	 * bz; private int type;
@@ -33,11 +36,6 @@ public class IncomeDetailVO extends AccountingDetailVO {
 
 	public void setSeller(String seller) {
 		this.seller = seller;
-	}
-
-	@Override
-	public String toString() {
-		return "IncomeDetailVO [lbmc=" + lbmc + ", seller=" + seller + ", toString()=" + super.toString() + "]";
 	}
 
 	@Override

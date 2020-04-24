@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public abstract class AccountingDetailVO implements Serializable, Comparable<AccountingDetailVO>{
 	
 	private static final long serialVersionUID = 8496050198477700624L;
@@ -80,8 +82,7 @@ public abstract class AccountingDetailVO implements Serializable, Comparable<Acc
 
 	@Override
 	public String toString() {
-		return "AccountingDetail [user_id=" + user_id + ", fsrq=" + fsrq + ", je=" + je + ", bz=" + bz + ", type="
-				+ type + "]";
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }

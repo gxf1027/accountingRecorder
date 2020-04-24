@@ -1,8 +1,11 @@
 package cn.gxf.spring.struts2.integrate.model;
 
-import java.util.Date;
 
 public class PaymentDetailVO extends AccountingDetailVO {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1069688185254760009L;
 	private String mxuuid;
 	private String lbmc;
 	private String xlmc; // 小类
@@ -47,12 +50,6 @@ public class PaymentDetailVO extends AccountingDetailVO {
 
 	public void setSeller(String seller) {
 		this.seller = seller;
-	}
-
-	@Override
-	public String toString() {
-		return "PaymentDetailVO [mxuuid=" + mxuuid + ", lbmc=" + lbmc + ", xlmc=" + xlmc + ", category_mc="
-				+ category_mc + ", seller=" + seller + "]";
 	}
 
 	@Override

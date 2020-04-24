@@ -1,8 +1,11 @@
 package cn.gxf.spring.struts2.integrate.model;
 
-import java.util.Date;
 
 public class TransferDetailVO extends AccountingDetailVO {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3334387928751334544L;
 	/*
 	 * private int user_id; private Date fsrq; private float je; private String
 	 * bz; private int type;
@@ -42,12 +45,6 @@ public class TransferDetailVO extends AccountingDetailVO {
 	
 	public void setZzlxmc(String zzlxmc) {
 		this.zzlxmc = zzlxmc;
-	}
-
-	@Override
-	public String toString() {
-		return "TransferDetailVO [srcZhmc=" + srcZhmc + ", tgtZhmc=" + tgtZhmc + ", toString()=" + super.toString()
-				+ "]";
 	}
 
 	@Override
