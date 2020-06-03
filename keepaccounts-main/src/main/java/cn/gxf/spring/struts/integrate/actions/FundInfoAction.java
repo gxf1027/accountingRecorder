@@ -54,8 +54,8 @@ public class FundInfoAction extends ActionSupport{
 				String msg = body.getString("msg");
 				throw new RuntimeException(msg); 
 			}
-			JSONArray data = body.getJSONArray("data");
-			JSONObject detail = (JSONObject) data.get(0);
+			
+			JSONObject detail = (JSONObject) body.get("data");
 			//fundName = detail.getString("simpleName");
 			FundInfo fund = JSON.parseObject(detail.toJSONString(), FundInfo.class);
 			fundName = fund.getSimpleName();
