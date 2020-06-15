@@ -20,7 +20,9 @@ public class ConfirmCallBackListener implements ConfirmCallback{
 		
 		try {
 			if (ack){
-				msgLogService.updateStatus(correlationData.getId(), Constant.MsgLogStatus.DELIVER_SUCCESS);
+				if (null != correlationData){
+					msgLogService.updateStatus(correlationData.getId(), Constant.MsgLogStatus.DELIVER_SUCCESS);
+				}
 			}else{
 				System.out.println("∑¢ÀÕµΩexchange ß∞‹");
 			}

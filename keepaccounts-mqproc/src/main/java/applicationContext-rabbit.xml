@@ -72,5 +72,19 @@
 	    <property name="maxConcurrentConsumers" value="10" />
 	</bean>
    
+	<!-- 审计日志 -->
+    <bean id="auditMsgListener" class="cn.gxf.spring.bill.receiver.AuditMessageListener">
+    	<property name="simpleMsgConvt" ref="msgConverter" />
+    	<!-- <property name="taskExecutor" ref="taskExecutor" /> -->
+    	<!-- <property name="sender" ref="fpNoticeSender" /> -->
+    </bean> 
+	    
 	
+   <bean id="auditMsgContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+	    <property name="connectionFactory" ref="rabbitConnectionFactory"/>
+	    <property name="queueNames" value="auditqueue" />
+	    <property name="messageListener" ref="auditMsgListener" />
+	    <property name="concurrentConsumers" value="5" />
+	    <property name="maxConcurrentConsumers" value="10" />
+	</bean>
 </beans>

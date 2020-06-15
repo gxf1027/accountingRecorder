@@ -24,6 +24,8 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditInfo;
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditMsgSerivce;
 import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.model.AccountingDetail;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
@@ -43,6 +45,9 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 	private List<String> mxuuidList;
 	private Date date_from;
 	private Date date_to;
+	
+	@Autowired
+	private AuditMsgSerivce auditMsgService;
 	
     private Logger logger = LogManager.getLogger();
 
@@ -132,6 +137,9 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 			int count = wait4SyncService.queryWaiting4Save(accuuid);
 		}
 		
+		// 记录审计日志
+		this.auditMsgService.sendAuditMsg(AuditInfo.PAY_ADD, "支出-新增,accuuid:"+accuuid, user.getId(), new Date());
+		
 		return "saveOk";
 	}
 	
@@ -157,6 +165,9 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 		int count = wait4SyncService.queryWaiting4Update(detailUpdated.getAccuuid(), detailUpdated.getXgrq());
 		
+		// 记录审计日志
+		this.auditMsgService.sendAuditMsg(AuditInfo.PAY_UPDATE, "支出-更新,accuuid:"+paymentFromDb.getAccuuid(), user.getId(), new Date());
+				
 		return "saveOk";
 	}
 
@@ -168,6 +179,11 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 		if (!list.isEmpty()){
 			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
+		}
+			
+		// 记录审计日志
+		if (!list.isEmpty()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.PAY_DEL, "支出-删除,accuuid:"+mxuuidList, list.get(0).getUser_id(), new Date());
 		}
 				
 		return "delOk";

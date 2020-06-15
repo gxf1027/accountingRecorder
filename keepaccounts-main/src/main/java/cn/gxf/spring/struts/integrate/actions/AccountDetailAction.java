@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditInfo;
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditMsgSerivce;
 import cn.gxf.spring.struts2.integrate.model.AccountObject;
 import cn.gxf.spring.struts2.integrate.model.AccountingDetail;
 import cn.gxf.spring.struts2.integrate.model.IncomeDetail;
@@ -26,6 +28,9 @@ public class AccountDetailAction extends ActionSupport implements Preparable{
 	private Date date_to;
 	
 	@Autowired
+	private AuditMsgSerivce auditMsgService;
+	
+	@Autowired
 	private DetailAccountUnivServiceImpl<TransferDetail> detailAccountUnivServiceImpl;
 	
 	@Autowired
@@ -39,6 +44,11 @@ public class AccountDetailAction extends ActionSupport implements Preparable{
 		if (list.size()>0){
 			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
 			System.out.println("count: " + count);
+		}
+		
+		if (list.size()>0){
+			// 记录审计日志
+			this.auditMsgService.sendAuditMsg(AuditInfo.MULTI_DEL, "其他-删除,accuuid:"+accuuidList, list.get(0).getUser_id(), new Date());
 		}
 		
 		return "delOk";

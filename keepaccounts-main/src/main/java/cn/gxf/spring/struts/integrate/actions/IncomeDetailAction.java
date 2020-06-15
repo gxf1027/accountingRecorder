@@ -19,6 +19,8 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditInfo;
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditMsgSerivce;
 import cn.gxf.spring.struts2.integrate.dao.AccDetailVoDao;
 import cn.gxf.spring.struts2.integrate.model.AccountingDetail;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
@@ -43,6 +45,8 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 	private String productToReturn; // 理财产品的uuid
 	private String realReturn;
 
+	@Autowired
+	private AuditMsgSerivce auditMsgService;
 	
 	@Autowired
 	private DmService dmService;
@@ -136,6 +140,9 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 		int count = wait4SyncService.queryWaiting4Save(accuuid);
 		
+		// 记录审计日志
+		this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_ADD, "收入-新增,accuuid:"+accuuid, user.getId(), new Date());
+		
 		return "saveOk";
 	}
 	
@@ -161,6 +168,9 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 		int count = wait4SyncService.queryWaiting4Update(detailUpdated.getAccuuid(), detailUpdated.getXgrq());
 		
+		// 记录审计日志
+		this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_UPDATE, "收入-更新,accuuid:"+incomeFromDb.getAccuuid(), user.getId(), new Date());
+				
 		return "saveOk";
 	}
 	
@@ -172,6 +182,11 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 		if (!list.isEmpty()){
 			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
+		}
+			
+		// 记录审计日志
+		if (!list.isEmpty()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_DEL, "收入-删除,accuuid:"+mxuuidList, list.get(0).getUser_id(), new Date());
 		}
 				
 		return "delOk";

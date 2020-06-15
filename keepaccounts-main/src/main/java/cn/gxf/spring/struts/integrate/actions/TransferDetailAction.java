@@ -18,6 +18,8 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditInfo;
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditMsgSerivce;
 import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDaoImplJdbc;
 import cn.gxf.spring.struts2.integrate.model.AccountBook;
@@ -42,6 +44,8 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 	private Date date_from;
 	private Date date_to;
 
+	@Autowired
+	private AuditMsgSerivce auditMsgService;
 	
 	@Autowired
 	private DmService dmService;
@@ -83,6 +87,7 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 	
 	public String inputTransfer()
 	{	
+		System.out.println("TransferInputOk..... \n");
 		return "TransferInputOk";
 	}
 	
@@ -113,6 +118,8 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 	
 	public String editShow(){
 		this.myrequest.put("DETAIL_MODE", "EDIT");
+		System.out.println("TransferInputOk show..... \n");
+
 		return "TransferInputOk";
 	}
 	
@@ -141,6 +148,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		// 延迟一段时间等待主从同步
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 		int count = wait4SyncService.queryWaiting4Save(accuuid);
+			
+		// 记录审计日志
+		this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_ADD, "转账-新增,accuuid:"+accuuid, user.getId(), new Date());
 				
 		return "saveOk";
 	}
@@ -210,6 +220,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 		int count = wait4SyncService.queryWaiting4Update(detailUpdated.getAccuuid(), detailUpdated.getXgrq());
 		
+		// 记录审计日志
+		this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_UPDATE, "转账-更新,accuuid:"+transferFromDb.getAccuuid(), user.getId(), new Date());
+				
 		return "saveOk";
 	}
 	
@@ -221,6 +234,11 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		//AuxiliaryTools.delay(AuxiliaryTools.millisec_wait_mysql_sync);
 		if (!list.isEmpty()){
 			int count = wait4SyncService.queryWaiting4Del(list.get(0).getAccuuid());
+		}
+		
+		// 记录审计日志
+		if (!list.isEmpty()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_DEL, "转账-删除,accuuid:"+mxuuidList, list.get(0).getUser_id(), new Date());
 		}
 		
 		return "delOk";

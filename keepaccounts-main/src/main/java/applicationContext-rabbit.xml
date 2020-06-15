@@ -41,11 +41,13 @@
 		    <!-- 'queue' 可以是rabbit:queue的id或者name -->
 			<rabbit:binding queue="creditq" key="${rabbit.routing.key.creditcards}" />
 			<rabbit:binding queue="productsq" key="${rabbit.routing.key.finproducts}" />
+			<rabbit:binding queue="auditq" key="${rabbit.routing.key.audit}" />
 		</rabbit:bindings>
 	</rabbit:direct-exchange>
 	
 	<rabbit:queue id="creditq" name="creditqueue" durable="true"/>
 	<rabbit:queue id="productsq" name="productsqueue" durable="true"/>
+	<rabbit:queue id="auditq" name="auditqueue" durable="true"/>
 	
    
 	<rabbit:template id="rabbitTemplate" 
