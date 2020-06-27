@@ -69,7 +69,7 @@ public class AuthorizingInterceptor extends AbstractPhaseInterceptor<SoapMessage
 		}
 		
 		logger.info("==================SoapMessage =" + message); 
-		System.out.println("==================SoapMessage =" + message);
+		//System.out.println("==================SoapMessage =" + message);
 		// 获取SOAP消息的全部头  
         List<Header> headers = message.getHeaders(); 
         System.out.println("==================SoapHeaders =" + headers);

@@ -41,7 +41,7 @@ public class MyTokenInterceptor extends TokenInterceptor{
     }
 	
 	private boolean magicNumExists(HttpServletRequest request){
-		System.out.println("testing magic");
+		//System.out.println("testing magic");
 		HttpSession session = request.getSession();
 		if (session == null){
 			return false;

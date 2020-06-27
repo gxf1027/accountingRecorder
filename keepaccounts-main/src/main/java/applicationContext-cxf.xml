@@ -67,7 +67,7 @@
     		<!-- <ref bean="accessRateLimitInterceptor" /> --> <!-- 模拟数据生成时先取消 -->
    			<ref bean="authInterceptor"/>
    			<ref bean="logInInterceptor"/>
-   			<ref bean="wss4jInInterceptor"/>
+   			<!-- <ref bean="wss4jInInterceptor"/> --> <!-- 为测试，解除认证 -->
     	</jaxws:inInterceptors>	
     </jaxws:endpoint>
     
@@ -77,7 +77,7 @@
     		<!-- <ref bean="accessRateLimitInterceptor" /> --> <!-- 模拟数据生成时先取消 -->
    			<ref bean="authInterceptor"/>
    			<ref bean="logInInterceptor"/>
-   			<ref bean="wss4jInInterceptor"/>
+   			<!-- <ref bean="wss4jInInterceptor"/> --> <!-- 为测试，解除认证 -->
     	</jaxws:inInterceptors>	
     </jaxws:endpoint>
     

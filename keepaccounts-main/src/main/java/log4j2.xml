@@ -127,10 +127,10 @@
 			<!-- <AppenderRef ref="Failover" /> --> <!-- kafka -->
 		</AsyncLogger>
 		
-		<Logger name="cn.gxf.spring.quartz" level="DEBUG">
+		<AsyncLogger name="cn.gxf.spring.quartz" level="DEBUG">
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="RollingFileDebug" />
-		</Logger>
+		</AsyncLogger>
 		
 		<Logger name="cn.gxf.spring.struts2.integrate.service" level="DEBUG">
 			<AppenderRef ref="RollingFileActionDebug" />
@@ -153,15 +153,15 @@
 			<AppenderRef ref="Console" />
 		</Logger>
 		
-		<Logger name="cn.gxf.spring.cxf" level="DEBUG">
+		<AsyncLogger name="cn.gxf.spring.cxf" level="DEBUG">
 	        <!-- <AppenderRef ref="Console" /> -->
 	        <AppenderRef ref="RollingFileDebug" />
-	    </Logger>
+	    </AsyncLogger>
 	    
-	    <Logger name="cn.gxf.spring.motan" level="DEBUG">
+	    <AsyncLogger name="cn.gxf.spring.motan" level="DEBUG">
 	        <AppenderRef ref="Console" />
 	        <AppenderRef ref="RollingFileDebug" />
-	    </Logger>
+	    </AsyncLogger>
 	    
 		<!-- https://www.atomikos.com/Documentation/ConfiguringTheLogs -->
 		<!-- <Logger name="com.atomikos" level="DEBUG">
@@ -169,14 +169,14 @@
 	        <AppenderRef ref="RollingFileDebug" />
 	    </Logger> -->
 	    
-	    <Logger name="cn.gxf.spring.struts.integrate.security.WcDaoAuthenticationProvider" level="DEBUG">
+	    <AsyncLogger name="cn.gxf.spring.struts.integrate.security.WcDaoAuthenticationProvider" level="DEBUG">
 	        <AppenderRef ref="RollingFileDebug" />
-	    </Logger>
+	    </AsyncLogger>
 	    
-	    <Logger name="cn.gxf.spring.struts.integrate.cache" level="DEBUG">
+	    <AsyncLogger name="cn.gxf.spring.struts.integrate.cache" level="DEBUG">
 	   		<AppenderRef ref="Console" />
 	        <AppenderRef ref="RollingFileDebug" />
-	    </Logger>
+	    </AsyncLogger>
 	    
 	    <!-- <Logger name="kafkaLogger" level="DEBUG">
             <AppenderRef ref="kafkaLog" />
