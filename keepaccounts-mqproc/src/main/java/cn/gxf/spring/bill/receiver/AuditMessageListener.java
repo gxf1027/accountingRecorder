@@ -1,12 +1,12 @@
 package cn.gxf.spring.bill.receiver;
 
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
+import org.springframework.messaging.converter.MessageConversionException;
 import org.springframework.amqp.support.converter.SimpleMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,7 +37,22 @@ public class AuditMessageListener implements ChannelAwareMessageListener{
 			jobjAuditMsg = JSONObject.parseObject(jsonAuditMsg);
 		} catch (Exception e) {
 			System.out.println("JSON PARSE ERROR " + e);
-			throw new RuntimeException();
+			
+			/*
+			 * 
+			 * org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler
+			 * private boolean isCauseFatal(Throwable cause) {
+			return cause instanceof MessageConversionException
+					|| cause instanceof org.springframework.messaging.converter.MessageConversionException
+					|| cause instanceof MethodArgumentResolutionException
+					|| cause instanceof NoSuchMethodException
+					|| cause instanceof ClassCastException
+					|| isUserCauseFatal(cause);
+				}
+			 * 
+			 * 
+			 */
+			throw new MessageConversionException("消息消费失败，移出消息队列，不再试错"); // fatal error rabbitmq会丢弃msg不重试
 		}
 		
 		
@@ -55,6 +70,8 @@ public class AuditMessageListener implements ChannelAwareMessageListener{
 		//taskExecutor.execute(new SendingEmailProcess(sender, objMsg));
 		
 		auditMsgDao.save(mapMsg);
+		
+		channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
 	}
 	
 	

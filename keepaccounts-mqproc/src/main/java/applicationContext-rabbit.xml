@@ -39,6 +39,12 @@
 		<property name="staticField" value="org.springframework.amqp.core.AcknowledgeMode.AUTO" />
 	</bean>
 	
+	<bean id="MANUAL"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField" value="org.springframework.amqp.core.AcknowledgeMode.MANUAL" />
+	</bean>
+	
+	
 	<!-- 信用卡账单 --> 
     <bean id="creditMessageListener" class="cn.gxf.spring.bill.receiver.WcMessageListener">
    		<property name="simpleMsgConvt" ref="msgConverter" />
@@ -83,8 +89,13 @@
    <bean id="auditMsgContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
 	    <property name="connectionFactory" ref="rabbitConnectionFactory"/>
 	    <property name="queueNames" value="auditqueue" />
+	    <property name="acknowledgeMode" ref="MANUAL" /> 
+	    <property name="prefetchCount" value="5" />
+	    <property name="errorHandler"  ref="myErrorHandler" />
 	    <property name="messageListener" ref="auditMsgListener" />
 	    <property name="concurrentConsumers" value="5" />
 	    <property name="maxConcurrentConsumers" value="10" />
 	</bean>
+	
+	<bean id="myErrorHandler" class="cn.gxf.spring.keepacc.mqproc.sysctr.MyMsgErrorHandler" />
 </beans>
