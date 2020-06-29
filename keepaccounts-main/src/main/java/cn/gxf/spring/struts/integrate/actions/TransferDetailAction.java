@@ -174,6 +174,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		
 		// 延迟一段时间等待主从同步
 		int count = wait4SyncService.queryWaiting4Save(accuuid);
+			
+		// 记录审计日志
+		this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_ADD, "转账-新增,accuuid:"+accuuid, user.getId(), new Date());
 				
 		return "saveRecOk";
 	}
