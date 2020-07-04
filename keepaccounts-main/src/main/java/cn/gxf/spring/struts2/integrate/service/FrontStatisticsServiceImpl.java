@@ -69,9 +69,9 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 		if (null == lastproc){
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-			removeCache(sdf.format(date), Integer.valueOf(userid));
+			removeCache(sdf.format(date), userid);
 			// 如果对应用户上次更新时间不存在，那么直接运行stat存储过程
-			statDao.procAccStatThisMonth(Integer.valueOf(userid));
+			statDao.procAccStatThisMonth(userid);
 			System.out.println("updateStatThisMonth username:"+username);
 			// 更新last proc time
 			statProcDao.insertProcTime(current, userid.intValue());
@@ -93,8 +93,8 @@ public class FrontStatisticsServiceImpl implements FrontStatisticsService {
 			for (String ndyf : monthsHashNewData){
 				String nd = ndyf.split("-")[0];
 				String yf = ndyf.split("-")[1];
-				removeCache(nd, Integer.valueOf(userid));
-				statDao.procAccStatByMonth(Integer.valueOf(userid), nd, yf);
+				removeCache(nd, userid);
+				statDao.procAccStatByMonth(userid, nd, yf);
 			}
 			System.out.println("updateStatThisMonth username:"+username);
 			// 更新last proc time

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,8 @@ import cn.gxf.spring.struts2.integrate.model.MsgLog;
 
 @Component
 public class ResendScheduler {
+	
+	private Logger logger = LogManager.getLogger();
 	
 	@Autowired
 	public MqMsgLogDao msgLogDao;
@@ -55,7 +59,7 @@ public class ResendScheduler {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			logger.warn("resending processing has exceptions with eception:[{}]", e.getMessage());
 		}
 		
 	}

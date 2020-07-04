@@ -116,7 +116,7 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
                 user = retrieveUser(username, (UsernamePasswordAuthenticationToken) authentication);
             } catch (UsernameNotFoundException notFound) {
             	
-            	logger.info("User [{}] not found.", user.getUsername());
+            	logger.info("User [{}] not found.", username);
 
                 if (hideUserNotFoundExceptions) {
                     throw new BadCredentialsException(messages.getMessage(

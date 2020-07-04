@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,8 @@ public class BillSendAction extends ActionSupport {
 	private CreditCardsBillProcessor billProcessor;
 	
 	private String msg;
+	
+	private Logger logger = LogManager.getLogger();
 	
 	public String execute(){
 		
@@ -45,7 +49,8 @@ public class BillSendAction extends ActionSupport {
 		try {
 			billProcessor.processCreditCardBillManually(user.getId());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.warn("ajaxrequest processing has exceptions with user :[{}], eception:[{}]", user.getId(), e.getMessage());
+
 			this.msg = e.getMessage();
 			write.print(msg);
 			write.flush();

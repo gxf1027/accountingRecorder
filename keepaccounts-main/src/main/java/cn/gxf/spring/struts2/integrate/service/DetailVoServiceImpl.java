@@ -33,8 +33,8 @@ public class DetailVoServiceImpl implements DetailVoService{
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("date_from", date_from == null ? null : sdf.format(date_from));
-		paramMap.put("date_to", date_to == null ? null : sdf.format(date_to));
+		paramMap.put("date_from", sdf.format(date_from));
+		paramMap.put("date_to", sdf.format(date_to));
 		paramMap.put("user_id", user_id);
 		
 		List<PaymentDetailVO> listPayment = accountVoMBDao.getPaymentVo(paramMap);
@@ -52,8 +52,8 @@ public class DetailVoServiceImpl implements DetailVoService{
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("date_from", date_from == null ? null : sdf.format(date_from));
-		paramMap.put("date_to", date_to == null ? null : sdf.format(date_to));
+		paramMap.put("date_from", sdf.format(date_from));
+		paramMap.put("date_to", sdf.format(date_to));
 		paramMap.put("user_id", user_id);
 		
 		List<IncomeDetailVO> listIncome = accountVoMBDao.getIncomeVo(paramMap);
@@ -72,8 +72,8 @@ public class DetailVoServiceImpl implements DetailVoService{
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("date_from", date_from == null ? null : sdf.format(date_from));
-		paramMap.put("date_to", date_to == null ? null : sdf.format(date_to));
+		paramMap.put("date_from", sdf.format(date_from));
+		paramMap.put("date_to", sdf.format(date_to));
 		paramMap.put("user_id", user_id);
 		
 		List<TransferDetailVO> listTransfer = accountVoMBDao.getTransferVo(paramMap);

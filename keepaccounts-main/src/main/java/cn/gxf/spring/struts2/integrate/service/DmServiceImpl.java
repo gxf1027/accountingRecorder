@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,11 +20,15 @@ import cn.gxf.spring.struts2.integrate.dao.AccountBookDao;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDao;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDaoImplJdbc;
 import cn.gxf.spring.struts2.integrate.model.AccountBook;
+import cn.gxf.spring.struts2.integrate.model.AccountBookVO;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
 
 @Service
 public class DmServiceImpl implements DmService {	
+	
+    private Logger logger = LogManager.getLogger();
+
 	@Autowired
 	private DmUtilDao dmUtilDao;
 	
@@ -111,6 +117,14 @@ public class DmServiceImpl implements DmService {
 		return books;
 	}
 	
+	@Cacheable(value="dmCache")
+	@Override
+	public List<AccountBookVO> getZhInfoVO(int user_id) {
+
+		List<AccountBookVO> books = accountBookDao.getZhInfoVO(user_id);
+		return books;
+	}
+	
 	@Override
 	public void removeZhInfoCache(int user_id){
 				
@@ -126,8 +140,7 @@ public class DmServiceImpl implements DmService {
  			}
  			
  		} catch (SecurityException e) {
- 			// TODO Auto-generated catch block
- 			e.printStackTrace();
+ 			logger.warn("remove 'ZhInfo' cache with exception [{}]", e.getMessage());
  		}
 	}
 	

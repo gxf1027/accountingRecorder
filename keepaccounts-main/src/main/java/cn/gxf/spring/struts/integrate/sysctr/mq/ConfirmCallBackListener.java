@@ -1,5 +1,7 @@
 package cn.gxf.spring.struts.integrate.sysctr.mq;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate.ConfirmCallback;
 import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,8 @@ import cn.gxf.spring.struts2.integrate.service.MsgLogService;
 
 @Service
 public class ConfirmCallBackListener implements ConfirmCallback{
+
+	private Logger logger = LogManager.getLogger();
 	
 	@Autowired
 	private MsgLogService msgLogService;
@@ -27,7 +31,7 @@ public class ConfirmCallBackListener implements ConfirmCallback{
 				System.out.println("∑¢ÀÕµΩexchange ß∞‹");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.warn("ConfirmCallBackListener#confirm has exceptions with correlationData:[{}], eception:[{}]",correlationData, e.getMessage());
 		}
 		
 	}

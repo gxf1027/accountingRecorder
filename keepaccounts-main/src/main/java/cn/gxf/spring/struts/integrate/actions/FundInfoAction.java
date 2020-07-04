@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
 import com.alibaba.fastjson.JSON;
@@ -22,7 +24,7 @@ import cn.gxf.spring.struts2.integrate.model.FundInfo;
 public class FundInfoAction extends ActionSupport{
 
 	private static final long serialVersionUID = -6235277611608364555L;
-	
+    private Logger logger = LogManager.getLogger();
 	private String fundCode;
 	private ShowApiRequest apiRequestBasic;
 	private ShowApiRequest apiRequestExtra;
@@ -61,7 +63,7 @@ public class FundInfoAction extends ActionSupport{
 			fundName = fund.getSimpleName();
 		} catch (Exception e) {
 			fundName = "error";
-			e.printStackTrace();
+			logger.warn("FundInfoAction#queryBasicInfo processing has exceptions with eception:[{}]", e.getMessage());
 		}
 		
 		HttpServletResponse response = ServletActionContext.getResponse();

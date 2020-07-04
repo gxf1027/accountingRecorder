@@ -55,6 +55,7 @@ public class AuxiliaryTools {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
+			Thread.currentThread().interrupt(); // "InterruptedException" should not be ignored
 		}
 	}
 	
