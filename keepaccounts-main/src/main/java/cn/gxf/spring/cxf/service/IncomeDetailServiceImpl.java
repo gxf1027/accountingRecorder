@@ -2,6 +2,7 @@ package cn.gxf.spring.cxf.service;
 
 
 import java.io.StringReader;
+import java.util.Date;
 
 import javax.jws.WebService;
 import javax.xml.soap.SOAPException;
@@ -13,6 +14,9 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
 
 import cn.gxf.spring.cxf.util.OxmMapper;
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditInfo;
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditMsgSerivce;
+import cn.gxf.spring.struts2.integrate.model.AccountObject;
 import cn.gxf.spring.struts2.integrate.model.IncomeDetail;
 import cn.gxf.spring.struts2.integrate.service.DetailAccountUnivServiceImpl;
 
@@ -26,9 +30,16 @@ public class IncomeDetailServiceImpl implements IncomeDetailService {
 	@Autowired
 	private DetailAccountUnivServiceImpl<IncomeDetail> detailAccountUnivServiceImpl;
 	
+	@Autowired
+	private AuditMsgSerivce auditMsgService;
+	
+	private boolean checkUserId(AccountObject account){
+		return account.getUser_id() > 0 ? true : false;
+	}
+	
 	@Override
 	public int save2(IncomeDetail incomeDetail) {
-		if (null == incomeDetail){
+		if (null == incomeDetail || false == checkUserId(incomeDetail)){
 			return 0;
 		}
 		
@@ -38,6 +49,8 @@ public class IncomeDetailServiceImpl implements IncomeDetailService {
 			throw new Fault(new RuntimeException(e));  
 		}
 		
+		// 记录审计日志
+		this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_ADD, "收入-新增,accuuid:"+incomeDetail.getAccuuid(), incomeDetail.getUser_id(), new Date());
 		
 		return 1;
 	}
@@ -99,12 +112,18 @@ public class IncomeDetailServiceImpl implements IncomeDetailService {
 			return 0;
 		}
 		
+		IncomeDetail incomeDetail = null;
 		try {
-			IncomeDetail incomeDetail = detailAccountUnivServiceImpl.getIncomeDetailByMxuuid(mxuuid);
+			incomeDetail = detailAccountUnivServiceImpl.getIncomeDetailByMxuuid(mxuuid);
 			detailAccountUnivServiceImpl.deleteOne(incomeDetail);
 		} catch (Exception e) {
 			throw new Fault(new RuntimeException(e));
 		}
+		
+		if (null != incomeDetail){
+			this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_DEL, "收入-删除,accuuid:"+mxuuid, incomeDetail.getUser_id(), new Date());
+		}
+		
 		return 0;
 	}
 
