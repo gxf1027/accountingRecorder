@@ -10,6 +10,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.cxf.interceptor.Fault;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,9 @@ public class IncomeDetailServiceImpl implements IncomeDetailService {
 	@Autowired
 	private AuditMsgSerivce auditMsgService;
 	
+	@Value("${cn.gxf.keepacc.audit}")
+	private String audit;
+	
 	private boolean checkUserId(AccountObject account){
 		return account.getUser_id() > 0 ? true : false;
 	}
@@ -50,7 +54,9 @@ public class IncomeDetailServiceImpl implements IncomeDetailService {
 		}
 		
 		// 记录审计日志
-		this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_ADD, "收入-新增,accuuid:"+incomeDetail.getAccuuid(), incomeDetail.getUser_id(), new Date());
+		if (isAuditOpen()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_ADD, "收入-新增,accuuid:"+incomeDetail.getAccuuid(), incomeDetail.getUser_id(), new Date());
+		}
 		
 		return 1;
 	}
@@ -120,11 +126,17 @@ public class IncomeDetailServiceImpl implements IncomeDetailService {
 			throw new Fault(new RuntimeException(e));
 		}
 		
-		if (null != incomeDetail){
-			this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_DEL, "收入-删除,accuuid:"+mxuuid, incomeDetail.getUser_id(), new Date());
+		if (isAuditOpen()){
+			if (null != incomeDetail){
+				this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_DEL, "收入-删除,accuuid:"+mxuuid, incomeDetail.getUser_id(), new Date());
+			}
 		}
 		
 		return 0;
+	}
+	
+	private boolean isAuditOpen(){
+		return this.audit.equals("enabled");
 	}
 
 }

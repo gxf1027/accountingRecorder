@@ -10,6 +10,7 @@ import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -66,6 +67,9 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 	
 	@Autowired
 	private WaitingForSyncService wait4SyncService;
+	
+	@Value("${cn.gxf.keepacc.audit}")
+	private String audit;
 	
 	public String inputIncome(){
 		Map<String, String> map = dmService.getIncomeLb();
@@ -141,7 +145,9 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		int count = wait4SyncService.queryWaiting4Save(accuuid);
 		
 		// 记录审计日志
-		this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_ADD, "收入-新增,accuuid:"+accuuid, user.getId(), new Date());
+		if (isAuditOpen()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_ADD, "收入-新增,accuuid:"+accuuid, user.getId(), new Date());
+		}
 		
 		return "saveOk";
 	}
@@ -169,7 +175,9 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		int count = wait4SyncService.queryWaiting4Update(detailUpdated.getAccuuid(), detailUpdated.getXgrq());
 		
 		// 记录审计日志
-		this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_UPDATE, "收入-更新,accuuid:"+incomeFromDb.getAccuuid(), user.getId(), new Date());
+		if (isAuditOpen()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_UPDATE, "收入-更新,accuuid:"+incomeFromDb.getAccuuid(), user.getId(), new Date());
+		}
 				
 		return "saveOk";
 	}
@@ -185,8 +193,10 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		}
 			
 		// 记录审计日志
-		if (!list.isEmpty()){
-			this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_DEL, "收入-删除,accuuid:"+mxuuidList, list.get(0).getUser_id(), new Date());
+		if (isAuditOpen()){
+			if (!list.isEmpty()){
+				this.auditMsgService.sendAuditMsg(AuditInfo.INCOME_DEL, "收入-删除,accuuid:"+mxuuidList, list.get(0).getUser_id(), new Date());
+			}
 		}
 				
 		return "delOk";
@@ -267,4 +277,7 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		
 	}
 
+	private boolean isAuditOpen(){
+		return this.audit.equals("enabled");
+	}
 }

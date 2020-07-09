@@ -6,6 +6,7 @@ import javax.jws.WebService;
 
 import org.apache.cxf.interceptor.Fault;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import cn.gxf.spring.struts.integrate.sysctr.audit.AuditInfo;
@@ -25,6 +26,9 @@ public class TransferDetailServiceImpl implements TransferDetailService{
 	@Autowired
 	private AuditMsgSerivce auditMsgService;
 	
+	@Value("${cn.gxf.keepacc.audit}")
+	private String audit;
+	
 	private boolean checkUserId(AccountObject account){
 		return account.getUser_id() > 0 ? true : false;
 	}
@@ -43,7 +47,9 @@ public class TransferDetailServiceImpl implements TransferDetailService{
 		}
 		
 		// 记录审计日志
-		this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_ADD, "转账-新增,accuuid:"+transferDetail.getAccuuid(), transferDetail.getUser_id(), new Date());
+		if (isAuditOpen()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_ADD, "转账-新增,accuuid:"+transferDetail.getAccuuid(), transferDetail.getUser_id(), new Date());
+		}
 				
 		return 1;
 	}
@@ -62,7 +68,9 @@ public class TransferDetailServiceImpl implements TransferDetailService{
 		}
 		
 		// 记录审计日志
-		this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_UPDATE, "转账-更新,accuuid:"+transferDetailNew.getAccuuid(), transferDetailNew.getUser_id(), new Date());
+		if (isAuditOpen()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_UPDATE, "转账-更新,accuuid:"+transferDetailNew.getAccuuid(), transferDetailNew.getUser_id(), new Date());
+		}
 		
 		return 1;
 	}
@@ -82,12 +90,16 @@ public class TransferDetailServiceImpl implements TransferDetailService{
 			throw new Fault(new RuntimeException(e));
 		}
 		
-		
-		if (null != transferDetail){
-			this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_DEL, "转账-删除,accuuid:"+mxuuid, transferDetail.getUser_id(), new Date());
+		if (isAuditOpen()){
+			if (null != transferDetail){
+				this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_DEL, "转账-删除,accuuid:"+mxuuid, transferDetail.getUser_id(), new Date());
+			}
 		}
 		
 		return 0;
 	}
 
+	private boolean isAuditOpen(){
+		return this.audit.equals("enabled");
+	}
 }

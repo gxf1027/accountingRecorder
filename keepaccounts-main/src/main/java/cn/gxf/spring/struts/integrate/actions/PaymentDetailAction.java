@@ -16,6 +16,7 @@ import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -65,6 +66,8 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 	@Autowired
 	private WaitingForSyncService wait4SyncService;
 
+	@Value("${cn.gxf.keepacc.audit}")
+	private String audit;
 	
 	public String inputPayment(){
 		//Map<DmPaymentDl, List<DmPaymentXl>> map = daoImplJdbc.getPaymentDlXlDzb();
@@ -138,7 +141,9 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		}
 		
 		// 记录审计日志
-		this.auditMsgService.sendAuditMsg(AuditInfo.PAY_ADD, "支出-新增,accuuid:"+accuuid, user.getId(), new Date());
+		if (isAuditOpen()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.PAY_ADD, "支出-新增,accuuid:"+accuuid, user.getId(), new Date());
+		}
 		
 		return "saveOk";
 	}
@@ -166,7 +171,9 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		int count = wait4SyncService.queryWaiting4Update(detailUpdated.getAccuuid(), detailUpdated.getXgrq());
 		
 		// 记录审计日志
-		this.auditMsgService.sendAuditMsg(AuditInfo.PAY_UPDATE, "支出-更新,accuuid:"+paymentFromDb.getAccuuid(), user.getId(), new Date());
+		if (isAuditOpen()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.PAY_UPDATE, "支出-更新,accuuid:"+paymentFromDb.getAccuuid(), user.getId(), new Date());
+		}
 				
 		return "saveOk";
 	}
@@ -182,8 +189,10 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		}
 			
 		// 记录审计日志
-		if (!list.isEmpty()){
-			this.auditMsgService.sendAuditMsg(AuditInfo.PAY_DEL, "支出-删除,accuuid:"+mxuuidList, list.get(0).getUser_id(), new Date());
+		if (isAuditOpen()){
+			if (!list.isEmpty()){
+				this.auditMsgService.sendAuditMsg(AuditInfo.PAY_DEL, "支出-删除,accuuid:"+mxuuidList, list.get(0).getUser_id(), new Date());
+			}
 		}
 				
 		return "delOk";
@@ -248,5 +257,7 @@ public class PaymentDetailAction extends ActionSupport implements Preparable, Re
 		this.date_to = date_to;
 	}
 
-	
+	private boolean isAuditOpen(){
+		return this.audit.equals("enabled");
+	}
 }

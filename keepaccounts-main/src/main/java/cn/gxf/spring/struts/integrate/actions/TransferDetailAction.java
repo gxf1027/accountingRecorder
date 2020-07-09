@@ -10,6 +10,7 @@ import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -62,6 +63,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 	
 	@Autowired
 	private WaitingForSyncService wait4SyncService;
+	
+	@Value("${cn.gxf.keepacc.audit}")
+	private String audit;
 	
 	public void prepareInputTransfer(){
 		UserLogin user = (UserLogin) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -150,7 +154,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		int count = wait4SyncService.queryWaiting4Save(accuuid);
 			
 		// 记录审计日志
-		this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_ADD, "转账-新增,accuuid:"+accuuid, user.getId(), new Date());
+		if (isAuditOpen()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_ADD, "转账-新增,accuuid:"+accuuid, user.getId(), new Date());
+		}
 				
 		return "saveOk";
 	}
@@ -176,7 +182,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		int count = wait4SyncService.queryWaiting4Save(accuuid);
 			
 		// 记录审计日志
-		this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_ADD, "转账-新增,accuuid:"+accuuid, user.getId(), new Date());
+		if (isAuditOpen()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_ADD, "转账-新增,accuuid:"+accuuid, user.getId(), new Date());
+		}
 				
 		return "saveRecOk";
 	}
@@ -224,7 +232,9 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		int count = wait4SyncService.queryWaiting4Update(detailUpdated.getAccuuid(), detailUpdated.getXgrq());
 		
 		// 记录审计日志
-		this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_UPDATE, "转账-更新,accuuid:"+transferFromDb.getAccuuid(), user.getId(), new Date());
+		if (isAuditOpen()){
+			this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_UPDATE, "转账-更新,accuuid:"+transferFromDb.getAccuuid(), user.getId(), new Date());
+		}
 				
 		return "saveOk";
 	}
@@ -240,8 +250,10 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		}
 		
 		// 记录审计日志
-		if (!list.isEmpty()){
-			this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_DEL, "转账-删除,accuuid:"+mxuuidList, list.get(0).getUser_id(), new Date());
+		if (isAuditOpen()){
+			if (!list.isEmpty()){
+				this.auditMsgService.sendAuditMsg(AuditInfo.TRANS_DEL, "转账-删除,accuuid:"+mxuuidList, list.get(0).getUser_id(), new Date());
+			}
 		}
 		
 		return "delOk";
@@ -308,4 +320,7 @@ public class TransferDetailAction  extends ActionSupport implements Preparable, 
 		return this.transferDetail;
 	}
 
+	private boolean isAuditOpen(){
+		return this.audit.equals("enabled");
+	}
 }
