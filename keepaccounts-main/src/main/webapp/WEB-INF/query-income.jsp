@@ -565,6 +565,7 @@
 									<th style="text-align: center;">类别</th>
 									<th style="text-align: center;">金额</th>
 									<th style="text-align: center;">付款方</th>
+									<th style="text-align: center;">备注</th>
 								</tr>
 							</thead>
 							
@@ -576,6 +577,7 @@
 										<td>${lbmc }</td>
 										<td>${je }</td>
 										<td>${seller }</td> <!-- 实际是付款方 -->
+										<td>${bz }</td>
 									</tr>
 								</s:iterator>
 								
