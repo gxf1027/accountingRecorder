@@ -18,7 +18,7 @@
     		<interceptor-stack name="myinterceptorStack">
     			<interceptor-ref name="MyTokenInterceptor" >
     			<!-- <interceptor-ref name="token" > -->
-    				<param name="includeMethods">accountSave,saveExp,registerUser,savePayment,savePaymentAndRec,saveIncome,saveIncomeAndRec,saveTransfer,saveTransferAndRec</param>
+    				<param name="includeMethods">accountSave,saveExp,registerUser,savePayment,savePaymentAndRec,saveIncome,saveIncomeAndRec</param>
     			</interceptor-ref>
     			<interceptor-ref name="paramsPrepareParamsStack" />
     			<interceptor-ref name="MySessionInterceptor" />

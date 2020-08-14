@@ -87,14 +87,25 @@
 			</Policies>
 		</RollingFile>
 		
+		<RollingFile name="RollingFileThreadPool" fileName="${web:rootDir}/WEB-INF/log/threadpool.log"
+			filePattern="${web:rootDir}/WEB-INF/log/$${date:yyyy-MM}/threadpool-%d{yyyy-MM-dd}-%i.log">
+			<!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+			<ThresholdFilter level="Debug" onMatch="ACCEPT"	onMismatch="DENY" />
+			<PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="5 MB" />
+			</Policies>
+		</RollingFile>
+		
 		<!-- syncSend不能设置为false, 否则无法实现故障转移 -->
-		<MyKafka name="kafkaLog" topic="test" syncSend="true" ignoreExceptions="false" >
+		<!-- <MyKafka name="kafkaLog" topic="test" syncSend="true" ignoreExceptions="false" >
             <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}] [%t] (%F:%L)  - %m%n" />
             <Property name="bootstrap.servers">127.0.0.1:9092</Property>
-            <!-- <Property name="timeout.ms">2000</Property>
-            <Property name="requestTimeoutMillis">2000</Property> -->
+            <Property name="timeout.ms">2000</Property>
+            <Property name="requestTimeoutMillis">2000</Property>
             <Property name="max.block.ms">2000</Property>
-        </MyKafka>
+        </MyKafka> -->
         
         <RollingFile name="failoverKafkaLog" fileName="${web:rootDir}/WEB-INF/log/kafka-failover.log"
 		            filePattern="${web:rootDir}/WEB-INF/log/failoverKafka/$${date:yyyy-MM}/kafka-failover-%d{yyyy-MM-dd}-%i.log">
@@ -176,6 +187,10 @@
 	    <AsyncLogger name="cn.gxf.spring.struts.integrate.cache" level="DEBUG">
 	   		<AppenderRef ref="Console" />
 	        <AppenderRef ref="RollingFileDebug" />
+	    </AsyncLogger>
+	    
+	    <AsyncLogger name="cn.gxf.spring.struts.integrate.sysctr" level="DEBUG">
+	    	<AppenderRef ref="RollingFileThreadPool" />
 	    </AsyncLogger>
 	    
 	    <!-- <Logger name="kafkaLogger" level="DEBUG">

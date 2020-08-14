@@ -19,7 +19,10 @@ import com.esotericsoftware.kryo.util.Pool;
 
 import cn.gxf.spring.struts2.integrate.model.AccDateStat;
 import cn.gxf.spring.struts2.integrate.model.AccountingDetailVO;
+import cn.gxf.spring.struts2.integrate.model.IncomeDetailVO;
 import cn.gxf.spring.struts2.integrate.model.PaymentDetail;
+import cn.gxf.spring.struts2.integrate.model.PaymentDetailVO;
+import cn.gxf.spring.struts2.integrate.model.TransferDetailVO;
 
 /*
  * https://blog.csdn.net/rocklee/article/details/81143320
@@ -35,6 +38,9 @@ public class KryoRedisPoolingSerializer implements RedisSerializer<Object> {
 			kryo.setRegistrationRequired(false);
 			kryo.setReferences(false);
 			// Configure the Kryo instance.
+			kryo.register(IncomeDetailVO.class);
+			kryo.register(PaymentDetailVO.class);
+			kryo.register(TransferDetailVO.class);
 			return kryo;
 		}
 	};
@@ -82,12 +88,11 @@ public class KryoRedisPoolingSerializer implements RedisSerializer<Object> {
 			return output.toBytes();
 		} catch (Exception e) {
 			logger.error("serialize error, obj: " + obj, e);
-			//throw new SerializationException("Cannot serialize", e);
+			throw new SerializationException("Cannot serialize", e);
 		} finally {
 			kryoPool.free(kryo);
 			outputPool.free(output);
 		}
-		return EMPTY_ARRAY;
 	}
 
 	@Override
@@ -105,13 +110,11 @@ public class KryoRedisPoolingSerializer implements RedisSerializer<Object> {
 			return kryo.readClassAndObject(input);
 		} catch (Exception e) {
 			logger.error("deserialize error", e);
-			//throw new SerializationException("Cannot deserialize", e);
+			throw new SerializationException("Cannot deserialize", e);
 		} finally {
 			kryoPool.free(kryo);
 			inputPool.free(input);
 		}
-		
-		return null;
 	}
 
 	

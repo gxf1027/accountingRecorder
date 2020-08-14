@@ -22,6 +22,7 @@ public class Log4j2Config {
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 	    final org.apache.logging.log4j.core.config.Configuration config = ctx.getConfiguration();
 	    
+	    /*
 	    Appender failoverAppender = FailoverAppender.createAppender("FailoverAppender", 
 	    			"kafkaLog", new String[]{"failoverKafkaLog"}, "600", config, null, "false");
 	    
@@ -32,6 +33,6 @@ public class Log4j2Config {
 	    //final Filter filter = ThreadContextMapFilter.createFilter(pairs, null, Result.ACCEPT, Result.DENY);
 	    config.getLoggerConfig("cn.gxf.spring.struts.mybatis.dao").addAppender(failoverAppender, Level.DEBUG, null);
 	    ctx.updateLoggers(config);
-	
+	    */
 	}
 }

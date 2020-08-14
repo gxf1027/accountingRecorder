@@ -91,7 +91,9 @@
 		<property name="masterOnly" value="false" />
 	</bean>
 	
-	<bean id="dataSourceAspect"  class="cn.gxf.spring.struts.integrate.sysctr.dbconfig.DataSourceAspect"/>
+	<bean id="dataSourceAspect"  class="cn.gxf.spring.struts.integrate.sysctr.dbconfig.DataSourceAspect">
+		<property name="dbUseSlave" value="${db.use.slave}" />
+	</bean>
 	
 	<aop:config>	
 		<!-- 定义切面，所有的service的所有方法 -->

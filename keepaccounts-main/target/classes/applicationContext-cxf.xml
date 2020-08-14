@@ -64,7 +64,7 @@
     <jaxws:endpoint id="incomeDetailService" implementor="cn.gxf.spring.cxf.service.IncomeDetailServiceImpl"
     		address="/incomeService">
     	<jaxws:inInterceptors>
-    		<ref bean="accessRateLimitInterceptor" />
+    		<!-- <ref bean="accessRateLimitInterceptor" /> --> <!-- 模拟数据生成时先取消 -->
    			<ref bean="authInterceptor"/>
    			<ref bean="logInInterceptor"/>
    			<ref bean="wss4jInInterceptor"/>
@@ -74,7 +74,7 @@
     <jaxws:endpoint id="paymentDetailService" implementor="cn.gxf.spring.cxf.service.PaymentDetailServiceImpl"
     		address="/paymentService">
     	<jaxws:inInterceptors>
-    		<ref bean="accessRateLimitInterceptor" />
+    		<!-- <ref bean="accessRateLimitInterceptor" /> --> <!-- 模拟数据生成时先取消 -->
    			<ref bean="authInterceptor"/>
    			<ref bean="logInInterceptor"/>
    			<ref bean="wss4jInInterceptor"/>

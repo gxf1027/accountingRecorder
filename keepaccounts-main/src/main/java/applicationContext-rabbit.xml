@@ -21,7 +21,6 @@
 	<!-- 公共部分 -->
 	<!-- 创建连接类 连接安装好的 rabbitmq -->
 	<bean id="rabbitConnectionFactory"  class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
-	    <constructor-arg value="localhost" />    
 	    <!-- username,访问RabbitMQ服务器的账户,默认是guest -->
 	    <property name="username" value="${rabbit.username}" />
 	    <!-- username,访问RabbitMQ服务器的密码,默认是guest -->   

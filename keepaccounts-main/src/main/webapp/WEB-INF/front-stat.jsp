@@ -185,6 +185,10 @@
 				window.location.href = "${pageContext.request.contextPath}/demo/customTailoredQuery!inputPaymentQuery";
 				break;
 				
+			case "settings":
+				window.location.href = "${pageContext.request.contextPath}/demo/settings!showSettings";
+				break;
+				
 			case "detail-all":
 				window.location.href = "${pageContext.request.contextPath}/demo/listDetail!listByMonth";
 				break;
@@ -270,7 +274,7 @@
 						<span>查询</span> <!-- <i class="icon-nav icon-arrow icon-arrow-down abs ddfix"></i> -->
 					</div>
 				</div>
-				<div id="set" class="menu">
+				<div id="set" class="menu" onclick="chooseTab('settings')">
 					<div class="itemWrap rel">
 						<div class="img_0_7 icon-nav ddfix">&nbsp;</div>
 						<span>设置</span> <!-- <i class="icon-nav icon-arrow icon-arrow-down abs ddfix"></i> -->
