@@ -37,7 +37,7 @@ public class KeepAccountingDatesServiceImpl implements KeepAccountingDatesServic
 		
 		int dates = 0;
 		try {
-			statDao.getKeepAccountingDates(user_id);
+			dates = statDao.getKeepAccountingDates(user_id);
 		} catch (Exception e) {
 			return 0;
 		}
