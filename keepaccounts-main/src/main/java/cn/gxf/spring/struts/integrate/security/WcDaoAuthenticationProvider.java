@@ -11,6 +11,7 @@ import org.springframework.security.authentication.dao.SaltSource;
 import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +28,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.util.Assert;
 
 import cn.gxf.spring.struts.integrate.cache.RedisKeysContants;
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditMsgSerivce;
 import cn.gxf.spring.struts2.integrate.dao.UserDao;
 import cn.gxf.spring.struts2.integrate.service.SimpleRateLimitService;
 
@@ -46,6 +48,10 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
     private PasswordEncoder passwordEncoder;
     
     private UserDao userDao;
+    
+	private AuditMsgSerivce auditService;
+	
+	private String audit;
 
     /**
      * The password used to perform {@link PasswordEncoder#isPasswordValid(String, String, Object)} on when the user is
@@ -188,7 +194,11 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
         }
         
         // 再更新数据库
-        this.taskExecutor.execute(new LoginPostProcess(userDao, userLogin, wauth.getRemoteAddress()));
+        AuditMsgSerivce auditServ = this.auditService;
+        if (!this.audit.equals("enabled")){
+        	auditServ = null;
+        }
+        this.taskExecutor.execute(new LoginPostProcess(userDao, auditServ, userLogin, wauth.getRemoteAddress()));
         
         // 统计在线人数
         try {
@@ -355,6 +365,14 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
+	
+	public AuditMsgSerivce getAuditService() {
+		return auditService;
+	}
+	
+	public void setAuditService(AuditMsgSerivce auditService) {
+		this.auditService = auditService;
+	}
 
 	protected UserDetailsService getUserDetailsService() {
         return userDetailsService;
@@ -370,5 +388,9 @@ public class WcDaoAuthenticationProvider extends AbstractUserDetailsAuthenticati
 	
 	public void setTaskExecutor(ThreadPoolTaskExecutor taskExecutor) {
 		this.taskExecutor = taskExecutor;
+	}
+	
+	public void setAudit(String audit) {
+		this.audit = audit;
 	}
 }

@@ -73,6 +73,8 @@
 	<beans:bean id="myLogoutSuccessFilter" class="cn.gxf.spring.struts.integrate.security.CustomLogoutSuccessHandler" >
 		<beans:property name="logoutSuccessUrl" value="myLoginWcai.jsp" />
 		<beans:property name="redisTemplate" ref="stringRedisTemplate" />
+		<beans:property name="auditService" ref="auditMsgServiceImpl" />
+		<beans:property name="audit" value="${cn.gxf.keepacc.audit}"/>
 	</beans:bean>
 	<!-- 指定退出filter的实现类 -->
     <beans:bean id="customLogoutFilter" class="cn.gxf.spring.struts.integrate.security.CustomLogoutFilter">
@@ -108,7 +110,9 @@
 		<beans:property name="userDetailsService" ref="myUserDetailService" />
 		<beans:property name="rateLimitService" ref="simpleRateLimitServiceImpl"></beans:property>
 		<beans:property name="passwordEncoder" ref="passwordEncoder" />
-		<beans:property name="userDao" ref="userDaoImplJdbc"></beans:property>
+		<beans:property name="userDao" ref="userDaoImplJdbc" />
+		<beans:property name="auditService" ref="auditMsgServiceImpl" />
+		<beans:property name="audit" value="${cn.gxf.keepacc.audit}"/>
 		<beans:property name="redisTemplate" ref="stringRedisTemplate" />
 		<beans:property name="redisUserCache" ref="redisUserCache" />
 		<beans:property name="taskExecutor" ref="taskExecutor" />

@@ -26,6 +26,11 @@ public class AuditInfo implements Serializable {
 	public static final int TRANS_UPDATE = 8;
 	public static final int TRANS_DEL = 9;
 	public static final int MULTI_DEL = 10;
+	public static final int LOGIN_SUCCESS = 11;
+	public static final int LOGIN_FAILURE = 12;
+	public static final int LOGOUT = 13;
+	public static final int SEND_MAIL = 14;
+	public static final int OTHERS = 99;
 	
 	public AuditInfo(){
 		

@@ -1,6 +1,7 @@
 package cn.gxf.spring.struts.integrate.security;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,8 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 
 import cn.gxf.spring.struts.integrate.cache.RedisKeysContants;
 import cn.gxf.spring.struts.integrate.sysctr.KryoRedisSerializer;
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditInfo;
+import cn.gxf.spring.struts.integrate.sysctr.audit.AuditMsgSerivce;
 
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler{
 
@@ -22,6 +25,10 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler{
 	private String logoutSuccessUrl;
 	
 	private StringRedisTemplate redisTemplate;
+	
+	private AuditMsgSerivce auditService;
+	
+	private String audit;
 
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
@@ -35,6 +42,14 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler{
 				UserLogin userLogin = (UserLogin)user;
 				redisTemplate.opsForValue().setBit(RedisKeysContants.ONLINE_USERS_KEY, (long)userLogin.getId(), false);
 				logger.info(String.format("%s Logout successfully", user.getUsername()));
+				
+				if (this.audit.equals("enabled")){
+					try {
+						auditService.sendAuditMsg(AuditInfo.LOGOUT, "µÇ³ö,("+user.getId()+", "+user.getUsername()+")", user.getId(), new Date());
+					} catch (Exception e) {
+						logger.warn(String.format("Logout successfully, but error happened when sending audit msg, %s", e.getMessage()));
+					}
+				}
 			}
 		}
 		response.sendRedirect(this.logoutSuccessUrl);
@@ -53,4 +68,11 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler{
 		this.redisTemplate = redisTemplate;
 	}
 
+	public void setAuditService(AuditMsgSerivce auditService) {
+		this.auditService = auditService;
+	}
+	
+	public void setAudit(String audit) {
+		this.audit = audit;
+	}
 }
