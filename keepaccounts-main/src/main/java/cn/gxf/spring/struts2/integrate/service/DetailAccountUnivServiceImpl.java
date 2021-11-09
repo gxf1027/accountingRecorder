@@ -21,6 +21,7 @@ import com.alibaba.csp.sentinel.slots.block.BlockException;
 import cn.gxf.spring.struts.integrate.cache.StatDetailKeyGenerator;
 import cn.gxf.spring.struts.mybatis.dao.AccountDetailMBDao;
 import cn.gxf.spring.struts.mybatis.dao.FinancialProductDetailMBDao;
+import cn.gxf.spring.struts.mybatis.dao.FinancialProductIncomeDetailMBDao;
 import cn.gxf.spring.struts.mybatis.dao.FundDetailMBDao;
 import cn.gxf.spring.struts.mybatis.dao.IncomeDetailMBDao;
 import cn.gxf.spring.struts.mybatis.dao.PaymentDetailMBDao;
@@ -29,6 +30,7 @@ import cn.gxf.spring.struts2.integrate.dao.AccountBookDao;
 import cn.gxf.spring.struts2.integrate.model.AccountObject;
 import cn.gxf.spring.struts2.integrate.model.AccountingDetail;
 import cn.gxf.spring.struts2.integrate.model.FinancialProductDetail;
+import cn.gxf.spring.struts2.integrate.model.FinancialProductIncomeDetail;
 import cn.gxf.spring.struts2.integrate.model.FundDetail;
 import cn.gxf.spring.struts2.integrate.model.IncomeDetail;
 import cn.gxf.spring.struts2.integrate.model.PaymentDetail;
@@ -60,6 +62,9 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 	
 	@Autowired
 	private FinancialProductDetailMBDao financialProductDetailMBDao;
+	
+	@Autowired
+	private FinancialProductIncomeDetailMBDao financialProductIncomeDetailMBDao; 
 	
 	@Autowired
 	private AccountBookDao accountBookDao;
@@ -103,13 +108,33 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 		
 	}
 	
+//	public IncomeDetail getIncomeDetailByMxuuid(String mxuuid){
+//		IncomeDetail incomeDetail = this.incomeDetailMBDao.getIncomeDetailByUuid(mxuuid);
+//		// 查看是否和理财产品关联
+//		FinancialProductDetail financialProductDetail = this.financialProductDetailMBDao.getFinancialProductDetailByReturnUuid(mxuuid);
+//		if (financialProductDetail != null){
+//			incomeDetail.setFinprodUuid(financialProductDetail.getUuid());
+//		}
+//		return incomeDetail;
+//	}
+	
 	public IncomeDetail getIncomeDetailByMxuuid(String mxuuid){
 		IncomeDetail incomeDetail = this.incomeDetailMBDao.getIncomeDetailByUuid(mxuuid);
 		// 查看是否和理财产品关联
-		FinancialProductDetail financialProductDetail = this.financialProductDetailMBDao.getFinancialProductDetailByReturnUuid(mxuuid);
-		if (financialProductDetail != null){
-			incomeDetail.setFinprodUuid(financialProductDetail.getUuid());
+		if (incomeDetail.getLb_dm().equals(DmService.srlb_fin_prod_dm))
+		{
+			FinancialProductIncomeDetail fpincomedetail = this.financialProductIncomeDetailMBDao.getFinancialProductIncomeByIncomeUuid(incomeDetail.getMxuuid());
+			if (fpincomedetail != null)
+			{
+				incomeDetail.setFinprodUuid(fpincomedetail.getFpuuid());
+				incomeDetail.setIs_redeem(fpincomedetail.getIs_redeem());
+			}
+			else{
+				incomeDetail.setFinprodUuid(null);
+				incomeDetail.setIs_redeem("N");
+			}
 		}
+		
 		return incomeDetail;
 	}
 	
@@ -202,7 +227,18 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			accountBookDao.updateYe(incomeDetail.getZh_dm(), incomeDetail.getJe());
 			if (incomeDetail.getLb_dm().equals(DmService.srlb_fin_prod_dm)){ // 如果类型是“理财收入”，则修改理财信息
 				// mxuuid通过mybatis的主键回写获得
-				this.financialProductDetailMBDao.setRealReturn(incomeDetail.getFinprodUuid(), incomeDetail.getMxuuid(), incomeDetail.getJe());
+				if (incomeDetail.getFinprodUuid()!=null && !incomeDetail.getFinprodUuid().equals("-1"))
+				{
+					// 必须选择了对应的理财产品，如果不选finproduuid为'-1'
+					if (incomeDetail.getIs_redeem()!=null && incomeDetail.getIs_redeem().equals("Y"))
+					{
+						this.financialProductDetailMBDao.setRealReturn(incomeDetail.getFinprodUuid(), incomeDetail.getMxuuid(), incomeDetail.getJe());
+					}
+					// 写入理财收入明细信息
+					FinancialProductIncomeDetail finprodincome = new FinancialProductIncomeDetail();
+					finprodincome.init(null/*uuid*/, incomeDetail.getFinprodUuid(), incomeDetail.getMxuuid(), incomeDetail.getJe(), incomeDetail.getIs_redeem(), new Date()/*lrrq*/, null/*xgrq*/, "Y");
+					this.financialProductIncomeDetailMBDao.addOne(finprodincome);
+				}
 			}
 			
 			// 清除“收入明细”的缓存(redis)
@@ -413,9 +449,22 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 			accountSnapshotting.shotting(incomeDetail.getZh_dm(), incomeDetail.getAccuuid(), AccountSnapshotting.DELETE, incomeDetail.getUser_id(), -1.0f*incomeDetail.getJe());
 			accountBookDao.updateYe(incomeDetail.getZh_dm(), -1.0f*incomeDetail.getJe());
 			
-			if (incomeDetail.getLb_dm().equals(DmService.srlb_fin_prod_dm)){
-				// 如果收入类型是“理财收益”,那么关联的理财产品信息被清除
-				this.financialProductDetailMBDao.cancelRealReturn(incomeDetail.getMxuuid());
+			if (incomeDetail.getLb_dm().equals(DmService.srlb_fin_prod_dm))
+			{	
+				FinancialProductIncomeDetail fpincomedetail = this.financialProductIncomeDetailMBDao.getFinancialProductIncomeByIncomeUuid(incomeDetail.getMxuuid());
+				if (fpincomedetail != null)
+				{
+					incomeDetail.setFinprodUuid(fpincomedetail.getFpuuid());
+					incomeDetail.setIs_redeem(fpincomedetail.getIs_redeem());
+					
+					// 如果收入类型是“理财收益”,那么关联的理财产品信息被清除
+					if (incomeDetail.getIs_redeem().equals("Y"))
+					{
+						this.financialProductDetailMBDao.cancelRealReturn(incomeDetail.getMxuuid());
+					}
+					this.financialProductIncomeDetailMBDao.deleteOneByIncomeUuid(incomeDetail.getMxuuid());
+					
+				}
 			}
 			
 			// 清除“收入明细”的缓存(redis)
@@ -490,9 +539,22 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 				
 				accountBookDao.updateYe(incomeItem.getZh_dm(), -1.0f*incomeItem.getJe());
 				
-				if (incomeItem.getLb_dm().equals(DmService.srlb_fin_prod_dm)){
-					// 如果收入类型是“理财收益”,那么关联的理财产品信息被清除
-					this.financialProductDetailMBDao.cancelRealReturn(incomeItem.getMxuuid());
+				if (incomeItem.getLb_dm().equals(DmService.srlb_fin_prod_dm))
+				{	
+					FinancialProductIncomeDetail fpincomedetail = this.financialProductIncomeDetailMBDao.getFinancialProductIncomeByIncomeUuid(incomeItem.getMxuuid());
+					if (fpincomedetail != null)
+					{
+						incomeItem.setFinprodUuid(fpincomedetail.getFpuuid());
+						incomeItem.setIs_redeem(fpincomedetail.getIs_redeem());
+						
+						// 如果收入类型是“理财收益”,那么关联的理财产品信息被清除
+						if (incomeItem.getIs_redeem().equals("Y"))
+						{
+							this.financialProductDetailMBDao.cancelRealReturn(incomeItem.getMxuuid());
+						}
+						this.financialProductIncomeDetailMBDao.deleteOneByIncomeUuid(incomeItem.getMxuuid());
+						
+					}
 				}
 				
 				// 准备删除缓存
@@ -593,8 +655,22 @@ public class DetailAccountUnivServiceImpl<T extends AccountObject>{
 				accountBookDao.updateYe(income.getZh_dm(), -1.0f*income.getJe());
 				
 				if (income.getLb_dm().equals(DmService.srlb_fin_prod_dm)){
-					// 如果收入类型是“理财收益”,那么关联的理财产品信息被清除
-					this.financialProductDetailMBDao.cancelRealReturn(income.getMxuuid());
+					
+					FinancialProductIncomeDetail fpincomedetail = this.financialProductIncomeDetailMBDao.getFinancialProductIncomeByIncomeUuid(income.getMxuuid());
+					if (fpincomedetail != null)
+					{
+						income.setFinprodUuid(fpincomedetail.getFpuuid());
+						income.setIs_redeem(fpincomedetail.getIs_redeem());
+						
+						// 如果收入类型是“理财收益”,那么关联的理财产品信息被清除
+						if (income.getIs_redeem().equals("Y"))
+						{
+							this.financialProductDetailMBDao.cancelRealReturn(income.getMxuuid());
+						}
+						this.financialProductIncomeDetailMBDao.deleteOneByIncomeUuid(income.getMxuuid());
+						
+					}
+					
 				}
 			}
 		}

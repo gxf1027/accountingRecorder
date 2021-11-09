@@ -444,6 +444,21 @@ CREATE TABLE `financial_product_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
+-- Table structure for financial_product_income
+-- ----------------------------
+DROP TABLE IF EXISTS `financial_product_income`;
+CREATE TABLE `financial_product_income` (
+  `uuid` varchar(255) NOT NULL,
+  `fpuuid` varchar(255) NOT NULL,
+  `incomeuuid` varchar(255) DEFAULT NULL,
+  `je` float(11,2) DEFAULT NULL,
+  `is_redeem` varchar(2) DEFAULT NULL,
+  `lrrq` datetime DEFAULT NULL,
+  `xgrq` datetime DEFAULT NULL,
+  `yxbz` varchar(2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
 -- Table structure for financial_product_notice
 -- ----------------------------
 DROP TABLE IF EXISTS `financial_product_notice`;

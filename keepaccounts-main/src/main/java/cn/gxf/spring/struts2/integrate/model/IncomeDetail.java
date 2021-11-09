@@ -27,6 +27,7 @@ public class IncomeDetail extends AccountObject implements Serializable {
 	private String accuuid;
 	/*@XmlElement(nillable=true)*/
 	private String finprodUuid; // 与“收入”关联的“理财产品”，当收入类型是“理财收益”时有效
+	private String is_redeem; // 与“收入”关联的“理财产品”，当收入类型是“理财收益”时有效
 	private String user_name;
 	private int user_id;
 	private float je;
@@ -64,6 +65,14 @@ public class IncomeDetail extends AccountObject implements Serializable {
 		this.finprodUuid = finprodUuid;
 	}
 
+	public String getIs_redeem() {
+		return is_redeem;
+	}
+	
+	public void setIs_redeem(String is_redeem) {
+		this.is_redeem = is_redeem;
+	}
+	
 	public int getUser_id() {
 		return user_id;
 	}

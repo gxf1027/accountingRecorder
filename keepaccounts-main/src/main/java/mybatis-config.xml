@@ -24,6 +24,7 @@
     	<typeAlias type="cn.gxf.spring.struts2.integrate.model.TransferDetail" alias="TransferDetail"/>
     	<typeAlias type="cn.gxf.spring.struts2.integrate.model.FundDetail" alias="FundDetail" />
     	<typeAlias type="cn.gxf.spring.struts2.integrate.model.FinancialProductDetail" alias="FinancialProductDetail"/>
+    	<typeAlias type="cn.gxf.spring.struts2.integrate.model.FinancialProductIncomeDetail" alias="FinancialProductIncomeDetail"/>
     	<typeAlias type="cn.gxf.spring.struts2.integrate.model.AccountingDetail" alias="AccountingDetail"/>
     	<typeAlias type="cn.gxf.spring.struts2.integrate.model.AccountSnapshot" alias="AccountSnapshot"/>
     	<typeAlias type="cn.gxf.spring.struts2.integrate.model.MsgLog" alias="MsgLog"/>

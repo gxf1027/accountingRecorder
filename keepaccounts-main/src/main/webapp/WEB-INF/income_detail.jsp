@@ -10,6 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="../css/footer.css" />
 	<link rel="stylesheet" type="text/css" href="../css/left-nav.css" />
 	<link rel="stylesheet" type="text/css" href="../js/toastr/toastr.css" />
+	<link rel="stylesheet" type="text/css" href="../js/icheck/skins/flat/green.css" />
 
 	<style type="text/css"> 
 		.record_biz{font-size:12px;font-weight:normal;width:99%;margin:0 auto;margin-top:15px;}
@@ -111,6 +112,9 @@
 		    width: 99px;
 		    line-height: 35px;
 		}
+		
+		.finproduct-redeem {margin-left: -35px; padding-bottom: 20px}
+		.finproduct-redeem li{float:left; margin-right:10px}
 	</style>
 
 	
@@ -118,6 +122,8 @@
 	<script type="text/javascript" src="../js/jquery.js"></script>
 	<script type="text/javascript" src="../js/calculator.js"></script>
 	<script type="text/javascript" src="../js/toastr/toastr.js"></script>
+	<script type="text/javascript" src="../js/icheck/icheck.js"></script>
+	
 	<script type="text/javascript">	
 	
 	if(typeof jQuery !='undefined'){
@@ -215,6 +221,17 @@
 		  "showMethod": "fadeIn",
 		  "hideMethod": "fadeOut"
 		};
+	   
+	   
+	   $("input[name='finproduct.isreturn']").iCheck({
+		    checkboxClass: 'icheckbox_flat-green',
+		    radioClass: 'iradio_flat-green'
+		  }); 
+	  
+	   $("input[name='finproduct.is_redeem']").iCheck({
+		    checkboxClass: 'icheckbox_flat-green',
+		    increaseArea: '20%' // optional
+		  });
 	    
 	    $('#input_je').blur(function(){
 	    	
@@ -477,6 +494,8 @@
 					<tr style="height:10px;font-size:0px;">
 						<td></td>
 					</tr>
+					
+					
 					<s:if test="#request.DETAIL_MODE != 'EDIT'">
 							<tr>
 								<th>理财产品</th>
@@ -498,6 +517,21 @@
 							</td>
 						</tr>
 					</s:else>
+					<tr>
+						<th>是否赎回</th>
+						<td>
+							<ul class="finproduct-redeem">
+						 			<li>
+						 				<input type="radio" name="is_redeem" value="Y" <s:if test='is_redeem == "Y" '>checked="checked"</s:if> <s:if test="#request.DETAIL_MODE == 'EDIT'"> disabled="disabled"</s:if> />
+					                  	<label for="flat-radio-1">是</label>
+				                  	</li>
+				                  	<li>
+						 				<input type="radio" name="is_redeem" value="N" <s:if test='is_redeem == "N" '>checked="checked"</s:if> <s:if test="#request.DETAIL_MODE == 'EDIT'"> disabled="disabled"</s:if> />
+					                  	<label for="flat-radio-1">否</label>
+				                  	</li>
+			              	</ul>
+						</td>
+					</tr>
 				</tbody>
 	  			
 	  			<tr style="height:10px;font-size:0px;">

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.gxf.spring.struts.mybatis.dao.FinancialProductIncomeDetailMBDao">
+  	
+  	<select id="getFinancialProductIncomeByUuid" parameterType="String" 
+		resultType="FinancialProductIncomeDetail">
+		SELECT  uuid,
+				fpuuid,
+				incomeuuid,
+				je,
+				is_redeem AS is_redeem,
+				lrrq, 
+				xgrq,
+				yxbz
+			  FROM financial_product_income WHERE uuid = #{uuid} AND yxbz='Y'
+	</select>
+	
+	
+	<select id="getFinancialProductIncomeByIncomeUuid" parameterType="String" 
+		resultType="FinancialProductIncomeDetail">
+		SELECT  uuid,
+				fpuuid,
+				incomeuuid,
+				je,
+				is_redeem AS is_redeem,
+				lrrq, 
+				xgrq,
+				yxbz
+			  FROM financial_product_income WHERE incomeuuid = #{incomeUuid} AND yxbz='Y'
+	</select>
+	
+  	<insert id="addOne" parameterType="FinancialProductIncomeDetail">
+  		
+  		<selectKey keyColumn="uuid" keyProperty="uuid" resultType="string" order="BEFORE">
+			SELECT CONCAT('FPINC',UUID_SHORT())
+		</selectKey>
+		
+  		INSERT INTO financial_product_income(uuid, fpuuid, incomeuuid, je, is_redeem, lrrq, xgrq, yxbz)
+			VALUES(#{uuid}, #{fpuuid}, #{incomeuuid}, #{je}, #{is_redeem}, #{lrrq}, null, 'Y')
+  	</insert>
+  	
+  	<update id="updateOne" parameterType="FinancialProductIncomeDetail">
+		UPDATE financial_product_income SET je=#{je}, is_redeem=#{is_redeem}, xgrq= #{xgrq}
+				WHERE uuid = #{uuid} AND yxbz='Y'
+  	</update>
+  	
+  	
+  	<update id="deleteOne" parameterType="String">
+  		UPDATE financial_product_income SET yxbz='N', xgrq = NOW() WHERE uuid = #{uuid} AND yxbz='Y'
+  	</update>
+  	
+  	
+  	<update id="deleteOneByIncomeUuid" parameterType="String">
+  		UPDATE financial_product_income SET yxbz='N', xgrq = NOW() WHERE incomeuuid = #{incomeuuid} AND yxbz='Y'
+  	</update>
+    
+</mapper>

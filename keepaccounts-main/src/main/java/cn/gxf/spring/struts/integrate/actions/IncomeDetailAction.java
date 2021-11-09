@@ -120,11 +120,14 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		if (this.incomeDetail.getFinprodUuid() != null){
 			// 如果这笔"收入"关联了一笔理财产品
 			FinancialProductDetail finprod = financialProductService.getFinancialProductByUuid(this.incomeDetail.getFinprodUuid());
-			String finprod_info = finprod.getProductName();
-			if (finprod.getDateCount() > 0){
-				finprod_info += " "+finprod.getDateCount()+"天";
+			if (null != finprod)
+			{
+				String finprod_info = finprod.getProductName();
+				if (finprod.getDateCount() > 0){
+					finprod_info += " "+finprod.getDateCount()+"天";
+				}
+				this.myrequest.put("finprod_info", finprod_info);
 			}
-			this.myrequest.put("finprod_info", finprod_info);
 		}
 	}
 	
@@ -168,6 +171,9 @@ public class IncomeDetailAction extends ActionSupport implements Preparable, Req
 		}
 		this.incomeDetail.setXgrq(new Date());
 		this.incomeDetail.setUser_id(user.getId());
+		// 有关理财产品：前台控制为不可修改，所以这里也强制为旧的信息
+		this.incomeDetail.setIs_redeem(incomeFromDb.getIs_redeem());
+		this.incomeDetail.setFinprodUuid(incomeFromDb.getFinprodUuid());
 		AccountingDetail detailUpdated = detailAccountUnivServiceImpl.updateOne(this.incomeDetail);
 		
 		// 延迟一段时间等待主从同步
