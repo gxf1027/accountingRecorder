@@ -1,20 +1,13 @@
 package cn.gxf.spring.struts2.integrate.model;
 
-import java.io.Serializable;
-
-public class AccountBook implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7928200014910403046L;
-	
+public class AccountBookVO {
 	private String zh_dm;
 	private String zh_mc;
 	private String khrmc;
 	private int user_id;
 	private String zhhm; // 账户号码
 	private String yxbz;
-	private String zhlx_dm; // 账户类型
+	private String zhlx_mc; // 账户类型
 	private float ye;
 
 	public String getZh_dm() {
@@ -59,12 +52,12 @@ public class AccountBook implements Serializable{
 	}
 	
 
-	public String getZhlx_dm() {
-		return zhlx_dm;
+	public String getZhlx_mc() {
+		return zhlx_mc;
 	}
-
-	public void setZhlx_dm(String zhlx_dm) {
-		this.zhlx_dm = zhlx_dm;
+	
+	public void setZhlx_mc(String zhlx_mc) {
+		this.zhlx_mc = zhlx_mc;
 	}
 
 	public int getUser_id() {
@@ -86,6 +79,6 @@ public class AccountBook implements Serializable{
 	@Override
 	public String toString() {
 		return "AccountDetialInfo [zh_dm=" + zh_dm + ", zh_mc=" + zh_mc + ", khrmc=" + khrmc + ", user_id=" + user_id
-				+ ", zhhm=" + zhhm + ", yxbz=" + yxbz + ", zhlx_dm=" + zhlx_dm + ", ye=" + ye + "]";
+				+ ", zhhm=" + zhhm + ", yxbz=" + yxbz + ", zhlx_mc=" + zhlx_mc + ", ye=" + ye + "]";
 	}
 }

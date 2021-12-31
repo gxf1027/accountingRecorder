@@ -21,6 +21,7 @@ import cn.gxf.spring.struts2.integrate.dao.DmUtilDao;
 import cn.gxf.spring.struts2.integrate.dao.DmUtilDaoImplJdbc;
 import cn.gxf.spring.struts2.integrate.model.AccountBook;
 import cn.gxf.spring.struts2.integrate.model.AccountBookVO;
+import cn.gxf.spring.struts2.integrate.model.BookTypeSummary;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
 
@@ -108,7 +109,66 @@ public class DmServiceImpl implements DmService {
 
 		return bookMaps;
 	}
+	
+//	@Cacheable(value="dmCache")
+//	@Override
+//	public Map<String, List<AccountBook>> getZhInfoMapSimple(int user_id) {
+//		
+//		List<AccountBook> books = accountBookDao.getZhInfo(user_id);
+//		Map<String, List<AccountBook>> bookMaps = new HashMap<String, List<AccountBook>>();
+//		Map<String, String> zhlxdm = this.getZhLx();
+//		
+//		for(AccountBook book : books){
+//			String bookKey = zhlxdm.get(book.getZhlx_dm()); // 以账户类别的名称作为key
+//			List<AccountBook> bookList = bookMaps.get(bookKey);
+//			if (null == bookList){
+//				bookList = new ArrayList<AccountBook>();
+//				bookList.add(book);
+//				bookMaps.put(bookKey, bookList);
+//			}else{
+//				bookMaps.get(bookKey).add(book);
+//			}
+//			
+//		}
+//
+//		return bookMaps;
+//	}
 
+	@Cacheable(value="dmCache")
+	@Override
+	public Map<BookTypeSummary, List<AccountBook>> getZhInfoMap4FrontPage(int user_id) {
+		
+		List<AccountBook> books = accountBookDao.getZhInfo(user_id);
+		Map<String, List<AccountBook>> bookMaps = new HashMap<String, List<AccountBook>>();
+		Map<String, String> zhlxdm = this.getZhLx();
+		
+		for(AccountBook book : books){
+			String bookKey = book.getZhlx_dm();
+			List<AccountBook> bookList = bookMaps.get(bookKey);
+			if (null == bookList){
+				bookList = new ArrayList<AccountBook>();
+				bookList.add(book);
+				bookMaps.put(bookKey, bookList);
+			}else{
+				bookMaps.get(bookKey).add(book);
+			}
+			
+		}
+		
+		Map<BookTypeSummary, List<AccountBook>> bookSumMap = new TreeMap<BookTypeSummary, List<AccountBook>>();
+		for(String typeid : bookMaps.keySet())
+		{
+			float sum = 0.f;
+			for (AccountBook book:bookMaps.get(typeid))
+			{
+				sum += book.getYe();
+			}
+			bookSumMap.put(new BookTypeSummary(typeid, zhlxdm.get(typeid), sum), bookMaps.get(typeid));
+		}
+
+		return bookSumMap;
+	}
+	
 	@Cacheable(value="dmCache")
 	@Override
 	public List<AccountBook> getZhInfoSimple(int user_id) {

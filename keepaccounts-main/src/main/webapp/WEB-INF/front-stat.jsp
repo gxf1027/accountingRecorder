@@ -292,7 +292,7 @@
 				<div id="stat_table" class="contentPage_1" style=" min-width: 600px; margin-top: 16px; " >
 					<div>
 						<s:form action="frontStatistics" method="POST">
-							<s:select list="{'2015','2016','2017','2018','2019','2020'}" name="nd" id="nd" class="selectInput" theme="simple"></s:select>
+							<s:select list="{'2015','2016','2017','2018','2019','2020','2021','2022','2023'}" name="nd" id="nd" class="selectInput" theme="simple"></s:select>
 							&nbsp;
 						
 							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -355,7 +355,9 @@
 					
 					
 				</div>
+
 				
+
 				<div id="ndyf_chart">
 					<script type="text/javascript">
 						$(document).ready(function() {
@@ -575,6 +577,41 @@
 					</script>
 					<div><span id="info_incmoe" class="plot-info">&nbsp;</span></div>
 					<div id="income-plot" style="margin-top:25px; width: 880px;margin-left: 140px;"></div>
+				</div>
+				
+				<br />
+				<br/>
+				<div style="min-height: 220px; margin-left: 170px; margin-top: 6px;">
+					<table id="queryResTable" class="record_biz">
+						<thead	style="font-size: 14px; color: #737373; background-color: #eee; font-weight: bold;">
+							<tr>
+								<th style="text-align: center; width:23px">账户名称</th>
+								<th style="text-align: center;">余额(元)</th>
+							</tr>
+						</thead>						
+						
+						<tbody style="min-height: 400px;">
+							<s:iterator value="#request.accountBooksSumMap" id="bookList">
+								<tr style="font-weight: bold; background: #f2eada">
+									<td style="text-align: left;">${bookList.key.bookType }</td>
+									<td style="text-align: center;">${bookList.key.bookSum }</td>
+								</tr>
+								<s:iterator value="#bookList.value" status="s">
+									<tr>
+										<td style="width:30px"><span class="ndyf">${zh_mc }</span></td>
+		
+										<td>
+											<p class="income-je-net">${ye }</p>
+											<p class="salary-je-net" style="display:none">--</p>
+											<p class="fp-je-net" style="display:none">--</p>
+										</td>
+									</tr>
+								</s:iterator>
+								
+							</s:iterator>
+						</tbody>
+					</table>
+
 				</div>
 		</div>
 	</div>

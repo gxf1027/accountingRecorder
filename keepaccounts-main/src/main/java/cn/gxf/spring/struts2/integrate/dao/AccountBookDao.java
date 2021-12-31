@@ -3,9 +3,11 @@ package cn.gxf.spring.struts2.integrate.dao;
 import java.util.List;
 
 import cn.gxf.spring.struts2.integrate.model.AccountBook;
+import cn.gxf.spring.struts2.integrate.model.AccountBookVO;
 
 public interface AccountBookDao {
 	public List<AccountBook> getZhInfo(int user_id);
+	public List<AccountBookVO> getZhInfoVO(int user_id);
 	public AccountBook getZhInfo(String zh_dm);
 	/*
 	* delt_je: ÔöÁ¿Öµ

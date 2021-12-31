@@ -28,7 +28,7 @@ public class ResendScheduler {
 	@Autowired
 	private RabbitSender rabbitSender;
 	
-	@Scheduled(cron="0 */10 * * * ?")
+	@Scheduled(cron="0 */2 * * * ?")
 	public void resend(){
 		
 		try {

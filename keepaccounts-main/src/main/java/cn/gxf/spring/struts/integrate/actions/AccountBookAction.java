@@ -66,8 +66,8 @@ public class AccountBookAction extends ActionSupport implements RequestAware, Se
 		for (AccountBook item : bookList){
 			if ( item.getZh_mc().equals(this.accountBook.getZh_mc())  ){
 				System.out.println("name '" + item.getZh_mc() + "' has existed.");
-				this.addFieldError("zh_mc", "ÊäÈëµÄÕË»§Ãû³ÆÒÑ´æÔÚ£¡");
-				this.bookErrorMessage= "ÊäÈëµÄÕË»§Ãû³ÆÒÑ´æÔÚ£¡";
+				this.addFieldError("zh_mc", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½Ú£ï¿½");
+				this.bookErrorMessage= "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½Ú£ï¿½";
 				return;
 			}
 		}

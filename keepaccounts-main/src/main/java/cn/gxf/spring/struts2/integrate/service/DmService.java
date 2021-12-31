@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import cn.gxf.spring.struts2.integrate.model.AccountBook;
+import cn.gxf.spring.struts2.integrate.model.AccountBookVO;
+import cn.gxf.spring.struts2.integrate.model.BookTypeSummary;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentDl;
 import cn.gxf.spring.struts2.integrate.model.DmPaymentXl;
 
@@ -15,7 +17,10 @@ public interface DmService {
 	public final static String srlb_fin_prod_dm = "2001"; // 收入类型-理财利息
 	
 	public List<AccountBook> getZhInfo(int user_id);
+	public List<AccountBookVO> getZhInfoVO(int user_id);
 	public Map<String, List<AccountBook>> getZhInfoMap(int user_id);
+	//public Map<String, List<AccountBook>> getZhInfoMapSimple(int user_id);
+	public Map<BookTypeSummary, List<AccountBook>> getZhInfoMap4FrontPage(int user_id);
 	public List<AccountBook> getZhInfoSimple(int user_id);
 	public void removeZhInfoCache(int user_id);
 	

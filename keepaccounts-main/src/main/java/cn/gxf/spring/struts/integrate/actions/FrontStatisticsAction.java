@@ -1,8 +1,10 @@
 package cn.gxf.spring.struts.integrate.actions;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.struts2.interceptor.RequestAware;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,11 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import cn.gxf.spring.struts.integrate.security.UserLogin;
 import cn.gxf.spring.struts.integrate.util.AuxiliaryTools;
+import cn.gxf.spring.struts2.integrate.model.AccountBook;
+import cn.gxf.spring.struts2.integrate.model.BookTypeSummary;
 import cn.gxf.spring.struts2.integrate.model.StatByCategory;
 import cn.gxf.spring.struts2.integrate.model.StatByMonth;
+import cn.gxf.spring.struts2.integrate.service.DmService;
 import cn.gxf.spring.struts2.integrate.service.FrontStatisticsService;
 import cn.gxf.spring.struts2.integrate.service.KeepAccountingDatesService;
 
@@ -28,10 +33,11 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 	private FrontStatisticsService frontStatService;
 	
 	@Autowired
+	private DmService dmService;
+	
+	@Autowired
 	private KeepAccountingDatesService keepAccountingDatesService;
 	
-//	@Autowired
-//	private AccTools accTools; 
 	
 	private StatByMonth calcAggregationProp(List<StatByMonth> list){
 		// ºÏ¼ÆÊý
@@ -72,6 +78,8 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 		
 		myrequest.put("incomeStatLb", incomeStatLb);
 		myrequest.put("paymentStatDl", paymentStatDl);
+		
+		myrequest.put("accountBooksSumMap", dmService.getZhInfoMap4FrontPage(user.getId()));
 		
 		int keepdates = keepAccountingDatesService.getKeepAccountingDates(user.getId());
 		myrequest.put("keepdates", keepdates);
@@ -153,5 +161,7 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 	public String getNd() {
 		return nd;
 	}
-
+	
+	
+	
 }

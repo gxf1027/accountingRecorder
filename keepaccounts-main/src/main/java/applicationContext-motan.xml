@@ -31,7 +31,7 @@
                         application="keepAccounts" registry="my_consul" id="serviceBasicConfig"/>
                         
     <!-- 使用consul作为注册中心 --> 
-    <motan:registry regProtocol="consul" name="my_consul" address="192.168.0.104:8500"/>
+    <motan:registry regProtocol="consul" name="my_consul" address="192.168.0.109:8500"/>
      
     <!-- 使用consul为注册中心 -->
     <!-- <motan:service interface="cn.gxf.spring.quartz.job.service.RpcService" ref="rpcServiceImpl" registry="my_consul" export="8002" /> -->

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.gxf.spring.struts2.integrate.model.AccountBook;
+import cn.gxf.spring.struts2.integrate.model.AccountBookVO;
 
 @Repository
 public class AccountBookDaoImplJdbc implements AccountBookDao{
@@ -32,7 +33,8 @@ public class AccountBookDaoImplJdbc implements AccountBookDao{
 	@Override
 	public List<AccountBook> getZhInfo(int user_id) {
 		
-		String sql = "SELECT * from zh_detail_info WHERE user_id=? AND yxbz='Y' AND xybz='Y'";
+		//String sql = "SELECT * from zh_detail_info WHERE user_id=? AND yxbz='Y' AND xybz='Y'";
+		String sql = "SELECT zh_dm, Zh_mc, khrmc, zhhm, user_id, zhlx_dm, ye from zh_detail_info WHERE user_id=? AND yxbz='Y' AND xybz='Y'";
 		
 		PreparedStatementSetter pss = new PreparedStatementSetter() {
 			
@@ -58,6 +60,46 @@ public class AccountBookDaoImplJdbc implements AccountBookDao{
 				adi.setYe(rs.getFloat("ye"));
 				adi.setYxbz("Y");
 				return adi;
+			}});
+	
+	}
+	
+	@Override
+	public List<AccountBookVO> getZhInfoVO(int user_id) {
+		
+		String sql = "SELECT a.zh_dm, "
+				+ "a.zh_mc, "
+				+ "b.zhlx_mc, "
+				+ "a.zhhm, "
+				+ "a.user_id, "
+				+ "a.khrmc, "
+				+ "a.ye, "
+				+ "a.yxbz "
+				+ "FROM zh_detail_info a LEFT JOIN dm_zhlx b ON a.zhlx_dm = b.zhlx_dm WHERE user_id = ? "
+				+ "ORDER BY a.zhlx_dm, a.zh_dm";
+		
+		PreparedStatementSetter pss = new PreparedStatementSetter() {
+			
+			@Override
+			public void setValues(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, user_id);
+			}
+		};
+		
+		return jdbcTemplate.query(sql, pss, new RowMapper<AccountBookVO>(){
+
+			@Override
+			public AccountBookVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				AccountBookVO book = new AccountBookVO();
+				book.setZh_dm(rs.getString("zh_dm"));
+				book.setZh_mc(rs.getString("Zh_mc"));
+				book.setKhrmc(rs.getString("khrmc"));
+				book.setZhhm(rs.getString("zhhm"));
+				book.setUser_id(rs.getInt("user_id"));
+				book.setZhlx_mc(rs.getString("zhlx_mc"));
+				book.setYe(rs.getFloat("ye"));
+				book.setYxbz(rs.getString("yxbz"));
+				return book;
 			}});
 	
 	}
@@ -96,6 +138,7 @@ public class AccountBookDaoImplJdbc implements AccountBookDao{
 		return books.get(0);
 	}
 
+	
 	@Transactional(value="dsTransactionManager", propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
 	//@CacheEvict(value="dmCache", allEntries=true)
 	@Override
