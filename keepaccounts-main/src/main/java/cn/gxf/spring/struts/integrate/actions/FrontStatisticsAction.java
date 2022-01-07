@@ -107,6 +107,8 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 		myrequest.put("incomeStatLb", incomeStatLb);
 		myrequest.put("paymentStatDl", paymentStatDl);
 		
+		myrequest.put("accountBooksSumMap", dmService.getZhInfoMap4FrontPage(user.getId()));
+		
 		int keepdates = keepAccountingDatesService.getKeepAccountingDates(user.getId());
 		myrequest.put("keepdates", keepdates);
 		
@@ -137,6 +139,8 @@ public class FrontStatisticsAction extends ActionSupport implements RequestAware
 		
 		myrequest.put("incomeStatLb", incomeStatLb);
 		myrequest.put("paymentStatDl", paymentStatDl);
+		
+		myrequest.put("accountBooksSumMap", dmService.getZhInfoMap4FrontPage(user.getId()));
 		
 		int keepdates = keepAccountingDatesService.getKeepAccountingDates(user.getId());
 		myrequest.put("keepdates", keepdates);
