@@ -14,7 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	<struts.version>2.3.32</struts.version> 
 	<spring.version>4.3.14.RELEASE</spring.version>  
-	<cxf.version>3.2.2</cxf.version>
+	<cxf.version>3.4.10</cxf.version>
 	<org.springframework.security.version>3.2.6.RELEASE</org.springframework.security.version>
 	<motan.version>1.1.1</motan.version>
   </properties>
